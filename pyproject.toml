@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hushai"
+description = "Zen AI CLI — one sentence at a time"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "The hush.ai Authors" }]
+keywords = ["cli", "llm", "openai", "zen", "chat"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "openai>=1.0.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/peace-lab-global/hush.ai"
+Documentation = "https://github.com/peace-lab-global/hush.ai/blob/main/docs/README.md"
+Repository = "https://github.com/peace-lab-global/hush.ai"
+Issues = "https://github.com/peace-lab-global/hush.ai/issues"
+Changelog = "https://github.com/peace-lab-global/hush.ai/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+  "ruff>=0.4.0",
+  "mypy>=1.8",
+  "pre-commit>=3.0",
+  "pip-audit>=2.6",
+  "build>=1.0",
+]
+
+[project.scripts]
+hush = "hushai.cli:main"
+
+[tool.setuptools]
+packages = ["hushai"]
+
+[tool.setuptools.dynamic]
+version = { attr = "hushai.__version__" }
+
+[tool.setuptools.package-data]
+hushai = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+branch = true
+source = ["hushai"]
+omit = ["hushai/__main__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+src = ["hushai", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["hushai"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+strict_optional = true
+packages = ["hushai"]
+
+[[tool.mypy.overrides]]
+module = "openai.*"
+ignore_missing_imports = true
