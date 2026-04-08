@@ -24,7 +24,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/peace-lab-global/hush.ai?style=social)](https://github.com/peace-lab-global/hush.ai)
 [![Issues](https://img.shields.io/github/issues/peace-lab-global/hush.ai)](https://github.com/peace-lab-global/hush.ai/issues)
 
-[文档](#文档) · [安装](#安装) · [演示](#演示) · [配置](#配置) · [贡献](#贡献)
+[文档](#文档) · [安装](#安装) · [演示](#演示) · [了了冥想老师](#了了--冥想老师-ai-分身) · [配置](#配置) · [贡献](#贡献)
 
 </div>
 
@@ -32,9 +32,18 @@
 
 ## 它是什么
 
+`hush.ai` 包含两个产品：
+
+| 产品 | 定位 |
+|------|------|
+| **hush CLI** | 终端禅意 AI，一句到底 |
+| **了了 (LiaoLiao)** | 冥想老师 AI 分身 — 长期记忆 + RAG 知识库 + 语音对话 |
+
+### hush CLI
+
 `hush` 是一个运行在终端里的 **禅意 AI CLI**：只需配置 **`LLM_APPKEY`**（OpenAI 兼容 API），默认以「哲理老人」的口吻回答；并在本地把模型输出 **压成一句话**（句末标点切首句，否则取首行并截断），避免长篇大论。（**例外**：`pua` 模式使用独立演练提示，不叠用哲理老人基座，见下表与 [配置说明](docs/configuration.md)。）
 
-内置多种 **对话模式**（默认 `calm`）：多数模式在系统提示中追加不同取向的约束并匹配 **REPL 欢迎语**；`pua` 为教育向反操控演练。
+内置多种 **对话模式**（默认 `calm`）：
 
 | 模式 | 含义 |
 |------|------|
@@ -42,59 +51,49 @@
 | `focus` | **反拖延**：小步行动、不羞辱、不堆清单 |
 | `hype` | **打鸡血**：积极有力量，避免空洞口号 |
 | `plain` | 仅保留基础「哲理老人」提示，不追加模式后缀 |
-| `pua` | **反PUA 演练**：模型扮演对话里「施压一方」可能说出的一句台词（教育向、虚构情境），便于练习觉察与回应边界；**非**心理咨询，遇真实风险请寻求专业帮助 |
-
-切换：`--mode calm|focus|hype|plain|pua`，或环境变量 `HUSH_MODE`，或 JSON `hush_mode`。**别名**（仅 env / JSON，如 `anti-pua`→`pua`）见 [docs/configuration.md · 模式别名](docs/configuration.md#mode-aliases)。兼容旧版：`HUSH_CALM_MODE=0` / `hush_calm_mode: false` 等价于 `plain`；`--no-calm` 等价于 `--mode plain`。
-
-适合：想要 **极简回答**、在脚本/管道里嵌入一句点拨、或在 REPL 里慢问慢答的你。
+| `pua` | **反PUA 演练**：教育向、虚构情境，练习觉察与回应边界 |
 
 ---
 
-## 为什么选择 hush
+## 为什么选择 hush.ai
 
 |  |  |
 |--|--|
-| **一句到底** | 客户端强制单句输出，适合「点一下就走」的决策场景。 |
-| **多模式** | calm / focus / hype / plain / pua，一键切换语气取向（见上表）。 |
-| **终端原生** | 单次 / 管道 / 交互三种模式；`--json-errors` 方便自动化。 |
-| **可配置、可观测** | 超时与重试、中文错误映射；JSON 配置 + 环境变量覆盖。 |
-| **工程化** | Apache-2.0、CI（多版本 Python + 跨平台烟测）、类型与测试覆盖门槛。 |
-
----
-
-## 文档
-
-| 文档 | 说明 |
-|------|------|
-| [docs/README.md](docs/README.md) | 文档中心入口 |
-| [docs/configuration.md](docs/configuration.md) | 环境变量、JSON 配置、路径与优先级 |
-| [docs/cli.md](docs/cli.md) | 参数、管道、REPL、退出码 |
-| [docs/architecture.md](docs/architecture.md) | 模块职责与请求流程 |
+| **一句到底** | CLI 模式强制单句输出，适合「点一下就走」的决策场景 |
+| **了了冥想老师** | 有记忆的 AI 冥想陪伴 — 记住每位用户的状态、偏好、目标 |
+| **长期记忆** | 7 大记忆维度，自动提取、向量检索、重要性评分、90 天自动归档 |
+| **RAG 知识库** | 导入老师理论体系，语义搜索注入对话，让 AI 真正「学会」老师的方法 |
+| **多模型路由** | OpenAI / DeepSeek / 智谱 一键切换，支持任意 OpenAI 兼容端点 |
+| **语音对话** | 浏览器语音识别 + 语音合成，可配置音色、语速、音调 |
+| **安全护栏** | 内置危机信号检测，自动建议专业求助渠道 |
+| **多租户** | 每位用户独立记忆空间，微信小程序 OAuth 接入 |
+| **全功能管理后台** | 用户、对话、记忆、知识库一站式管理 |
 
 ---
 
 ## 目录
 
-- [它是什么](#它是什么)
-- [为什么选择 hush](#为什么选择-hush)
-- [文档](#文档)
 - [安装](#安装)
-- [演示](#演示)
-- [配置](#配置)
-- [LLM 接入说明](#llm-接入说明)
-- [使用速查](#使用速查)
-- [常见问题](#常见问题)
+- [hush CLI 演示](#hush-cli-演示)
+- [了了 — 冥想老师 AI 分身](#了了--冥想老师-ai-分身)
+  - [核心架构](#核心架构)
+  - [长期记忆系统](#长期记忆系统)
+  - [RAG 知识库](#rag-知识库)
+  - [语音配置](#语音配置)
+  - [管理后台](#管理后台)
+  - [安全设计](#安全设计)
+  - [快速启动](#快速启动)
+  - [API 总览](#api-总览)
+  - [配置项](#配置项)
+- [hush CLI 配置](#hush-cli-配置)
 - [贡献](#贡献)
-- [社区、安全与许可证](#社区安全与许可证)
-- [English](#english)
+- [许可证](#许可证)
 
 ---
 
 ## 安装
 
 **环境：** Python **3.9+**
-
-**从源码安装（推荐）：**
 
 ```bash
 git clone https://github.com/peace-lab-global/hush.ai.git
@@ -105,32 +104,28 @@ python3 -m pip install -U pip
 python3 -m pip install -e .
 ```
 
-验证：
+**冥想老师额外依赖：**
 
 ```bash
-hush --version
-# 或
-python3 -m hushai --version
+python3 -m pip install -e ".[meditation]"
 ```
 
-> **PyPI：** 若已发布 wheel，可使用 `pip install hushai`（以 [CHANGELOG](CHANGELOG.md) 与 [MAINTAINERS](MAINTAINERS.md) 为准）；当前默认以源码安装说明为主。
+**Docker（可选，用于 PostgreSQL + ChromaDB）：**
+
+```bash
+docker compose up -d
+```
 
 ---
 
-## 演示
+## hush CLI 演示
 
-**单次提问（输出为一句）：**
+**单次提问：**
 
 ```bash
 export LLM_APPKEY='你的_API_Key'
 hush "心很乱的时候，先做哪一件事？"
-```
-
-终端可能类似：
-
-```text
-$ hush "心很乱的时候，先做哪一件事？"
-先停三息，再决定下一步。
+# → 先停三息，再决定下一步。
 ```
 
 **管道：**
@@ -146,140 +141,401 @@ hush
 # 提示符 > 下输入问题；exit / quit / q 退出
 ```
 
-**反 PUA 演练（`pua`）：**
+**反 PUA 演练：**
 
 ```bash
 hush --mode pua "领导开会时当众说我太敏感，换一句他可能说的话"
 ```
 
+| 场景 | 命令 |
+|------|------|
+| 单次 | `hush "问题"` |
+| 管道 | `echo "问题" \| hush` |
+| 交互 REPL | `hush` |
+| 切换模式 | `hush --mode hype "冲一把"` 或 `export HUSH_MODE=focus` |
+| 版本 | `hush --version` |
+
 ---
 
-## 配置
+## 了了 — 冥想老师 AI 分身
 
-**原则：** 同一键 **环境变量优先于配置文件**（详见 [docs/configuration.md](docs/configuration.md)）。
+> **每一次呼吸，都是回家的路。**
+
+**了了 (LiaoLiao)** 是一个有长期记忆的冥想陪伴 AI — 她能记住每位用户的冥想经历、情绪模式、个人偏好和目标进展，让每次对话都建立在上次交流的基础上。
+
+### 核心架构
+
+```
+┌──────────────────────────────────────────────┐
+│                  前端 SPA                     │
+│   SVG 头像 · 语音 I/O · 音色配置 · 萤火粒子    │
+└─────────────┬────────────────────────────────┘
+              │ SSE / REST
+┌─────────────▼────────────────────────────────┐
+│             FastAPI 服务层                     │
+│  ┌──────┐ ┌──────┐ ┌───────┐ ┌────────────┐  │
+│  │ Auth │ │ Chat │ │Memory │ │ Knowledge  │  │
+│  └──┬───┘ └──┬───┘ └───┬───┘ └─────┬──────┘  │
+│     │        │         │           │          │
+│  ┌──▼────────▼─────────▼───────────▼───────┐  │
+│  │          对话引擎 (Engine)                │  │
+│  │  Prompt 构建 → LLM 调用 → 记忆提取       │  │
+│  └──┬──────────┬──────────┬────────────────┘  │
+│     │          │          │                    │
+└─────┼──────────┼──────────┼────────────────────┘
+      │          │          │
+┌─────▼───┐ ┌───▼────┐ ┌──▼──────────┐
+│PostgreSQL│ │ChromaDB│ │ LLM Router  │
+│  /SQLite │ │ 向量库  │ │ OpenAI/DS/ZP│
+└──────────┘ └────────┘ └─────────────┘
+```
+
+### 长期记忆系统
+
+了了不只是聊天 — 她会从每次对话中 **自动提取** 关键信息，存入长期记忆，并在未来对话中 **智能检索** 相关记忆注入上下文。
+
+**7 大记忆维度：**
+
+| 类别 | 记录内容 |
+|------|---------|
+| 🧘 冥想经历 | 练习时长、频率、体感、技法偏好 |
+| 💭 情绪模式 | 常见情绪、触发因素、变化趋势 |
+| ✨ 个人偏好 | 引导风格、练习时间、沟通方式 |
+| 🎯 目标进展 | 练习目标、里程碑、当前阶段 |
+| 📌 重要事件 | 突破、领悟、困难、转折点 |
+| 💊 健康提醒 | 身体限制、不适感、医嘱 |
+| 🌏 生活背景 | 工作、家庭、压力来源 |
+
+**记忆生命周期：**
+
+1. **自动提取** — 每次对话后，LLM 自动从对话内容提取记忆（独立模型，低温 0.3）
+2. **双重存储** — PostgreSQL 结构化存储 + ChromaDB 向量嵌入
+3. **语义检索** — 基于当前消息的向量相似度搜索，注入系统提示
+4. **重要性评分** — 0~1 分，影响检索排序和归档策略
+5. **自动归档** — 90 天以上且重要性 < 0.3 的记忆自动归档
+
+### RAG 知识库
+
+导入冥想老师的理论体系，让 AI 真正「学会」老师的教学方法：
+
+- **智能分块** — 800 字块 + 200 字重叠，中文优化的段落感知切分
+- **层次导入** — 支持嵌套结构（章节/小节），保持知识体系完整性
+- **语义搜索** — ChromaDB 余弦相似度检索，Top-K 结果注入提示
+- **三种导入方式** — 文本导入、文件上传、结构化 JSON
+
+```bash
+# 导入知识文本
+curl -X POST http://localhost:8000/api/knowledge/import \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "正念呼吸法", "content": "...", "tags": ["呼吸", "入门"]}'
+```
+
+### 语音配置
+
+了了支持完整的 **语音输入 + 语音输出**：
+
+- **语音输入** — 浏览器 Web Speech API，中文识别，说完自动发送
+- **语音输出** — SpeechSynthesis TTS，每条回复可一键朗读
+- **音色选择** — 从设备所有可用语音中选择，支持按性别/语言筛选
+- **语速调节** — 0.5x ~ 2.0x 可调（默认 0.9x）
+- **音调调节** — 0.5 ~ 2.0 可调（默认 1.1）
+- **一键试听** — 调整后立即试听效果
+- **持久化** — 所有设置自动保存到 localStorage
+
+### 管理后台
+
+完整的服务端渲染管理面板（`/admin/`）：
+
+| 页面 | 功能 |
+|------|------|
+| 仪表盘 | 用户/对话/记忆/知识库统计，最近活动 |
+| 用户管理 | 列表、搜索、启用/禁用、详情（对话+记忆） |
+| 对话管理 | 列表、按用户筛选、查看完整消息记录 |
+| 记忆管理 | 列表、按用户/分类筛选、删除 |
+| 知识库管理 | 列表、搜索、导入、删除 |
+| 系统设置 | 查看当前配置 |
+
+### 安全设计
+
+- **JWT 认证** — 7 天有效期，HS256 签名
+- **多租户隔离** — 每位用户只能访问自己的记忆和对话
+- **管理员独立认证** — Cookie-based，独立于用户 JWT
+- **CORS 配置** — 可配置允许的来源域名
+- **危机检测** — 自动识别自伤、严重焦虑/抑郁、暴力信号，引导专业求助
+- **输入验证** — Pydantic 模型校验，消息长度限制 5000 字符
+
+### 快速启动
+
+**1. 最小化启动（SQLite，无需 Docker）：**
+
+```bash
+export MEDITATION_JWT_SECRET=your-secret
+export MEDITATION_OPENAI_API_KEY=sk-your-key
+python3 -m uvicorn hushai.meditation.app:get_app --factory
+```
+
+**2. 使用脚本启动：**
+
+```bash
+# SQLite 模式
+bash scripts/start_server.sh
+
+# PostgreSQL 模式
+bash scripts/start_server.sh --postgresql
+```
+
+**3. Docker 全套：**
+
+```bash
+docker compose up -d                                    # 启动 PostgreSQL + ChromaDB
+export MEDITATION_POSTGRES_URL=postgresql+asyncpg://hush:hush123@localhost:5432/hush_meditation
+export MEDITATION_OPENAI_API_KEY=sk-your-key
+export MEDITATION_JWT_SECRET=your-secret
+python3 -m uvicorn hushai.meditation.app:get_app --factory
+```
+
+**访问：**
+
+| 页面 | URL |
+|------|-----|
+| 对话页 | http://localhost:8000/ |
+| API 文档 | http://localhost:8000/debug |
+| ReDoc | http://localhost:8000/redoc |
+| 管理后台 | http://localhost:8000/admin/ |
+| 健康检查 | http://localhost:8000/health |
+
+### API 总览
+
+#### 对话
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `POST` | `/api/chat/` | 标准对话（请求/响应） |
+| `POST` | `/api/chat/stream` | SSE 流式对话 |
+
+#### 认证
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `POST` | `/api/auth/dev-login` | 开发环境登录 |
+| `POST` | `/api/auth/wx-login` | 微信小程序 OAuth |
+
+#### 记忆
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `GET` | `/api/memory/` | 查看当前用户记忆列表 |
+
+#### 知识库
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `POST` | `/api/knowledge/import` | 导入文本知识 |
+| `POST` | `/api/knowledge/import-file` | 上传文件导入 |
+| `POST` | `/api/knowledge/import-structured` | 导入结构化数据 |
+| `POST` | `/api/knowledge/search` | 语义搜索知识库 |
+
+#### 管理
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `GET` | `/api/admin/users` | 用户列表 |
+| `GET` | `/api/admin/users/{id}/profile` | 用户详情 |
+
+### 配置项
+
+所有配置通过环境变量设置，统一 `MEDITATION_` 前缀：
+
+**核心配置：**
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `MEDITATION_JWT_SECRET` | — | JWT 签名密钥（**必填**） |
+| `MEDITATION_OPENAI_API_KEY` | — | LLM API Key（**必填**） |
+| `MEDITATION_POSTGRES_URL` | 空（SQLite） | PostgreSQL 连接串 |
+| `MEDITATION_CHROMA_DIR` | 空（内存） | ChromaDB 持久化目录 |
+
+**LLM 多模型：**
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `MEDITATION_DEFAULT_LLM_PROVIDER` | `openai` | 默认 LLM 提供商 |
+| `MEDITATION_DEFAULT_LLM_MODEL` | `gpt-4o-mini` | 默认模型 |
+| `MEDITATION_OPENAI_BASE_URL` | OpenAI 官方 | OpenAI 端点 |
+| `MEDITATION_DEEPSEEK_API_KEY` | — | DeepSeek API Key |
+| `MEDITATION_ZHIPU_API_KEY` | — | 智谱 API Key |
+
+**向量化：**
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `MEDITATION_EMBEDDING_PROVIDER` | `openai` | Embedding 提供商 |
+| `MEDITATION_EMBEDDING_MODEL` | `text-embedding-3-small` | Embedding 模型 |
+
+**调优参数：**
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `MEDITATION_MEMORY_TOP_K` | `5` | 记忆检索数量 |
+| `MEDITATION_KNOWLEDGE_TOP_K` | `3` | 知识检索数量 |
+| `MEDITATION_CONVERSATION_MAX_TURNS` | `20` | 对话历史轮次上限 |
+
+**微信小程序：**
+
+| 变量 | 说明 |
+|------|------|
+| `MEDITATION_WX_APPID` | 小程序 AppID |
+| `MEDITATION_WX_SECRET` | 小程序 Secret |
+
+**管理后台：**
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `MEDITATION_ADMIN_USERNAME` | `admin` | 管理员用户名 |
+| `MEDITATION_ADMIN_PASSWORD` | `admin` | 管理员密码 |
+
+完整配置模板见 [`.env.example`](.env.example)。
+
+---
+
+## 技术栈
+
+| 层 | 技术 |
+|----|------|
+| 后端框架 | FastAPI (async) |
+| ORM | SQLAlchemy 2.0 (async) |
+| 数据库 | PostgreSQL / SQLite |
+| 向量数据库 | ChromaDB |
+| LLM | OpenAI / DeepSeek / 智谱 (OpenAI 兼容协议) |
+| 认证 | JWT (python-jose) + 微信 OAuth |
+| 前端 | 原生 HTML/CSS/JS，SVG 头像 |
+| 模板引擎 | Jinja2 (管理后台) |
+| 测试 | pytest (69 tests passing) |
+| 部署 | Docker Compose / uvicorn |
+
+---
+
+## 文档
+
+| 文档 | 说明 |
+|------|------|
+| [docs/README.md](docs/README.md) | 文档中心入口 |
+| [docs/configuration.md](docs/configuration.md) | hush CLI 环境变量、JSON 配置 |
+| [docs/cli.md](docs/cli.md) | CLI 参数、管道、REPL、退出码 |
+| [docs/architecture.md](docs/architecture.md) | 模块职责与请求流程 |
+| [.env.example](.env.example) | 冥想老师完整配置模板 |
+
+---
+
+## hush CLI 配置
 
 ### LLM 接入说明
 
-`hush` 使用 **OpenAI 官方 Python SDK** 调用 **`chat.completions.create`**，因此需要支持 **OpenAI 兼容** 的 Chat Completions 端点（多数云厂商、自建网关会提供兼容 Base URL 与模型名，具体以服务商文档为准）。
-
-**最小配置（使用 OpenAI 官方 API 时）：** 只需 API Key；未设置 `OPENAI_BASE_URL` 时，SDK 使用官方默认地址；未设置 `LLM_MODEL` 时默认为 `gpt-4o-mini`。
+`hush` 使用 **OpenAI 官方 Python SDK** 调用 `chat.completions.create`，需要支持 OpenAI 兼容的端点。
 
 ```bash
-export LLM_APPKEY='你的_API_Key'   # 勿提交到 git，勿贴在公开处
+export LLM_APPKEY='你的_API_Key'   # 勿提交到 git
 hush "你好"
 ```
 
-**自建网关或其它云（示例思路，非唯一写法）：** 在服务商控制台创建兼容 OpenAI 的 Key，并抄下 **Base URL** 与 **模型 ID**，再写入环境变量或 JSON：
+自建网关：
 
 ```bash
 export LLM_APPKEY='…'
-export OPENAI_BASE_URL='https://你的兼容网关/v1'   # 末尾是否带 /v1 以厂商说明为准
-export LLM_MODEL='模型名或 deployment 名'
+export OPENAI_BASE_URL='https://你的兼容网关/v1'
+export LLM_MODEL='模型名'
 hush "你好"
 ```
-
-**用 JSON 文件代替部分环境变量（推荐把 Key 只放在本机文件 + 权限收紧）：**
-
-```json
-{
-  "llm_appkey": "…",
-  "openai_base_url": "https://…",
-  "llm_model": "…"
-}
-```
-
-配合 `hush --config /path/to/config.json` 或默认路径下的 `config.json`；**环境变量仍会覆盖**文件中同名字段。
-
-**安全：** 密钥等同于账号能力，勿写入仓库；可参考 [SECURITY.md](SECURITY.md)。
 
 ### 常用环境变量
 
 | 变量 | 说明 |
 |------|------|
-| `LLM_APPKEY` | API Key（可与文件中的 `llm_appkey` 二选一） |
-| `OPENAI_BASE_URL` | 兼容网关 Base URL；**不设**则走 OpenAI 官方默认端点 |
+| `LLM_APPKEY` | API Key |
+| `OPENAI_BASE_URL` | 兼容网关 Base URL |
 | `LLM_MODEL` | 模型名，默认 `gpt-4o-mini` |
 | `LLM_TIMEOUT` | 超时（秒），默认 `60` |
-| `LLM_MAX_RETRIES` | SDK 重试次数，默认 `2` |
-| `HUSH_CONFIG` | 配置文件路径（与 `--config` 二选一；**命令行优先**） |
-| `HUSH_MODE` | `calm` / `focus` / `hype` / `plain` / `pua`；优先级高于文件中的 `hush_mode` |
-| `HUSH_CALM_MODE` | （兼容）`1` 等价于 `calm`，`0` 等价于 `plain`，仅当未设置 `HUSH_MODE` 时生效 |
+| `HUSH_MODE` | `calm` / `focus` / `hype` / `plain` / `pua` |
 
-### 配置文件（JSON）
-
-默认路径（文件**存在**时才自动加载）：
-
-- Linux / macOS：`~/.config/hush/config.json`（或 `$XDG_CONFIG_HOME/hush/config.json`）
-- Windows：`%APPDATA%\hush\config.json`
-
-```bash
-hush --config /path/to/config.json "你好"
-```
-
-可在 JSON 中设置 `"hush_mode": "focus"` 等；也可用 `"hush_calm_mode": false` 映射为 `plain`（兼容旧配置）。LLM 相关键名与环境变量对应关系见 [docs/configuration.md](docs/configuration.md)。
-
----
-
-## 使用速查
+### 使用速查
 
 | 场景 | 命令 |
 |------|------|
 | 单次 | `hush "问题"` |
 | 管道 | `echo "问题" \| hush` |
-| 交互 REPL | `hush`（欢迎语随模式变化） |
-| 切换模式 | `hush --mode hype "冲一把"` 或 `export HUSH_MODE=focus` |
-| 反 PUA 演练 | `hush --mode pua "…"` 或 `export HUSH_MODE=pua`（环境变量可用别名 `anti-pua` 等，见 [配置说明](docs/configuration.md)） |
-| 仅基础提示 | `hush --mode plain` 或 `--no-calm`（兼容） |
+| 交互 REPL | `hush` |
+| 切换模式 | `hush --mode hype "冲一把"` |
+| 反 PUA 演练 | `hush --mode pua "…"` |
 | 版本 | `hush --version` |
-| 脚本解析错误 | `hush --json-errors "问"`（stderr 单行 JSON） |
-
-完整参数、TTY/管道分支、退出码： **[docs/cli.md](docs/cli.md)**。
 
 ---
 
 ## 常见问题
 
 <details>
-<summary><strong>提示未配置 API 密钥</strong></summary>
+<summary><strong>了了：如何开始？</strong></summary>
+
+最简单的方式 — 无需 Docker，一条命令启动：
+
+```bash
+MEDITATION_JWT_SECRET=dev MEDITATION_OPENAI_API_KEY=sk-xxx \
+  python3 -m uvicorn hushai.meditation.app:get_app --factory
+```
+
+打开 http://localhost:8000/ ，输入昵称即可开始对话。
+
+</details>
+
+<details>
+<summary><strong>了了：支持哪些 LLM？</strong></summary>
+
+所有提供 OpenAI 兼容 API 的服务商均可使用。内置支持 OpenAI、DeepSeek、智谱。切换只需设置环境变量 `MEDITATION_DEFAULT_LLM_PROVIDER`。
+
+</details>
+
+<details>
+<summary><strong>了了：记忆存储在哪里？</strong></summary>
+
+双重存储：PostgreSQL（或 SQLite）保存结构化数据（分类、重要性、状态），ChromaDB 保存向量嵌入用于语义检索。开发模式下可全部使用本地文件，无需外部服务。
+
+</details>
+
+<details>
+<summary><strong>了了：如何导入老师的知识体系？</strong></summary>
+
+三种方式：通过 API 导入文本、上传文件、导入结构化 JSON。系统会自动分块并向量化，在对话时通过语义搜索注入相关内容。详见 [API 总览 - 知识库](#api-总览)。
+
+</details>
+
+<details>
+<summary><strong>hush CLI：提示未配置 API 密钥</strong></summary>
 
 设置 `LLM_APPKEY`，或在配置文件中填写 `llm_appkey`。见 [配置文档](docs/configuration.md)。
 
 </details>
 
 <details>
-<summary><strong>管道无输出或立刻退出</strong></summary>
+<summary><strong>hush CLI：几种模式有什么区别？</strong></summary>
 
-无参数且 stdin **不是**交互终端时，会从 stdin 读入；若去空白后为空，会报错退出。
-
-</details>
-
-<details>
-<summary><strong>想换模型或自建网关</strong></summary>
-
-使用 `LLM_MODEL`、`OPENAI_BASE_URL` 或 JSON 中对应字段。
+`calm`/`focus`/`hype` 在系统提示中追加不同前缀，`plain` 不加；`pua` 使用独立演练提示。详见 [docs/configuration.md](docs/configuration.md)。
 
 </details>
 
-<details>
-<summary><strong>为什么永远只有「一句话」？</strong></summary>
+---
 
-这是产品设计：客户端只展示首句（或首行截断）。详见 [docs/architecture.md](docs/architecture.md)。
+## 测试
 
-</details>
+```bash
+# 单元测试（69 tests）
+python3 -m pytest tests/ -q
 
-<details>
-<summary><strong>几种模式有什么区别？</strong></summary>
+# 端到端测试（需启动服务）
+python3 scripts/test_local.py
 
-`calm`/`focus`/`hype` 在系统提示中追加不同前缀，`plain` 不加；`pua` 使用**独立**演练提示（不叠用「哲理老人」）。客户端仍只输出 **一句话**。详见 [docs/configuration.md](docs/configuration.md)。
-
-</details>
-
-<details>
-<summary><strong><code>pua</code> 模式适合做什么？有什么限制？</strong></summary>
-
-用于在受控、教育语境下**练习识别**操控话术、边界与回应思路：模型按提示输出**一句**虚构的「施压方」台词。它不是心理咨询、也不是对真实关系的诊断；若你面临暴力、跟踪、职场/亲密关系中的现实风险，请向专业人士与本地求助渠道求助。详见 [docs/configuration.md](docs/configuration.md) 与 [SECURITY.md](SECURITY.md)。
-
-</details>
+# Lint
+python3 -m ruff check hushai/ tests/
+```
 
 ---
 
@@ -292,7 +548,7 @@ pip install -e ".[dev]"
 make check
 ```
 
-流程与 CI 说明见 **[CONTRIBUTING.md](CONTRIBUTING.md)**。若你改善文档、测试或 CLI 体验，同样非常感谢。
+流程与 CI 说明见 **[CONTRIBUTING.md](CONTRIBUTING.md)**。
 
 ---
 
@@ -313,19 +569,27 @@ make check
 
 ## English
 
-**hush.ai** is a minimal terminal CLI for a **zen, one-sentence** AI reply. It uses the **OpenAI Python SDK** against an **OpenAI-compatible** Chat Completions endpoint. Set **`LLM_APPKEY`** (or `llm_appkey` in JSON); optionally **`OPENAI_BASE_URL`** and **`LLM_MODEL`** for third-party gateways (defaults: official OpenAI host + `gpt-4o-mini` when unset). See the **「LLM 接入说明」** section in the Chinese README above, or [docs/configuration.md](docs/configuration.md). Client-side post-processing keeps output to a **single sentence** (first sentence by punctuation; otherwise first line, truncated).
+**hush.ai** includes two products:
 
-**Modes:** `calm` (anti-anxiety, default), `focus` (anti-procrastination), `hype` (motivational), `plain` (base prompt only), `pua` (educational drill: one fictional pressure line for awareness practice; **not** therapy or crisis support). Set via `--mode`, `HUSH_MODE`, or `hush_mode` in JSON. **Aliases** (env / JSON only, not `--mode`): e.g. `anti-anxiety`→`calm`, `anti-pua`→`pua` — see [docs/configuration.md](docs/configuration.md). Legacy: `HUSH_CALM_MODE=0` or `--no-calm` → `plain`.
+1. **hush CLI** — A minimal terminal AI that outputs exactly **one sentence**. Modes: `calm` (anti-anxiety), `focus` (anti-procrastination), `hype` (motivational), `plain`, `pua` (educational boundary drill). Uses OpenAI-compatible Chat Completions.
 
-**Highlights:** mode switching, timeouts & retries, Chinese SDK error messages, JSON config + env overrides, stdin piping, REPL, `--json-errors` for scripts.
+2. **LiaoLiao (了了)** — An AI meditation teacher with **long-term memory**. Features include: 7-category memory extraction, RAG knowledge base, multi-LLM routing (OpenAI/DeepSeek/Zhipu), voice I/O with configurable timbre/speed/pitch, WeChat Mini Program OAuth, full admin dashboard, and safety guardrails with crisis detection.
+
+```bash
+# Quick start (SQLite, no Docker needed)
+MEDITATION_JWT_SECRET=dev MEDITATION_OPENAI_API_KEY=sk-xxx \
+  python3 -m uvicorn hushai.meditation.app:get_app --factory
+# → http://localhost:8000/
+```
 
 | Resource | Link |
 |----------|------|
 | Documentation hub | [docs/README.md](docs/README.md) |
-| Configuration | [docs/configuration.md](docs/configuration.md) |
+| CLI configuration | [docs/configuration.md](docs/configuration.md) |
 | CLI reference | [docs/cli.md](docs/cli.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Security | [SECURITY.md](SECURITY.md) |
+| Meditation env template | [.env.example](.env.example) |
 
 **License:** [Apache-2.0](LICENSE)

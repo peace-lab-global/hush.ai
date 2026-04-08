@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}管理后台{% endblock %} - 冥想老师 AI</title>
+    <link rel="stylesheet" href="/admin/static/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="admin-container">
+        {% if admin_user %}
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-spa"></i>
+                    <span>冥想老师 AI</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/" class="nav-item {% if request.url.path == '/admin/' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>仪表盘</span>
+                </a>
+                <a href="/admin/users" class="nav-item {% if '/admin/users' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-users"></i>
+                    <span>用户管理</span>
+                </a>
+                <a href="/admin/conversations" class="nav-item {% if '/admin/conversations' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-comments"></i>
+                    <span>对话记录</span>
+                </a>
+                <a href="/admin/memories" class="nav-item {% if '/admin/memories' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-brain"></i>
+                    <span>记忆管理</span>
+                </a>
+                <a href="/admin/knowledge" class="nav-item {% if '/admin/knowledge' in request.url.path and '/knowledge-import' not in request.url.path %}active{% endif %}">
+                    <i class="fas fa-book"></i>
+                    <span>知识库</span>
+                </a>
+                <a href="/admin/knowledge-import" class="nav-item {% if '/admin/knowledge-import' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-file-import"></i>
+                    <span>导入知识</span>
+                </a>
+                <a href="/admin/settings" class="nav-item {% if '/admin/settings' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+                <a href="/debug" class="nav-item" target="_blank">
+                    <i class="fas fa-code"></i>
+                    <span>API 调试</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <i class="fas fa-user-shield"></i>
+                    <span>{{ admin_user }}</span>
+                </div>
+                <a href="/admin/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </aside>
+        {% endif %}
+        
+        <main class="main-content {% if not admin_user %}full-width{% endif %}">
+            {% if admin_user %}
+            <header class="page-header">
+                <h1>{% block page_title %}{% endblock %}</h1>
+            </header>
+            {% endif %}
+            
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

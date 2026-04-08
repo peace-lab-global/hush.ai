@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hush
+      POSTGRES_PASSWORD: hush123
+      POSTGRES_DB: hush_meditation
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hush -d hush_meditation"]
+      interval: 3s
+      retries: 10
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chromadata:/chroma/chroma
+    environment:
+      ANONYMIZED_TELEMETRY: "False"
+
+volumes:
+  pgdata:
+  chromadata:

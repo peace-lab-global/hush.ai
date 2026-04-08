@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}对话记录{% endblock %}
+
+{% block page_title %}对话记录{% endblock %}
+
+{% block content %}
+<!-- 筛选栏 -->
+<div class="toolbar">
+    <form class="filter-form" method="GET" action="/admin/conversations">
+        <div class="form-group">
+            <label>用户筛选</label>
+            <select name="user_id" onchange="this.form.submit()">
+                <option value="">全部用户</option>
+                {% for user in users %}
+                <option value="{{ user.id }}" {% if user_id == user.id %}selected{% endif %}>
+                    {{ user.nickname or '未命名' }} ({{ user.id[:8] }}...)
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if user_id %}
+        <a href="/admin/conversations" class="btn btn-secondary">清除筛选</a>
+        {% endif %}
+    </form>
+    <div class="toolbar-info">
+        共 {{ total }} 条对话记录
+    </div>
+</div>
+
+<!-- 对话列表 -->
+<div class="card">
+    {% if conversations %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>用户</th>
+                <th>标题</th>
+                <th>创建时间</th>
+                <th>更新时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in conversations %}
+            <tr>
+                <td>
+                    <a href="/admin/users/{{ item.conv.user_id }}" class="link">
+                        {{ item.nickname or '未命名' }}
+                    </a>
+                </td>
+                <td>
+                    <a href="/admin/conversations/{{ item.conv.id }}" class="link">
+                        {{ item.conv.title or '无标题' }}
+                    </a>
+                </td>
+                <td>{{ item.conv.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ item.conv.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <span class="badge {% if item.conv.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                        {% if item.conv.is_active %}进行中{% else %}已结束{% endif %}
+                    </span>
+                </td>
+                <td>
+                    <a href="/admin/conversations/{{ item.conv.id }}" class="btn btn-sm btn-info" title="查看详情">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- 分页 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/admin/conversations?page={{ page - 1 }}{% if user_id %}&user_id={{ user_id }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+        
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="page-btn active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+            <a href="/admin/conversations?page={{ p }}{% if user_id %}&user_id={{ user_id }}{% endif %}" class="page-btn">{{ p }}</a>
+            {% elif p == page - 3 or p == page + 3 %}
+            <span class="page-btn">...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page < total_pages %}
+        <a href="/admin/conversations?page={{ page + 1 }}{% if user_id %}&user_id={{ user_id }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+        
+        <span class="page-info">第 {{ page }} / {{ total_pages }} 页</span>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-comments"></i>
+        <p>暂无对话记录</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}用户详情 - {{ user.nickname or '未命名' }}{% endblock %}
+
+{% block page_title %}用户详情{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <a href="/admin/users" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> 返回列表
+    </a>
+</div>
+
+<!-- 用户基本信息 -->
+<div class="detail-grid">
+    <div class="card detail-card">
+        <div class="card-header">
+            <h3><i class="fas fa-user-circle"></i> 基本信息</h3>
+        </div>
+        <div class="card-body">
+            <div class="user-profile">
+                <div class="user-avatar-large">
+                    {% if user.avatar_url %}
+                    <img src="{{ user.avatar_url }}" alt="">
+                    {% else %}
+                    <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <div class="user-details">
+                    <h2>{{ user.nickname or '未命名用户' }}</h2>
+                    <span class="badge {% if user.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                        {% if user.is_active %}正常{% else %}已禁用{% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="info-list">
+                <div class="info-item">
+                    <label>用户 ID</label>
+                    <code>{{ user.id }}</code>
+                </div>
+                <div class="info-item">
+                    <label>OpenID</label>
+                    <code>{{ user.wx_openid or 'N/A' }}</code>
+                </div>
+                <div class="info-item">
+                    <label>UnionID</label>
+                    <code>{{ user.wx_unionid or 'N/A' }}</code>
+                </div>
+                <div class="info-item">
+                    <label>注册时间</label>
+                    <span>{{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+                <div class="info-item">
+                    <label>更新时间</label>
+                    <span>{{ user.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card detail-card">
+        <div class="card-header">
+            <h3><i class="fas fa-chart-bar"></i> 统计信息</h3>
+        </div>
+        <div class="card-body">
+            <div class="stats-list">
+                <div class="stat-item">
+                    <i class="fas fa-comments"></i>
+                    <div>
+                        <span class="stat-value">{{ conv_count }}</span>
+                        <span class="stat-label">对话数</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <span class="stat-value">{{ msg_count }}</span>
+                        <span class="stat-label">消息数</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-brain"></i>
+                    <div>
+                        <span class="stat-value">{{ memories|length }}</span>
+                        <span class="stat-label">记忆条目</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 操作按钮 -->
+<div class="action-bar">
+    <button 
+        class="btn {% if user.is_active %}btn-warning{% else %}btn-success{% endif %}"
+        onclick="toggleUserStatus('{{ user.id }}', {{ 'false' if user.is_active else 'true' }})"
+    >
+        <i class="fas {% if user.is_active %}fa-ban{% else %}fa-check{% endif %}"></i>
+        {% if user.is_active %}禁用用户{% else %}启用用户{% endif %}
+    </button>
+    <a href="/admin/conversations?user_id={{ user.id }}" class="btn btn-primary">
+        <i class="fas fa-comments"></i> 查看对话
+    </a>
+    <a href="/admin/memories?user_id={{ user.id }}" class="btn btn-info">
+        <i class="fas fa-brain"></i> 查看记忆
+    </a>
+</div>
+
+<!-- 记忆列表 -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-brain"></i> 用户记忆</h3>
+        <a href="/admin/memories?user_id={{ user.id }}" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="card-body">
+        {% if memories %}
+        <div class="memory-list">
+            {% for memory in memories[:10] %}
+            <div class="memory-item">
+                <div class="memory-header">
+                    <span class="badge badge-category">{{ memory.category }}</span>
+                    <span class="memory-date">{{ memory.created_at.strftime('%Y-%m-%d') }}</span>
+                </div>
+                <p class="memory-content">{{ memory.content[:100] }}{% if memory.content|length > 100 %}...{% endif %}</p>
+                {% if memory.summary %}
+                <p class="memory-summary">{{ memory.summary }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-brain"></i>
+            <p>暂无记忆</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 对话列表 -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-comments"></i> 最近对话</h3>
+        <a href="/admin/conversations?user_id={{ user.id }}" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="card-body">
+        {% if conversations %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>创建时间</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conv in conversations[:10] %}
+                <tr>
+                    <td>{{ conv.title or '无标题' }}</td>
+                    <td>{{ conv.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ conv.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <a href="/admin/conversations/{{ conv.id }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i> 查看
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-comments"></i>
+            <p>暂无对话</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function toggleUserStatus(userId, enable) {
+    if (!confirm(`确定要${enable ? '启用' : '禁用'}该用户吗？`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/api/users/${userId}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            location.reload();
+        } else {
+            const data = await response.json();
+            alert(data.detail || '操作失败');
+        }
+    } catch (error) {
+        alert('网络错误');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <i class="fas fa-spa logo-icon"></i>
+            <h1>冥想老师 AI</h1>
+            <p>管理后台登录</p>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form class="login-form" method="POST" action="/admin/login">
+            <div class="form-group">
+                <label for="username">
+                    <i class="fas fa-user"></i>
+                    用户名
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    required 
+                    autocomplete="username"
+                    placeholder="请输入用户名"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i>
+                    密码
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    autocomplete="current-password"
+                    placeholder="请输入密码"
+                >
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                登录
+            </button>
+        </form>
+        
+        <div class="login-footer">
+            <p>默认账号: admin / admin</p>
+            <p>建议通过环境变量设置密码</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

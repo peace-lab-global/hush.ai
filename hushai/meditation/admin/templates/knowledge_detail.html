@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}知识详情 - {{ item.title or '无标题' }}{% endblock %}
+
+{% block page_title %}知识详情{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <a href="/admin/knowledge" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> 返回列表
+    </a>
+    <button class="btn btn-danger" onclick="deleteKnowledge('{{ item.id }}')">
+        <i class="fas fa-trash"></i> 删除条目
+    </button>
+</div>
+
+<div class="card">
+    <div class="knowledge-detail">
+        <div class="knowledge-detail-header">
+            <h2>{{ item.title or '无标题' }}</h2>
+            <div class="knowledge-detail-meta">
+                <span><i class="fas fa-calendar"></i> {{ item.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                {% if item.source %}
+                <span><i class="fas fa-link"></i> {{ item.source }}</span>
+                {% endif %}
+                <span><i class="fas fa-sort-numeric-down"></i> 分段: {{ item.chunk_index }}</span>
+            </div>
+        </div>
+        
+        {% if item.tags %}
+        <div class="knowledge-detail-tags">
+            {% for tag in item.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="knowledge-detail-content">
+            <pre>{{ item.content }}</pre>
+        </div>
+        
+        {% if item.metadata_ %}
+        <div class="knowledge-detail-meta-section">
+            <h4>元数据</h4>
+            <pre class="json-content">{{ item.metadata_ | tojson(indent=2) }}</pre>
+        </div>
+        {% endif %}
+        
+        {% if item.parent_id %}
+        <div class="knowledge-detail-parent">
+            <h4>父级条目</h4>
+            <a href="/admin/knowledge/{{ item.parent_id }}" class="link">
+                {{ item.parent_id }}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function deleteKnowledge(itemId) {
+    if (!confirm('确定要删除这条知识条目吗？此操作不可恢复。')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/api/knowledge/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            window.location.href = '/admin/knowledge';
+        } else {
+            const data = await response.json();
+            alert(data.detail || '删除失败');
+        }
+    } catch (error) {
+        alert('网络错误');
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.knowledge-detail {
+    padding: 1rem;
+}
+
+.knowledge-detail-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.knowledge-detail-header h2 {
+    margin-bottom: 0.75rem;
+}
+
+.knowledge-detail-meta {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.knowledge-detail-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.knowledge-detail-tags {
+    margin-bottom: 1.5rem;
+}
+
+.knowledge-detail-content {
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.knowledge-detail-content pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: inherit;
+    line-height: 1.8;
+}
+
+.knowledge-detail-meta-section,
+.knowledge-detail-parent {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.knowledge-detail-meta-section h4,
+.knowledge-detail-parent h4 {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.json-content {
+    background: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+</style>
+{% endblock %}

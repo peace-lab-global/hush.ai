@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block page_title %}用户管理{% endblock %}
+
+{% block content %}
+<!-- 搜索栏 -->
+<div class="toolbar">
+    <form class="search-form" method="GET" action="/admin/users">
+        <div class="search-input-group">
+            <i class="fas fa-search"></i>
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ search }}"
+                placeholder="搜索用户昵称或 OpenID..."
+            >
+            <button type="submit" class="btn btn-primary">搜索</button>
+            {% if search %}
+            <a href="/admin/users" class="btn btn-secondary">清除</a>
+            {% endif %}
+        </div>
+    </form>
+    <div class="toolbar-info">
+        共 {{ total }} 位用户
+    </div>
+</div>
+
+<!-- 用户列表 -->
+<div class="card">
+    {% if users %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>用户</th>
+                <th>OpenID</th>
+                <th>注册时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr data-user-id="{{ user.id }}">
+                <td>
+                    <div class="user-cell">
+                        <div class="user-avatar">
+                            {% if user.avatar_url %}
+                            <img src="{{ user.avatar_url }}" alt="">
+                            {% else %}
+                            <i class="fas fa-user"></i>
+                            {% endif %}
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ user.nickname or '未命名' }}</span>
+                            <span class="user-id">{{ user.id[:8] }}...</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <code class="openid">{{ user.wx_openid[:16] }}...</code>
+                </td>
+                <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <span class="badge {% if user.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                        {% if user.is_active %}正常{% else %}已禁用{% endif %}
+                    </span>
+                </td>
+                <td>
+                    <div class="actions">
+                        <a href="/admin/users/{{ user.id }}" class="btn btn-sm btn-info" title="查看详情">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <button 
+                            class="btn btn-sm {% if user.is_active %}btn-warning{% else %}btn-success{% endif %}"
+                            onclick="toggleUserStatus('{{ user.id }}', {{ 'false' if user.is_active else 'true' }})"
+                            title="{% if user.is_active %}禁用用户{% else %}启用用户{% endif %}"
+                        >
+                            <i class="fas {% if user.is_active %}fa-ban{% else %}fa-check{% endif %}"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- 分页 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/admin/users?page={{ page - 1 }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+        
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="page-btn active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+            <a href="/admin/users?page={{ p }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">{{ p }}</a>
+            {% elif p == page - 3 or p == page + 3 %}
+            <span class="page-btn">...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page < total_pages %}
+        <a href="/admin/users?page={{ page + 1 }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+        
+        <span class="page-info">第 {{ page }} / {{ total_pages }} 页</span>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-users"></i>
+        <p>暂无用户</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function toggleUserStatus(userId, enable) {
+    if (!confirm(`确定要${enable ? '启用' : '禁用'}该用户吗？`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/api/users/${userId}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            location.reload();
+        } else {
+            const data = await response.json();
+            alert(data.detail || '操作失败');
+        }
+    } catch (error) {
+        alert('网络错误');
+    }
+}
+</script>
+{% endblock %}

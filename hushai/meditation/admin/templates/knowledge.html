@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}知识库管理{% endblock %}
+
+{% block page_title %}知识库管理{% endblock %}
+
+{% block content %}
+<!-- 搜索栏 -->
+<div class="toolbar">
+    <form class="search-form" method="GET" action="/admin/knowledge">
+        <div class="search-input-group">
+            <i class="fas fa-search"></i>
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ search }}"
+                placeholder="搜索知识库标题或内容..."
+            >
+            <button type="submit" class="btn btn-primary">搜索</button>
+            {% if search %}
+            <a href="/admin/knowledge" class="btn btn-secondary">清除</a>
+            {% endif %}
+        </div>
+    </form>
+    <div class="toolbar-actions">
+        <div class="toolbar-info">共 {{ total }} 条知识</div>
+        <a href="/admin/knowledge-import" class="btn btn-success">
+            <i class="fas fa-plus"></i> 导入知识
+        </a>
+    </div>
+</div>
+
+<!-- 知识列表 -->
+<div class="card">
+    {% if knowledge_items %}
+    <div class="knowledge-grid">
+        {% for item in knowledge_items %}
+        <div class="knowledge-card" data-item-id="{{ item.id }}">
+            <div class="knowledge-header">
+                <h4>
+                    <a href="/admin/knowledge/{{ item.id }}">
+                        {{ item.title or '无标题' }}
+                    </a>
+                </h4>
+                <button class="btn-icon btn-danger" onclick="deleteKnowledge('{{ item.id }}')" title="删除">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="knowledge-content">
+                <p>{{ item.content[:200] }}{% if item.content|length > 200 %}...{% endif %}</p>
+            </div>
+            {% if item.tags %}
+            <div class="knowledge-tags">
+                {% for tag in item.tags %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="knowledge-meta">
+                <span><i class="fas fa-calendar"></i> {{ item.created_at.strftime('%Y-%m-%d') }}</span>
+                {% if item.source %}
+                <span><i class="fas fa-source"></i> {{ item.source }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- 分页 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/admin/knowledge?page={{ page - 1 }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+        
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="page-btn active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+            <a href="/admin/knowledge?page={{ p }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">{{ p }}</a>
+            {% elif p == page - 3 or p == page + 3 %}
+            <span class="page-btn">...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page < total_pages %}
+        <a href="/admin/knowledge?page={{ page + 1 }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+        
+        <span class="page-info">第 {{ page }} / {{ total_pages }} 页</span>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-book"></i>
+        <p>暂无知识条目</p>
+        <p class="hint">可以通过 API 接口导入知识库内容</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function deleteKnowledge(itemId) {
+    if (!confirm('确定要删除这条知识条目吗？此操作不可恢复。')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/api/knowledge/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const card = document.querySelector(`[data-item-id="${itemId}"]`);
+            if (card) {
+                card.style.opacity = '0';
+                setTimeout(() => card.remove(), 300);
+            }
+        } else {
+            const data = await response.json();
+            alert(data.detail || '删除失败');
+        }
+    } catch (error) {
+        alert('网络错误');
+    }
+}
+</script>
+{% endblock %}

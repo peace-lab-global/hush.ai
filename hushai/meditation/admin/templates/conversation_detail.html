@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}对话详情 - {{ conversation.title or '无标题' }}{% endblock %}
+
+{% block page_title %}对话详情{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <a href="/admin/conversations{% if user_id %}?user_id={{ user_id }}{% endif %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> 返回列表
+    </a>
+</div>
+
+<!-- 对话信息 -->
+<div class="card">
+    <div class="card-header">
+        <div class="conversation-header">
+            <div>
+                <h3>{{ conversation.title or '无标题' }}</h3>
+                <div class="conversation-meta">
+                    <span><i class="fas fa-user"></i> {{ nickname or '未命名' }}</span>
+                    <span><i class="fas fa-clock"></i> {{ conversation.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    <span class="badge {% if conversation.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                        {% if conversation.is_active %}进行中{% else %}已结束{% endif %}
+                    </span>
+                </div>
+            </div>
+            <a href="/admin/users/{{ user_id }}" class="btn btn-primary">
+                <i class="fas fa-user"></i> 查看用户
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 消息列表 -->
+<div class="chat-container">
+    {% if messages %}
+        {% for msg in messages %}
+        <div class="chat-message {{ msg.role }}">
+            <div class="message-avatar">
+                {% if msg.role == 'user' %}
+                <i class="fas fa-user"></i>
+                {% else %}
+                <i class="fas fa-robot"></i>
+                {% endif %}
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="message-role">
+                        {% if msg.role == 'user' %}用户{% else %}AI{% endif %}
+                    </span>
+                    <span class="message-time">{{ msg.created_at.strftime('%H:%M:%S') }}</span>
+                </div>
+                <div class="message-body">
+                    {{ msg.content | replace('\n', '<br>') | safe }}
+                </div>
+                {% if msg.metadata_ %}
+                <div class="message-meta">
+                    <details>
+                        <summary>元数据</summary>
+                        <pre>{{ msg.metadata_ | tojson(indent=2) }}</pre>
+                    </details>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-comments"></i>
+        <p>暂无消息</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.conversation-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.conversation-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.chat-message {
+    display: flex;
+    gap: 1rem;
+    max-width: 80%;
+}
+
+.chat-message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+    margin-left: auto;
+}
+
+.chat-message.assistant {
+    align-self: flex-start;
+    margin-right: auto;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.chat-message.assistant .message-avatar {
+    background: var(--primary);
+    color: white;
+}
+
+.message-content {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1rem;
+    flex: 1;
+}
+
+.chat-message.user .message-content {
+    background: var(--primary);
+    color: white;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.message-role {
+    font-weight: 600;
+}
+
+.message-body {
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.message-meta {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.message-meta details {
+    font-size: 0.75rem;
+}
+
+.message-meta summary {
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.message-meta pre {
+    background: var(--bg-tertiary);
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+}
+</style>
+{% endblock %}

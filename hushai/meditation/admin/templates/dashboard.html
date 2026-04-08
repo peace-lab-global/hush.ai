@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}仪表盘{% endblock %}
+
+{% block page_title %}仪表盘{% endblock %}
+
+{% block content %}
+<!-- 统计卡片 -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon users">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ user_count }}</h3>
+            <p>总用户数</p>
+            <span class="stat-badge">{{ active_users }} 活跃</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon conversations">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ conv_count }}</h3>
+            <p>总对话数</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon messages">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ msg_count }}</h3>
+            <p>总消息数</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon memories">
+            <i class="fas fa-brain"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ memory_count }}</h3>
+            <p>记忆条目</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon knowledge">
+            <i class="fas fa-book"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ knowledge_count }}</h3>
+            <p>知识条目</p>
+        </div>
+    </div>
+</div>
+
+<!-- 最近活动 -->
+<div class="dashboard-sections">
+    <div class="section-card">
+        <div class="section-header">
+            <h2><i class="fas fa-user-plus"></i> 最近注册用户</h2>
+            <a href="/admin/users" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="section-content">
+            {% if recent_users %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>用户</th>
+                        <th>注册时间</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in recent_users %}
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <span class="user-name">{{ user.nickname or '未命名' }}</span>
+                                <span class="user-id">{{ user.id[:8] }}...</span>
+                            </div>
+                        </td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {% if user.is_active %}
+                            <span class="badge badge-success">正常</span>
+                            {% else %}
+                            <span class="badge badge-danger">已禁用</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>暂无注册用户</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="section-card">
+        <div class="section-header">
+            <h2><i class="fas fa-comment-dots"></i> 最近对话</h2>
+            <a href="/admin/conversations" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="section-content">
+            {% if recent_conversations %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>用户</th>
+                        <th>标题</th>
+                        <th>时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in recent_conversations %}
+                    <tr>
+                        <td>{{ item.nickname or '未命名' }}</td>
+                        <td>
+                            <a href="/admin/conversations/{{ item.conv.id }}" class="link">
+                                {{ item.conv.title or '无标题' }}
+                            </a>
+                        </td>
+                        <td>{{ item.conv.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>暂无对话记录</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

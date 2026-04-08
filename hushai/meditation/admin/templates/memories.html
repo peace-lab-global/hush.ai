@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}记忆管理{% endblock %}
+
+{% block page_title %}记忆管理{% endblock %}
+
+{% block content %}
+<!-- 筛选栏 -->
+<div class="toolbar">
+    <form class="filter-form" method="GET" action="/admin/memories">
+        <div class="form-group">
+            <label>用户</label>
+            <select name="user_id">
+                <option value="">全部用户</option>
+                {% for user in users %}
+                <option value="{{ user.id }}" {% if user_id == user.id %}selected{% endif %}>
+                    {{ user.nickname or '未命名' }} ({{ user.id[:8] }}...)
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>分类</label>
+            <select name="category">
+                <option value="">全部分类</option>
+                {% for cat in categories %}
+                <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>
+                    {{ cat }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-filter"></i> 筛选
+        </button>
+        {% if user_id or category %}
+        <a href="/admin/memories" class="btn btn-secondary">清除</a>
+        {% endif %}
+    </form>
+    <div class="toolbar-info">
+        共 {{ total }} 条记忆
+    </div>
+</div>
+
+<!-- 记忆列表 -->
+<div class="card">
+    {% if memories %}
+    <div class="memory-grid">
+        {% for item in memories %}
+        <div class="memory-card" data-memory-id="{{ item.memory.id }}">
+            <div class="memory-card-header">
+                <span class="badge badge-category">{{ item.memory.category }}</span>
+                <div class="memory-actions">
+                    <button class="btn-icon" onclick="deleteMemory('{{ item.memory.id }}')" title="删除">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="memory-card-body">
+                <p class="memory-content">{{ item.memory.content }}</p>
+                {% if item.memory.summary %}
+                <p class="memory-summary">{{ item.memory.summary }}</p>
+                {% endif %}
+            </div>
+            <div class="memory-card-footer">
+                <div class="memory-user">
+                    <i class="fas fa-user"></i>
+                    <a href="/admin/users/{{ item.memory.user_id }}">{{ item.nickname or '未命名' }}</a>
+                </div>
+                <div class="memory-meta">
+                    <span class="memory-importance" title="重要度">
+                        <i class="fas fa-star"></i> {{ "%.2f"|format(item.memory.importance) }}
+                    </span>
+                    <span class="memory-date">{{ item.memory.created_at.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- 分页 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/admin/memories?page={{ page - 1 }}{% if user_id %}&user_id={{ user_id }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+        
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="page-btn active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+            <a href="/admin/memories?page={{ p }}{% if user_id %}&user_id={{ user_id }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="page-btn">{{ p }}</a>
+            {% elif p == page - 3 or p == page + 3 %}
+            <span class="page-btn">...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page < total_pages %}
+        <a href="/admin/memories?page={{ page + 1 }}{% if user_id %}&user_id={{ user_id }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+        
+        <span class="page-info">第 {{ page }} / {{ total_pages }} 页</span>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-brain"></i>
+        <p>暂无记忆</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function deleteMemory(memoryId) {
+    if (!confirm('确定要删除这条记忆吗？此操作不可恢复。')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/api/memories/${memoryId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            // 移除对应的记忆卡片
+            const card = document.querySelector(`[data-memory-id="${memoryId}"]`);
+            if (card) {
+                card.style.opacity = '0';
+                setTimeout(() => card.remove(), 300);
+            }
+        } else {
+            const data = await response.json();
+            alert(data.detail || '删除失败');
+        }
+    } catch (error) {
+        alert('网络错误');
+    }
+}
+</script>
+{% endblock %}
