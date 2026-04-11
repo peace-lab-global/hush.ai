@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}管理后台{% endblock %} - 冥想老师 AI</title>
+    <meta name="description" content="冥想导师数字人平台管理后台：用户、对话、记忆与知识库运维。">
+    <link rel="icon" href="/admin/static/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <title>{% block title %}管理后台{% endblock %} - 冥想导师数字人平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/admin/static/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <a href="#main-content" class="skip-link">跳到主内容</a>
     <div class="admin-container">
         {% if admin_user %}
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <i class="fas fa-spa"></i>
-                    <span>冥想老师 AI</span>
+                    <span>冥想导师数字人平台</span>
                 </div>
             </div>
             <nav class="sidebar-nav">
@@ -43,6 +50,14 @@
                     <i class="fas fa-file-import"></i>
                     <span>导入知识</span>
                 </a>
+                <a href="/admin/skills" class="nav-item {% if request.url.path == '/admin/skills' or (request.url.path.startswith('/admin/skills/') and not request.url.path.startswith('/admin/skills-import')) %}active{% endif %}">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    <span>技能管理</span>
+                </a>
+                <a href="/admin/skills-import" class="nav-item {% if '/admin/skills-import' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-file-import"></i>
+                    <span>导入技能</span>
+                </a>
                 <a href="/admin/settings" class="nav-item {% if '/admin/settings' in request.url.path %}active{% endif %}">
                     <i class="fas fa-cog"></i>
                     <span>系统设置</span>
@@ -65,10 +80,11 @@
         </aside>
         {% endif %}
         
-        <main class="main-content {% if not admin_user %}full-width{% endif %}">
+        <main id="main-content" class="main-content {% if not admin_user %}full-width{% endif %}" tabindex="-1">
             {% if admin_user %}
             <header class="page-header">
                 <h1>{% block page_title %}{% endblock %}</h1>
+                {% block breadcrumb %}{% endblock %}
             </header>
             {% endif %}
             

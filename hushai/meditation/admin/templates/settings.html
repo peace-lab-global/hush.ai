@@ -5,230 +5,132 @@
 {% block page_title %}系统设置{% endblock %}
 
 {% block content %}
-<!-- API 配置 -->
-<div class="card">
-    <div class="card-header">
-        <h3><i class="fas fa-cog"></i> API 配置</h3>
-    </div>
-    <div class="card-body">
-        <div class="settings-grid">
-            <div class="setting-item">
-                <label>服务地址</label>
-                <div class="setting-value">
-                    <code>{{ config.host }}:{{ config.port }}</code>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>调试模式</label>
-                <div class="setting-value">
-                    <span class="badge {% if config.debug %}badge-warning{% else %}badge-success{% endif %}">
-                        {{ '开启' if config.debug else '关闭' }}
-                    </span>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>JWT 算法</label>
-                <div class="setting-value">
-                    <code>{{ config.jwt_algorithm }}</code>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>Token 有效期</label>
-                <div class="setting-value">
-                    {{ config.jwt_expire_minutes }} 分钟
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{% if success %}
+<div class="alert alert-success">{{ success }}</div>
+{% endif %}
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
 
-<!-- LLM 配置 -->
-<div class="card">
-    <div class="card-header">
-        <h3><i class="fas fa-robot"></i> LLM 配置</h3>
-    </div>
-    <div class="card-body">
-        <div class="settings-grid">
-            <div class="setting-item">
-                <label>默认提供商</label>
-                <div class="setting-value">
-                    <code>{{ config.default_llm_provider }}</code>
+<form method="POST" action="/admin/settings">
+    <!-- API 配置 (只读展示，暂不支持通过 UI 修改核心服务端口等) -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-cog"></i> 服务状态</h3>
+        </div>
+        <div class="card-body">
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label>服务地址</label>
+                    <div class="setting-value">
+                        <code>{{ config.host }}:{{ config.port }}</code>
+                    </div>
                 </div>
-            </div>
-            <div class="setting-item">
-                <label>默认模型</label>
-                <div class="setting-value">
-                    <code>{{ config.default_llm_model }}</code>
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>记忆检索数量</label>
-                <div class="setting-value">
-                    {{ config.memory_top_k }} 条
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>知识检索数量</label>
-                <div class="setting-value">
-                    {{ config.knowledge_top_k }} 条
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>对话最大轮数</label>
-                <div class="setting-value">
-                    {{ config.conversation_max_turns }} 轮
+                <div class="setting-item">
+                    <label>调试模式</label>
+                    <div class="setting-value">
+                        <span class="badge {% if config.debug %}badge-warning{% else %}badge-success{% endif %}">
+                            {{ '开启' if config.debug else '关闭' }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <h4 class="settings-subtitle">提供商配置</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>提供商</th>
-                    <th>模型</th>
-                    <th>Base URL</th>
-                    <th>API Key</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>OpenAI</td>
-                    <td><code>gpt-4o-mini</code></td>
-                    <td><code>{{ config.openai_base_url or '默认' }}</code></td>
-                    <td>
-                        {% if config.openai_api_key %}
-                        <span class="badge badge-success">已配置</span>
-                        {% else %}
-                        <span class="badge badge-danger">未配置</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>DeepSeek</td>
-                    <td><code>{{ config.deepseek_model }}</code></td>
-                    <td><code>{{ config.deepseek_base_url }}</code></td>
-                    <td>
-                        {% if config.deepseek_api_key %}
-                        <span class="badge badge-success">已配置</span>
-                        {% else %}
-                        <span class="badge badge-danger">未配置</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>智谱 AI</td>
-                    <td><code>{{ config.zhipu_model }}</code></td>
-                    <td><code>{{ config.zhipu_base_url }}</code></td>
-                    <td>
-                        {% if config.zhipu_api_key %}
-                        <span class="badge badge-success">已配置</span>
-                        {% else %}
-                        <span class="badge badge-danger">未配置</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
-</div>
 
-<!-- 嵌入模型配置 -->
-<div class="card">
-    <div class="card-header">
-        <h3><i class="fas fa-vector-square"></i> 嵌入模型配置</h3>
-    </div>
-    <div class="card-body">
-        <div class="settings-grid">
-            <div class="setting-item">
-                <label>提供商</label>
-                <div class="setting-value">
-                    <code>{{ config.embedding_provider }}</code>
+    <!-- LLM 核心配置 -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-robot"></i> 运行参数动态调整</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>默认 LLM 提供商</label>
+                    <select name="default_llm_provider" class="form-control">
+                        <option value="openai" {% if config.default_llm_provider == 'openai' %}selected{% endif %}>OpenAI</option>
+                        <option value="deepseek" {% if config.default_llm_provider == 'deepseek' %}selected{% endif %}>DeepSeek</option>
+                        <option value="zhipu" {% if config.default_llm_provider == 'zhipu' %}selected{% endif %}>智谱 AI</option>
+                    </select>
                 </div>
-            </div>
-            <div class="setting-item">
-                <label>模型</label>
-                <div class="setting-value">
-                    <code>{{ config.embedding_model }}</code>
+                <div class="form-group">
+                    <label>默认模型名称</label>
+                    <input type="text" name="default_llm_model" value="{{ config.default_llm_model }}" class="form-control">
                 </div>
-            </div>
-            <div class="setting-item">
-                <label>Base URL</label>
-                <div class="setting-value">
-                    <code>{{ config.embedding_base_url or '默认' }}</code>
+                <div class="form-group">
+                    <label>记忆检索 Top-K</label>
+                    <input type="number" name="memory_top_k" value="{{ config.memory_top_k }}" class="form-control">
                 </div>
-            </div>
-            <div class="setting-item">
-                <label>API Key</label>
-                <div class="setting-value">
-                    {% if config.embedding_api_key %}
-                    <span class="badge badge-success">已配置</span>
-                    {% else %}
-                    <span class="badge badge-secondary">使用 LLM Key</span>
-                    {% endif %}
+                <div class="form-group">
+                    <label>知识库检索 Top-K</label>
+                    <input type="number" name="knowledge_top_k" value="{{ config.knowledge_top_k }}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>上下文最大对话轮数</label>
+                    <input type="number" name="conversation_max_turns" value="{{ config.conversation_max_turns }}" class="form-control">
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- 微信配置 -->
-<div class="card">
-    <div class="card-header">
-        <h3><i class="fab fa-weixin"></i> 微信配置</h3>
-    </div>
-    <div class="card-body">
-        <div class="settings-grid">
-            <div class="setting-item">
-                <label>AppID</label>
-                <div class="setting-value">
-                    {% if config.wx_appid %}
-                    <code>{{ config.wx_appid[:8] }}...</code>
-                    {% else %}
-                    <span class="badge badge-danger">未配置</span>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="setting-item">
-                <label>Secret</label>
-                <div class="setting-value">
-                    {% if config.wx_secret %}
-                    <span class="badge badge-success">已配置</span>
-                    {% else %}
-                    <span class="badge badge-danger">未配置</span>
-                    {% endif %}
-                </div>
-            </div>
+    <!-- 提供商详细配置 -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-key"></i> 提供商密钥与地址</h3>
         </div>
-    </div>
-</div>
+        <div class="card-body">
+            <div class="provider-settings">
+                <div class="provider-section">
+                    <h4>OpenAI</h4>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="password" name="openai_api_key" value="{{ config.openai_api_key }}" class="form-control" placeholder="sk-...">
+                    </div>
+                    <div class="form-group">
+                        <label>Base URL</label>
+                        <input type="text" name="openai_base_url" value="{{ config.openai_base_url }}" class="form-control" placeholder="默认">
+                    </div>
+                </div>
 
-<!-- 数据库配置 -->
-<div class="card">
-    <div class="card-header">
-        <h3><i class="fas fa-database"></i> 数据库配置</h3>
-    </div>
-    <div class="card-body">
-        <div class="settings-grid">
-            <div class="setting-item">
-                <label>PostgreSQL</label>
-                <div class="setting-value">
-                    {% if config.postgres_url %}
-                    <span class="badge badge-success">已配置</span>
-                    {% else %}
-                    <span class="badge badge-secondary">使用 SQLite</span>
-                    {% endif %}
+                <div class="provider-section">
+                    <h4>DeepSeek</h4>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="password" name="deepseek_api_key" value="{{ config.deepseek_api_key }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Base URL</label>
+                        <input type="text" name="deepseek_base_url" value="{{ config.deepseek_base_url }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>模型</label>
+                        <input type="text" name="deepseek_model" value="{{ config.deepseek_model }}" class="form-control">
+                    </div>
+                </div>
+
+                <div class="provider-section">
+                    <h4>智谱 AI</h4>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="password" name="zhipu_api_key" value="{{ config.zhipu_api_key }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Base URL</label>
+                        <input type="text" name="zhipu_base_url" value="{{ config.zhipu_base_url }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>模型</label>
+                        <input type="text" name="zhipu_model" value="{{ config.zhipu_model }}" class="form-control">
+                    </div>
                 </div>
             </div>
-            <div class="setting-item">
-                <label>Chroma 持久化目录</label>
-                <div class="setting-value">
-                    <code>{{ config.chroma_persist_dir or '默认' }}</code>
-                </div>
+
+            <div class="form-actions" style="margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">保存并立即生效</button>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <!-- 快速链接 -->
 <div class="card quick-links-card">

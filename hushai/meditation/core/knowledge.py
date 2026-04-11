@@ -12,6 +12,99 @@ from hushai.meditation.db import vector
 from hushai.meditation.db.models import KnowledgeChunk
 
 
+def _split_frontmatter(text: str) -> tuple[dict[str, str], str]:
+    """解析简单 YAML frontmatter（`---` 包裹，键值对）。"""
+    t = text.lstrip("\ufeff")
+    if not t.startswith("---"):
+        return {}, text
+    lines = t.split("\n")
+    if not lines or lines[0].strip() != "---":
+        return {}, text
+    meta: dict[str, str] = {}
+    i = 1
+    while i < len(lines):
+        line = lines[i]
+        if line.strip() == "---":
+            body = "\n".join(lines[i + 1 :])
+            return meta, body
+        if ":" in line:
+            key, val = line.split(":", 1)
+            meta[key.strip()] = val.strip().strip('"').strip("'")
+        i += 1
+    return {}, text
+
+
+def _first_markdown_heading_title(body: str) -> str | None:
+    for line in body.split("\n"):
+        s = line.strip()
+        m = re.match(r"^#{1,6}\s+(.+)$", s)
+        if m:
+            return m.group(1).strip()
+    return None
+
+
+def markdown_to_plain_text(md: str) -> str:
+    """将 Markdown 转为适合向量检索的纯文本（无额外依赖）。"""
+    t = md
+    # fenced code blocks：保留内部文本
+    t = re.sub(r"```[\w]*\n([\s\S]*?)```", lambda m: "\n" + m.group(1).strip() + "\n", t)
+    t = re.sub(r"```([^`]+)```", lambda m: m.group(1), t)
+    # inline code
+    t = re.sub(r"`([^`]+)`", r"\1", t)
+    # images then links
+    t = re.sub(r"!\[([^\]]*)\]\([^)]+\)", r"\1", t)
+    t = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", t)
+    # headers
+    t = re.sub(r"^#{1,6}\s+(.+)$", r"\1", t, flags=re.MULTILINE)
+    # bold / italic (order matters)
+    t = re.sub(r"\*\*\*([^*]+)\*\*\*", r"\1", t)
+    t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
+    t = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"\1", t)
+    t = re.sub(r"__([^_]+)__", r"\1", t)
+    t = re.sub(r"(?<!_)_([^_]+)_(?!_)", r"\1", t)
+    # hr
+    t = re.sub(r"^[-*_]{3,}\s*$", "", t, flags=re.MULTILINE)
+    # lists
+    t = re.sub(r"^\s*[-*+]\s+", "• ", t, flags=re.MULTILINE)
+    t = re.sub(r"^\s*\d+\.\s+", "", t, flags=re.MULTILINE)
+    # blockquote
+    t = re.sub(r"^>\s?", "", t, flags=re.MULTILINE)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    return t.strip()
+
+
+def prepare_import_content(
+    raw: str,
+    *,
+    filename: str | None,
+    is_markdown: bool,
+) -> tuple[str, str | None, list[str]]:
+    """
+    返回 (入库与分块的纯文本, 标题, 额外标签)。
+    Markdown 会转纯文本以便与 Chroma 嵌入一致；并自动附加标签 `markdown`。
+    """
+    if not is_markdown:
+        return raw.strip(), None, []
+
+    extra_tags: list[str] = ["markdown"]
+    meta, body = _split_frontmatter(raw)
+    title = meta.get("title")
+    tags_raw = meta.get("tags")
+    if tags_raw:
+        extra_tags.extend(
+            [x.strip() for x in re.split(r"[,，]", tags_raw) if x.strip()]
+        )
+
+    plain = markdown_to_plain_text(body)
+    if not title:
+        title = _first_markdown_heading_title(body)
+    if not title and filename:
+        base = filename.rsplit("/", 1)[-1]
+        title = base.rsplit(".", 1)[0] if "." in base else base
+
+    return plain, title, extra_tags
+
+
 def _split_text_to_chunks(
     text: str,
     chunk_size: int = 800,

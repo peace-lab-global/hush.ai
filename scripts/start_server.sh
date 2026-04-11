@@ -14,8 +14,8 @@ fi
 
 echo "冥想老师 AI 分身 — Starting..."
 echo "  Database: ${MEDITATION_POSTGRES_URL:-SQLite ($db_file)}"
-echo "  Swagger UI:  http://localhost:8000/docs"
+echo "  OpenAPI:     http://localhost:8000/debug"
 echo "  Press Ctrl+C to stop"
 echo ""
 
-exec python3 -m uvicorn hushai.meditation.app:get_app
+exec python3 -m uvicorn hushai.meditation.app:get_app --factory --host "${MEDITATION_HOST:-0.0.0.0}" --port "${MEDITATION_PORT:-8000}"

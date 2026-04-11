@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{% if skill %}编辑技能{% else %}新建技能{% endif %}{% endblock %}
+
+{% block page_title %}{% if skill %}编辑技能{% else %}新建技能{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <a href="/admin/skills" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> 返回列表
+    </a>
+</div>
+
+{% if error %}
+<div class="card" style="border-color:rgba(200,100,100,0.4);margin-bottom:1rem;">
+    <p style="color:#c9a090;">{{ error }}</p>
+</div>
+{% endif %}
+
+<div class="card">
+    <form method="post" action="{% if skill %}/admin/skills/{{ skill.id }}/edit{% else %}/admin/skills/new{% endif %}" class="form-stack">
+        <div class="form-group">
+            <label for="name">名称 <span style="color:var(--text-secondary)">*</span></label>
+            <input type="text" id="name" name="name" required maxlength="128"
+                   value="{{ skill.name if skill else '' }}"
+                   placeholder="例如：焦虑安抚、睡前放松">
+        </div>
+        <div class="form-group">
+            <label for="description">短摘要（前台展示）</label>
+            <input type="text" id="description" name="description" maxlength="512"
+                   value="{{ skill.description if skill else '' }}"
+                   placeholder="一句话说明适用场景">
+        </div>
+        <div class="form-group">
+            <label for="content">技能正文（注入模型） <span style="color:var(--text-secondary)">*</span></label>
+            <textarea id="content" name="content" rows="14" required
+                      placeholder="写入希望模型遵循的指引、风格或步骤，支持多段 Markdown。">{{ skill.content if skill else '' }}</textarea>
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <label for="sort_order">排序（越小越靠前）</label>
+            <input type="number" id="sort_order" name="sort_order" value="{{ skill.sort_order if skill else 0 }}" style="max-width:120px;">
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="is_active" name="is_active" value="on"
+                   {% if not skill or skill.is_active %}checked{% endif %}>
+            <label for="is_active" style="margin:0;">启用（前台仅展示已启用）</label>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> 保存
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-stack .form-group { margin-bottom: 1.25rem; }
+.form-stack label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.form-stack input[type="text"],
+.form-stack input[type="number"],
+.form-stack textarea {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, rgba(255,255,255,0.12));
+    background: var(--bg-secondary, rgba(0,0,0,0.2));
+    color: var(--text-primary, #e8e4dc);
+    font-family: inherit;
+}
+.form-stack textarea { line-height: 1.6; resize: vertical; min-height: 200px; }
+.form-actions { margin-top: 1.5rem; }
+</style>
+{% endblock %}

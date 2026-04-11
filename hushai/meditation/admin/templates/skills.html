@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}技能管理{% endblock %}
+
+{% block page_title %}技能管理{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+    <form class="search-form" method="GET" action="/admin/skills">
+        <div class="search-input-group">
+            <i class="fas fa-search"></i>
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="搜索技能名称或摘要..."
+            >
+            <button type="submit" class="btn btn-primary">搜索</button>
+            {% if search %}
+            <a href="/admin/skills" class="btn btn-secondary">清除</a>
+            {% endif %}
+        </div>
+    </form>
+    <div class="toolbar-actions">
+        <div class="toolbar-info">共 {{ total }} 条技能</div>
+        <a href="/admin/skills-import" class="btn btn-secondary">
+            <i class="fas fa-file-import"></i> 批量导入
+        </a>
+        <a href="/admin/skills/new" class="btn btn-success">
+            <i class="fas fa-plus"></i> 新建技能
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    {% if skills %}
+    <div class="knowledge-grid">
+        {% for s in skills %}
+        <div class="knowledge-card" data-skill-id="{{ s.id }}">
+            <div class="knowledge-header">
+                <h4>
+                    <a href="/admin/skills/{{ s.id }}/edit">{{ s.name }}</a>
+                </h4>
+                <button class="btn-icon btn-danger" onclick="deleteSkill('{{ s.id }}')" title="删除" type="button">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="knowledge-content">
+                <p>{{ s.description or '（无摘要）' }}</p>
+                <p class="hint" style="margin-top:8px;">{{ s.content[:160] }}{% if s.content|length > 160 %}...{% endif %}</p>
+            </div>
+            <div class="knowledge-meta">
+                <span><i class="fas fa-sort-numeric-down"></i> 排序 {{ s.sort_order }}</span>
+                <span>
+                    {% if s.is_active %}
+                    <span class="tag" style="background:rgba(110,155,134,0.2);color:#6e9b86;">启用</span>
+                    {% else %}
+                    <span class="tag">停用</span>
+                    {% endif %}
+                </span>
+                <span><i class="fas fa-calendar"></i> {{ s.created_at.strftime('%Y-%m-%d') }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/admin/skills?page={{ page - 1 }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="page-btn active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+            <a href="/admin/skills?page={{ p }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">{{ p }}</a>
+            {% elif p == page - 3 or p == page + 3 %}
+            <span class="page-btn">...</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+        <a href="/admin/skills?page={{ page + 1 }}{% if search %}&search={{ search }}{% endif %}" class="page-btn">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+
+        <span class="page-info">第 {{ page }} / {{ total_pages }} 页</span>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-wand-magic-sparkles"></i>
+        <p>暂无技能</p>
+        <p class="hint">创建或导入技能后，用户可在前台对话中勾选加持，内容将注入系统提示。</p>
+        <a href="/admin/skills-import" class="btn btn-secondary" style="margin-top:1rem;">批量导入</a>
+        <a href="/admin/skills/new" class="btn btn-primary" style="margin-top:0.5rem;">新建技能</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function deleteSkill(skillId) {
+    if (!confirm('确定要删除该技能吗？此操作不可恢复。')) {
+        return;
+    }
+    try {
+        const response = await fetch(`/admin/api/skills/${skillId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            const data = await response.json().catch(() => ({}));
+            alert(data.detail || '删除失败');
+        }
+    } catch (e) {
+        alert('网络错误');
+    }
+}
+</script>
+{% endblock %}

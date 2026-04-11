@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}导入技能{% endblock %}
+
+{% block page_title %}批量导入技能{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <a href="/admin/skills" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> 返回技能列表
+    </a>
+</div>
+
+<div class="import-container">
+    <div class="card import-rag-card">
+        <div class="card-header">
+            <h3><i class="fas fa-wand-magic-sparkles"></i> 说明</h3>
+        </div>
+        <div class="card-body">
+            <p class="rag-intro">通过 JSON 一次导入多条技能。每条技能包含注入模型的<strong>正文</strong>（<code>content</code>），前台用户勾选后会在系统提示中作为「加持」生效。</p>
+            <ul class="rag-list">
+                <li>必填字段：<code>name</code>、<code>content</code>；可选：<code>description</code>（前台展示）、<code>sort_order</code>（数字，越小越靠前）、<code>is_active</code>（默认 <code>true</code>）。</li>
+                <li>支持两种 JSON 根结构：<code>{"skills": [ ... ]}</code> 或顶层数组 <code>[ ... ]</code>。</li>
+                <li>单次最多导入 100 条。</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-code"></i> JSON 粘贴导入</h3>
+        </div>
+        <div class="card-body">
+            <form id="json-import-form" class="import-form">
+                <div class="form-group">
+                    <label for="json-data">JSON <span class="required">*</span></label>
+                    <textarea id="json-data" name="json_data" rows="14" required placeholder='[{"name":"示例","description":"摘要","content":"注入模型的指引正文……","sort_order":0,"is_active":true}]'></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> 导入
+                </button>
+            </form>
+            <div id="json-result" class="import-result"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-file-upload"></i> 文件导入（.json）</h3>
+        </div>
+        <div class="card-body">
+            <form id="file-import-form" class="import-form">
+                <div class="form-group">
+                    <label for="file">选择文件 <span class="required">*</span></label>
+                    <div class="file-upload-area" id="drop-zone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>拖拽 JSON 文件到此处，或 <span class="link">点击选择</span></p>
+                        <input type="file" id="file" name="file" accept=".json,application/json" required hidden>
+                    </div>
+                    <div id="file-name" class="file-name"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> 导入文件
+                </button>
+            </form>
+            <div id="file-result" class="import-result"></div>
+        </div>
+    </div>
+</div>
+
+<div class="card api-debug-card">
+    <div class="card-header">
+        <h3><i class="fas fa-terminal"></i> API</h3>
+    </div>
+    <div class="card-body">
+        <ul class="api-list">
+            <li><code>POST /api/skills/import</code> — JSON Body</li>
+            <li><code>POST /api/skills/import-file</code> — multipart 上传 <code>file</code></li>
+        </ul>
+        <p style="opacity:0.85;margin-bottom:0.75rem;">需携带 <code>Authorization: Bearer</code>（管理员或用户 Token）。后台页面使用管理员 Cookie。</p>
+        <a href="/debug" target="_blank" class="btn btn-secondary">
+            <i class="fas fa-external-link-alt"></i> API 文档
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.import-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.import-rag-card { grid-column: 1 / -1; }
+.rag-intro { margin-bottom: 0.75rem; line-height: 1.65; color: var(--text-primary); }
+.rag-list { margin-left: 1.25rem; line-height: 1.7; color: var(--text-secondary); }
+.rag-list code { font-size: 0.85em; background: var(--bg-tertiary); padding: 0.1rem 0.35rem; border-radius: 4px; }
+.import-form .form-group { margin-bottom: 1.25rem; }
+.import-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.import-form .required { color: var(--danger); }
+.import-form textarea {
+    width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 0.875rem; font-family: ui-monospace, monospace;
+    resize: vertical; min-height: 200px;
+}
+.file-upload-area {
+    border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem; text-align: center;
+    cursor: pointer; transition: var(--transition);
+}
+.file-upload-area:hover { border-color: var(--primary); background: var(--bg-secondary); }
+.file-upload-area i { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+.file-upload-area.dragover { border-color: var(--primary); background: rgba(79, 70, 229, 0.05); }
+.file-name { margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: var(--bg-secondary); border-radius: var(--radius); font-size: 0.875rem; display: none; }
+.file-name.show { display: block; }
+.import-result { margin-top: 1rem; padding: 1rem; border-radius: var(--radius); display: none; }
+.import-result.show { display: block; }
+.import-result.success { background: #d1fae5; color: #065f46; }
+.import-result.error { background: #fee2e2; color: #991b1b; }
+.api-debug-card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+}
+.api-debug-card .card-header h3 { color: white; }
+.api-list { list-style: none; margin-bottom: 1rem; }
+.api-list li { padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-family: monospace; font-size: 0.875rem; }
+.api-list li:last-child { border-bottom: none; }
+.api-list code { background: rgba(0,0,0,0.3); padding: 0.25rem 0.5rem; border-radius: 4px; color: #67e8f9; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file');
+const fileName = document.getElementById('file-name');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        showFileName(e.dataTransfer.files[0].name);
+    }
+});
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) showFileName(fileInput.files[0].name);
+});
+function showFileName(name) {
+    fileName.textContent = '已选择: ' + name;
+    fileName.classList.add('show');
+}
+
+function getToken() {
+    const m = document.cookie.match(/admin_token=([^;]+)/);
+    return m ? m[1] : '';
+}
+
+function showResult(el, type, message) {
+    el.textContent = message;
+    el.className = 'import-result show ' + type;
+}
+
+document.getElementById('json-import-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const result = document.getElementById('json-result');
+    const raw = document.getElementById('json-data').value.trim();
+    let data;
+    try {
+        data = JSON.parse(raw);
+    } catch (err) {
+        showResult(result, 'error', 'JSON 格式错误: ' + err.message);
+        return;
+    }
+    try {
+        const response = await fetch('/api/skills/import', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify(data)
+        });
+        const body = await response.json().catch(() => ({}));
+        if (response.ok) {
+            showResult(result, 'success', `成功导入 ${body.imported} 条技能`);
+            e.target.reset();
+        } else {
+            showResult(result, 'error', body.detail || body.error || '导入失败');
+        }
+    } catch (err) {
+        showResult(result, 'error', '网络错误: ' + err.message);
+    }
+});
+
+document.getElementById('file-import-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const result = document.getElementById('file-result');
+    const form = e.target;
+    if (!form.file.files.length) return;
+    const fd = new FormData();
+    fd.append('file', form.file.files[0]);
+    try {
+        const response = await fetch('/api/skills/import-file', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken() },
+            body: fd
+        });
+        const body = await response.json().catch(() => ({}));
+        if (response.ok) {
+            showResult(result, 'success', `成功导入 ${body.imported} 条技能`);
+            form.reset();
+            fileName.classList.remove('show');
+        } else {
+            showResult(result, 'error', body.detail || body.error || '导入失败');
+        }
+    } catch (err) {
+        showResult(result, 'error', '网络错误: ' + err.message);
+    }
+});
+</script>
+{% endblock %}

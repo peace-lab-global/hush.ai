@@ -102,6 +102,23 @@ class Memory(Base):
     __table_args__ = (Index("ix_memories_user_category", "user_id", "category"),)
 
 
+class Skill(Base):
+    """可注入系统提示的「技能」片段，由管理后台维护，前台可多选加持。"""
+
+    __tablename__ = "skills"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(128))
+    description: Mapped[Optional[str]] = mapped_column(String(512))
+    content: Mapped[str] = mapped_column(Text)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+
 class KnowledgeChunk(Base):
     __tablename__ = "knowledge_chunks"
 

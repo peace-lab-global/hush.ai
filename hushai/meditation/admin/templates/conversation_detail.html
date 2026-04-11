@@ -4,6 +4,12 @@
 
 {% block page_title %}对话详情{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb" aria-label="面包屑">
+    <a href="/admin/">首页</a> / <a href="/admin/conversations{% if user_id %}?user_id={{ user_id }}{% endif %}">对话记录</a> / 详情
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="page-actions">
     <a href="/admin/conversations{% if user_id %}?user_id={{ user_id }}{% endif %}" class="btn btn-secondary">

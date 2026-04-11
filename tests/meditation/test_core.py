@@ -52,17 +52,44 @@ class TestBuildSystemPrompt:
         result = build_system_prompt(teacher_description="你叫静心老师，擅长内观禅修")
         assert "静心老师" in result
 
+    def test_with_skills_context(self):
+        result = build_system_prompt(skills_context="## 睡前放松\n请用缓慢、低沉的语气引导。")
+        assert "当前加持的技能指引" in result
+        assert "睡前放松" in result
+
+    @pytest.mark.asyncio
+    async def test_get_skills_context_auto_mount(self):
+        from hushai.meditation.core.skills import get_skills_context_for_prompt
+        from hushai.meditation.db.models import Skill
+        
+        mock_session = AsyncMock()
+        mock_result = MagicMock()
+        skill = Skill(id="s1", name="自动技能", content="自动内容", is_active=True)
+        mock_result.scalars.return_value.all.return_value = [skill]
+        mock_session.execute.return_value = mock_result
+        
+        # 测试 skill_ids=None (自动挂载)
+        result = await get_skills_context_for_prompt(mock_session, None)
+        assert "自动技能" in result
+        assert "自动内容" in result
+        
+        # 测试 skill_ids=[] (不挂载)
+        result = await get_skills_context_for_prompt(mock_session, [])
+        assert result == ""
+
     def test_all_sections(self):
         result = build_system_prompt(
             memory_context="客户偏好: 呼吸法",
             knowledge_context="知识: 身体扫描",
             conversation_history="学生: 最近很焦虑",
             teacher_description="你是静心老师",
+            skills_context="## 焦虑安抚\n优先共情再引导呼吸。",
         )
         assert "客户偏好" in result
         assert "知识" in result
         assert "学生" in result
         assert "静心老师" in result
+        assert "焦虑安抚" in result
 
 
 class TestFormatConversationHistory:
@@ -247,6 +274,39 @@ class TestKnowledgeChunking:
         assert len(chunks) > 1
         for chunk in chunks:
             assert len(chunk) <= 300
+
+
+class TestMarkdownKnowledgeImport:
+    def test_markdown_to_plain_basic(self):
+        from hushai.meditation.core.knowledge import markdown_to_plain_text
+
+        md = "# 标题\n\n这是**粗体**与[链接](https://x.com)。\n\n- 一项\n"
+        plain = markdown_to_plain_text(md)
+        assert "标题" in plain
+        assert "粗体" in plain
+        assert "链接" in plain
+        assert "http" not in plain
+
+    def test_prepare_frontmatter_and_title(self):
+        from hushai.meditation.core.knowledge import prepare_import_content
+
+        raw = """---
+title: 测试文档
+tags: 冥想, 入门
+---
+
+## 第一节
+
+正文 **内容**。
+"""
+        plain, title, tags = prepare_import_content(
+            raw, filename="x.md", is_markdown=True
+        )
+        assert title == "测试文档"
+        assert "冥想" in tags
+        assert "markdown" in tags
+        assert "第一节" in plain
+        assert "**" not in plain
 
 
 class TestExtractBearerToken:

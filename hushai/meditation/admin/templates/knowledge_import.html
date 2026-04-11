@@ -12,6 +12,21 @@
 </div>
 
 <div class="import-container">
+    <!-- Markdown / RAG 说明 -->
+    <div class="card import-rag-card">
+        <div class="card-header">
+            <h3><i class="fas fa-database"></i> Markdown 与对话检索（RAG）</h3>
+        </div>
+        <div class="card-body">
+            <p class="rag-intro">导入的 Markdown 会<strong>写入数据库并写入向量库</strong>，用户在前台对话时，系统会按问题自动检索相关片段，注入到「相关理论参考」中参与回答。</p>
+            <ul class="rag-list">
+                <li>支持 <code>.md</code> / <code>.markdown</code> 文件；也可上传 <code>.txt</code> 并勾选「按 Markdown 解析」。</li>
+                <li>支持 YAML frontmatter（<code>title</code>、<code>tags</code>）；正文会转为纯文本后分块与向量化，便于检索。</li>
+                <li>纯文本粘贴时勾选「按 Markdown 解析」即可粘贴带 <code>#</code> 标题、列表的文档。</li>
+            </ul>
+        </div>
+    </div>
+
     <!-- 文本导入 -->
     <div class="card">
         <div class="card-header">
@@ -21,7 +36,7 @@
             <form id="text-import-form" class="import-form">
                 <div class="form-group">
                     <label for="title">标题</label>
-                    <input type="text" id="title" name="title" placeholder="知识条目标题（可选）">
+                    <input type="text" id="title" name="title" placeholder="知识条目标题（可选；Markdown 时可被 frontmatter 或一级标题覆盖）">
                 </div>
                 
                 <div class="form-group">
@@ -31,7 +46,14 @@
                 
                 <div class="form-group">
                     <label for="content">内容 <span class="required">*</span></label>
-                    <textarea id="content" name="content" rows="10" required placeholder="输入要导入的知识内容..."></textarea>
+                    <textarea id="content" name="content" rows="10" required placeholder="输入要导入的知识内容，或粘贴 Markdown..."></textarea>
+                </div>
+
+                <div class="form-group checkbox-row">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="text-as-md">
+                        <span>按 Markdown 解析（YAML 头、标题与正文转纯文本后入库）</span>
+                    </label>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">
@@ -45,7 +67,7 @@
     <!-- 文件导入 -->
     <div class="card">
         <div class="card-header">
-            <h3><i class="fas fa-file-upload"></i> 文件导入</h3>
+            <h3><i class="fas fa-file-upload"></i> 文件导入（含 Markdown 文档）</h3>
         </div>
         <div class="card-body">
             <form id="file-import-form" class="import-form">
@@ -54,7 +76,7 @@
                     <div class="file-upload-area" id="drop-zone">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <p>拖拽文件到此处，或 <span class="link">点击选择</span></p>
-                        <input type="file" id="file" name="file" accept=".txt,.md,.json" required hidden>
+                        <input type="file" id="file" name="file" accept=".txt,.md,.markdown,.json,text/plain,text/markdown" required hidden>
                     </div>
                     <div id="file-name" class="file-name"></div>
                 </div>
@@ -62,6 +84,13 @@
                 <div class="form-group">
                     <label for="file-tags">标签</label>
                     <input type="text" id="file-tags" name="tags" placeholder="标签1, 标签2, 标签3（用逗号分隔）">
+                </div>
+
+                <div class="form-group checkbox-row">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="file-as-md">
+                        <span>非 .md 扩展名时，仍按 Markdown 解析（可选）</span>
+                    </label>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">
@@ -121,6 +150,47 @@
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1.5rem;
+}
+
+.import-rag-card {
+    grid-column: 1 / -1;
+}
+
+.rag-intro {
+    margin-bottom: 0.75rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+}
+
+.rag-list {
+    margin-left: 1.25rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.rag-list code {
+    font-size: 0.85em;
+    background: var(--bg-tertiary);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+}
+
+.checkbox-row {
+    margin-bottom: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-weight: 400;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.checkbox-label input {
+    margin-top: 0.2rem;
+    flex-shrink: 0;
 }
 
 .import-form .form-group {
@@ -316,7 +386,8 @@ async function submitTextImport(e) {
     const data = {
         content: form.content.value,
         title: form.title.value || null,
-        tags: form.tags.value.split(',').map(t => t.trim()).filter(t => t)
+        tags: form.tags.value.split(',').map(t => t.trim()).filter(t => t),
+        content_format: document.getElementById('text-as-md').checked ? 'markdown' : 'plain'
     };
     
     try {
@@ -351,6 +422,9 @@ async function submitFileImport(e) {
     const formData = new FormData();
     formData.append('file', form.file.files[0]);
     formData.append('tags', form.tags.value);
+    if (document.getElementById('file-as-md').checked) {
+        formData.append('as_markdown', 'true');
+    }
     
     try {
         const response = await fetch('/api/knowledge/import-file', {

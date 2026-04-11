@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from hushai.meditation.core.skills import MAX_SKILLS_IMPORT_BATCH, MAX_SKILLS_PER_MESSAGE
 
 
 class MemoryCategory(str, Enum):
@@ -23,6 +25,26 @@ class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=5000)
     conversation_id: Optional[str] = None
     stream: bool = False
+    skill_ids: Optional[list[str]] = Field(default=None, max_length=MAX_SKILLS_PER_MESSAGE)
+
+    @field_validator("skill_ids", mode="before")
+    @classmethod
+    def _dedupe_skill_ids(cls, v: object) -> object:
+        if v is None or not isinstance(v, list):
+            return v
+        seen: set[str] = set()
+        out: list[str] = []
+        for x in v:
+            if not isinstance(x, str) or not x.strip():
+                continue
+            s = x.strip()
+            if s in seen:
+                continue
+            seen.add(s)
+            out.append(s)
+            if len(out) >= MAX_SKILLS_PER_MESSAGE:
+                break
+        return out or None
 
 
 class ChatResponse(BaseModel):
@@ -62,6 +84,10 @@ class KnowledgeImportRequest(BaseModel):
     title: Optional[str] = None
     tags: list[str] = Field(default_factory=list)
     parent_id: Optional[str] = None
+    content_format: Literal["plain", "markdown"] = Field(
+        default="plain",
+        description="plain 按原文分块；markdown 解析 YAML 头与正文并转纯文本后入库，供 RAG 检索",
+    )
 
 
 class KnowledgeImportFileRequest(BaseModel):
@@ -103,6 +129,64 @@ class UserProfile(BaseModel):
     total_conversations: int = 0
     total_messages: int = 0
     memory_summary: dict[str, Any] = Field(default_factory=dict)
+
+
+class SkillPublicItem(BaseModel):
+    id: str
+    name: str
+    description: Optional[str] = None
+
+
+class SkillListResponse(BaseModel):
+    skills: list[SkillPublicItem]
+
+
+class SkillImportItem(BaseModel):
+    name: str = Field(..., min_length=1, max_length=128)
+    description: Optional[str] = Field(None, max_length=512)
+    content: str = Field(..., min_length=1)
+    sort_order: int = 0
+    is_active: bool = True
+
+    @field_validator("name", "content", mode="before")
+    @classmethod
+    def strip_text(cls, v: object) -> object:
+        if isinstance(v, str):
+            return v.strip()
+        return v
+
+    @field_validator("description", mode="before")
+    @classmethod
+    def strip_desc(cls, v: object) -> object:
+        if v is None or v == "":
+            return None
+        if isinstance(v, str):
+            s = v.strip()
+            return s if s else None
+        return v
+
+
+class SkillImportRequest(BaseModel):
+    """JSON 可为 `{\"skills\": [...]}` 或顶层数组 `[...]`。"""
+
+    skills: list[SkillImportItem] = Field(..., min_length=1, max_length=MAX_SKILLS_IMPORT_BATCH)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _accept_top_level_array(cls, data: Any) -> Any:
+        if isinstance(data, list):
+            return {"skills": data}
+        return data
+
+
+class SkillImportedRow(BaseModel):
+    id: str
+    name: str
+
+
+class SkillImportResult(BaseModel):
+    imported: int
+    items: list[SkillImportedRow]
 
 
 class ErrorResponse(BaseModel):

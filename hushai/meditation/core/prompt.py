@@ -42,6 +42,8 @@ KNOWLEDGE_SECTION = "【相关理论参考】\n{knowledge_context}"
 
 CONVERSATION_HISTORY = "【最近的对话】\n{history}"
 
+SKILLS_SECTION = "【当前加持的技能指引】\n{skills_context}"
+
 TEACHER_PERSONALITY = (
     "【你的个性化风格】\n"
     "- 如果学生是初学者，用更简单的语言，更多鼓励\n"
@@ -58,12 +60,15 @@ def build_system_prompt(
     knowledge_context: str = "",
     conversation_history: str = "",
     teacher_description: str | None = None,
+    skills_context: str = "",
 ) -> str:
     parts: list[str] = []
     base = ROLE_BASE
     if teacher_description:
         base = base + "\n\n" + teacher_description
     parts.append(base)
+    if skills_context:
+        parts.append(SKILLS_SECTION.format(skills_context=skills_context))
     parts.append(TEACHER_PERSONALITY)
     if knowledge_context:
         parts.append(KNOWLEDGE_SECTION.format(knowledge_context=knowledge_context))

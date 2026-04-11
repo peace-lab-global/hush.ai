@@ -46,6 +46,7 @@ async def chat_endpoint(
             user_id=user_id,
             message=req.message,
             conversation_id=req.conversation_id,
+            skill_ids=req.skill_ids,
         )
         return ChatResponse(**result)
     except RuntimeError as e:
@@ -63,6 +64,7 @@ async def chat_stream_endpoint(
                 user_id=user_id,
                 message=req.message,
                 conversation_id=req.conversation_id,
+                skill_ids=req.skill_ids,
             ):
                 data = StreamChunk(**chunk).model_dump_json(exclude_none=True)
                 yield f"data: {data}\n\n"

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -55,23 +56,37 @@ def create_app() -> FastAPI:
     from hushai.meditation.api.knowledge import router as knowledge_router
     from hushai.meditation.api.login import router as login_router
     from hushai.meditation.api.memory import router as memory_router
+    from hushai.meditation.api.skills import router as skills_router
 
     app.include_router(frontend_router)
     app.include_router(login_router)
     app.include_router(chat_router)
+    app.include_router(skills_router)
     app.include_router(knowledge_router)
     app.include_router(memory_router)
     app.include_router(admin_router)
     app.include_router(admin_web_router)
 
-    # 挂载静态文件
+    # 挂载静态文件（路径相对本文件，不依赖进程 cwd）
     from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import RedirectResponse
 
+    _frontend_static = Path(__file__).resolve().parent / "static"
+    _admin_static = Path(__file__).resolve().parent / "admin" / "static"
+    app.mount(
+        "/static",
+        StaticFiles(directory=str(_frontend_static)),
+        name="static",
+    )
     app.mount(
         "/admin/static",
-        StaticFiles(directory="hushai/meditation/admin/static"),
+        StaticFiles(directory=str(_admin_static)),
         name="admin_static",
     )
+
+    @app.get("/favicon.ico", include_in_schema=False)
+    async def favicon():
+        return RedirectResponse(url="/static/favicon.svg")
 
     @app.get("/health")
     async def health():

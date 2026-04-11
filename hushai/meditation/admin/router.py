@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -18,13 +19,14 @@ from hushai.meditation.admin.auth import (
 )
 from hushai.meditation.config import get_config
 from hushai.meditation.core.memory import get_user_memories
-from hushai.meditation.db.models import Conversation, KnowledgeChunk, Memory, Message, User
+from hushai.meditation.db.models import Conversation, KnowledgeChunk, Memory, Message, Skill, User
 from hushai.meditation.db.session import get_session
 
 router = APIRouter(prefix="/admin", tags=["admin-web"])
 
-# 设置模板目录
-templates = Jinja2Templates(directory="hushai/meditation/admin/templates")
+# 模板目录：相对 __file__，避免依赖进程 cwd（否则从非项目根启动时管理后台 500）
+_ADMIN_TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
+templates = Jinja2Templates(directory=str(_ADMIN_TEMPLATES_DIR))
 
 # 添加 tojson 过滤器
 def tojson_filter(value, indent=None):
@@ -63,6 +65,8 @@ async def get_stats_context(session: AsyncSession) -> dict:
         await session.execute(select(func.count()).select_from(KnowledgeChunk))
     ).scalar() or 0
 
+    skill_count = (await session.execute(select(func.count()).select_from(Skill))).scalar() or 0
+
     return {
         "user_count": user_count,
         "active_users": active_users,
@@ -70,6 +74,7 @@ async def get_stats_context(session: AsyncSession) -> dict:
         "msg_count": msg_count,
         "memory_count": memory_count,
         "knowledge_count": knowledge_count,
+        "skill_count": skill_count,
     }
 
 
@@ -80,7 +85,7 @@ async def login_page(request: Request, error: str = None):
     # 如果已登录，跳转到仪表盘
     if get_admin_from_request(request):
         return RedirectResponse(url="/admin/", status_code=302)
-    return templates.TemplateResponse("login.html", {"request": request, "error": error})
+    return templates.TemplateResponse(request, "login.html", {"error": error})
 
 
 @router.post("/login")
@@ -93,7 +98,7 @@ async def login(
     creds = get_admin_credentials()
     if username != creds["username"] or password != creds["password"]:
         return templates.TemplateResponse(
-            "login.html", {"request": request, "error": "用户名或密码错误"}, status_code=401
+            request, "login.html", {"error": "用户名或密码错误"}, status_code=401
         )
 
     token = create_admin_token(username)
@@ -143,9 +148,9 @@ async def dashboard(request: Request, session: AsyncSession = Depends(get_sessio
     ]
 
     return templates.TemplateResponse(
+        request,
         "dashboard.html",
         {
-            "request": request,
             "admin_user": admin_user,
             **stats,
             "recent_users": recent_users,
@@ -190,9 +195,9 @@ async def users_page(
     total_pages = (total + limit - 1) // limit
 
     return templates.TemplateResponse(
+        request,
         "users.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "users": users,
             "page": page,
@@ -249,9 +254,9 @@ async def user_detail_page(
     conversations = list(conv_result.scalars().all())
 
     return templates.TemplateResponse(
+        request,
         "user_detail.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "user": user,
             "conv_count": conv_count,
@@ -298,9 +303,9 @@ async def conversations_page(
     users = list(users_result.scalars().all())
 
     return templates.TemplateResponse(
+        request,
         "conversations.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "conversations": conversations,
             "page": page,
@@ -345,9 +350,9 @@ async def conversation_detail_page(
     messages = list(msg_result.scalars().all())
 
     return templates.TemplateResponse(
+        request,
         "conversation_detail.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "conversation": conversation,
             "nickname": nickname,
@@ -404,9 +409,9 @@ async def memories_page(
     categories = [row[0] for row in category_result.all()]
 
     return templates.TemplateResponse(
+        request,
         "memories.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "memories": memories,
             "page": page,
@@ -459,9 +464,9 @@ async def knowledge_page(
     total_pages = (total + limit - 1) // limit
 
     return templates.TemplateResponse(
+        request,
         "knowledge.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "knowledge_items": knowledge_items,
             "page": page,
@@ -491,9 +496,9 @@ async def knowledge_detail_page(
         raise HTTPException(status_code=404, detail="知识条目不存在")
 
     return templates.TemplateResponse(
+        request,
         "knowledge_detail.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "item": item,
         },
@@ -510,9 +515,25 @@ async def knowledge_import_page(
         return RedirectResponse(url="/admin/login", status_code=302)
 
     return templates.TemplateResponse(
+        request,
         "knowledge_import.html",
         {
-            "request": request,
+            "admin_user": admin_user,
+        },
+    )
+
+
+@router.get("/skills-import", response_class=HTMLResponse)
+async def skills_import_page(request: Request):
+    """技能批量导入页面。"""
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    return templates.TemplateResponse(
+        request,
+        "skills_import.html",
+        {
             "admin_user": admin_user,
         },
     )
@@ -585,9 +606,196 @@ async def delete_knowledge(
     return {"success": True}
 
 
+@router.get("/skills", response_class=HTMLResponse)
+async def skills_page(
+    request: Request,
+    page: int = 1,
+    limit: int = 20,
+    search: str = "",
+    session: AsyncSession = Depends(get_session),
+):
+    """技能管理列表。"""
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    offset = (page - 1) * limit
+    base_query = select(Skill)
+    count_query = select(func.count()).select_from(Skill)
+
+    if search:
+        like = f"%{search}%"
+        base_query = base_query.where(Skill.name.ilike(like) | Skill.description.ilike(like))
+        count_query = count_query.where(Skill.name.ilike(like) | Skill.description.ilike(like))
+
+    result = await session.execute(
+        base_query.order_by(Skill.sort_order.asc(), Skill.created_at.desc()).offset(offset).limit(limit)
+    )
+    skills = list(result.scalars().all())
+    total = (await session.execute(count_query)).scalar() or 0
+    total_pages = (total + limit - 1) // limit if total else 0
+
+    return templates.TemplateResponse(
+        request,
+        "skills.html",
+        {
+            "admin_user": admin_user,
+            "skills": skills,
+            "page": page,
+            "total_pages": max(total_pages, 1),
+            "total": total,
+            "search": search,
+            "limit": limit,
+        },
+    )
+
+
+@router.get("/skills/new", response_class=HTMLResponse)
+async def skill_new_page(request: Request):
+    """新建技能表单。"""
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+    return templates.TemplateResponse(
+        request,
+        "skill_form.html",
+        {"admin_user": admin_user, "skill": None, "error": None},
+    )
+
+
+@router.post("/skills/new")
+async def skill_create(
+    request: Request,
+    name: str = Form(...),
+    description: str = Form(""),
+    content: str = Form(...),
+    sort_order: int = Form(0),
+    is_active: str | None = Form(None),
+    session: AsyncSession = Depends(get_session),
+):
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    name = name.strip()
+    content = content.strip()
+    if not name or not content:
+        return templates.TemplateResponse(
+            request,
+            "skill_form.html",
+            {
+                "admin_user": admin_user,
+                "skill": None,
+                "error": "名称与技能正文不能为空",
+            },
+            status_code=400,
+        )
+
+    skill = Skill(
+        name=name[:128],
+        description=(description.strip()[:512] if description.strip() else None),
+        content=content,
+        sort_order=sort_order,
+        is_active=is_active == "on",
+    )
+    session.add(skill)
+    await session.commit()
+    return RedirectResponse(url="/admin/skills", status_code=302)
+
+
+@router.get("/skills/{skill_id}/edit", response_class=HTMLResponse)
+async def skill_edit_page(
+    request: Request,
+    skill_id: str,
+    session: AsyncSession = Depends(get_session),
+):
+    """编辑技能表单。"""
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    result = await session.execute(select(Skill).where(Skill.id == skill_id))
+    skill = result.scalar_one_or_none()
+    if not skill:
+        raise HTTPException(status_code=404, detail="技能不存在")
+
+    return templates.TemplateResponse(
+        request,
+        "skill_form.html",
+        {"admin_user": admin_user, "skill": skill, "error": None},
+    )
+
+
+@router.post("/skills/{skill_id}/edit")
+async def skill_update(
+    request: Request,
+    skill_id: str,
+    name: str = Form(...),
+    description: str = Form(""),
+    content: str = Form(...),
+    sort_order: int = Form(0),
+    is_active: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    result = await session.execute(select(Skill).where(Skill.id == skill_id))
+    skill = result.scalar_one_or_none()
+    if not skill:
+        raise HTTPException(status_code=404, detail="技能不存在")
+
+    name = name.strip()
+    content = content.strip()
+    if not name or not content:
+        return templates.TemplateResponse(
+            request,
+            "skill_form.html",
+            {
+                "admin_user": admin_user,
+                "skill": skill,
+                "error": "名称与技能正文不能为空",
+            },
+            status_code=400,
+        )
+
+    skill.name = name[:128]
+    skill.description = description.strip()[:512] if description.strip() else None
+    skill.content = content
+    skill.sort_order = sort_order
+    skill.is_active = is_active == "on"
+    await session.commit()
+    return RedirectResponse(url="/admin/skills", status_code=302)
+
+
+@router.delete("/api/skills/{skill_id}")
+async def delete_skill(
+    request: Request,
+    skill_id: str,
+    session: AsyncSession = Depends(get_session),
+):
+    """删除技能。"""
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        raise HTTPException(status_code=401, detail="需要管理员登录")
+
+    result = await session.execute(select(Skill).where(Skill.id == skill_id))
+    skill = result.scalar_one_or_none()
+    if not skill:
+        raise HTTPException(status_code=404, detail="技能不存在")
+
+    await session.delete(skill)
+    await session.commit()
+
+    return {"success": True}
+
+
 @router.get("/settings", response_class=HTMLResponse)
 async def settings_page(
     request: Request,
+    success: str = None,
+    error: str = None,
 ):
     """系统设置页面。"""
     admin_user = get_admin_from_request(request)
@@ -597,10 +805,61 @@ async def settings_page(
     config = get_config()
 
     return templates.TemplateResponse(
+        request,
         "settings.html",
         {
-            "request": request,
             "admin_user": admin_user,
             "config": config,
+            "success": success,
+            "error": error,
         },
     )
+
+
+@router.post("/settings")
+async def settings_update(
+    request: Request,
+    default_llm_provider: str = Form(...),
+    default_llm_model: str = Form(...),
+    memory_top_k: int = Form(...),
+    knowledge_top_k: int = Form(...),
+    conversation_max_turns: int = Form(...),
+    openai_api_key: str = Form(""),
+    openai_base_url: str = Form(""),
+    deepseek_api_key: str = Form(""),
+    deepseek_base_url: str = Form(""),
+    deepseek_model: str = Form(""),
+    zhipu_api_key: str = Form(""),
+    zhipu_base_url: str = Form(""),
+    zhipu_model: str = Form(""),
+):
+    """更新系统设置。"""
+    admin_user = get_admin_from_request(request)
+    if not admin_user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    from dataclasses import replace
+    from hushai.meditation.config import set_config
+
+    old_cfg = get_config()
+    try:
+        new_cfg = replace(
+            old_cfg,
+            default_llm_provider=default_llm_provider,
+            default_llm_model=default_llm_model,
+            memory_top_k=memory_top_k,
+            knowledge_top_k=knowledge_top_k,
+            conversation_max_turns=conversation_max_turns,
+            openai_api_key=openai_api_key,
+            openai_base_url=openai_base_url,
+            deepseek_api_key=deepseek_api_key,
+            deepseek_base_url=deepseek_base_url,
+            deepseek_model=deepseek_model,
+            zhipu_api_key=zhipu_api_key,
+            zhipu_base_url=zhipu_base_url,
+            zhipu_model=zhipu_model,
+        )
+        set_config(new_cfg)
+        return RedirectResponse(url="/admin/settings?success=设置已更新", status_code=303)
+    except Exception as e:
+        return RedirectResponse(url=f"/admin/settings?error=更新失败: {e}", status_code=303)

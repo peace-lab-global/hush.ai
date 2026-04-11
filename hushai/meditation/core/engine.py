@@ -21,6 +21,7 @@ from hushai.meditation.core.prompt import (
     build_system_prompt,
     format_conversation_history,
 )
+from hushai.meditation.core.skills import get_skills_context_for_prompt
 from hushai.meditation.db.models import Conversation, Message
 from hushai.meditation.db.session import get_session_factory
 
@@ -73,6 +74,7 @@ async def chat(
     message: str,
     conversation_id: str | None = None,
     teacher_description: str | None = None,
+    skill_ids: list[str] | None = None,
     provider: str | None = None,
 ) -> dict[str, Any]:
     factory = get_session_factory()
@@ -89,6 +91,7 @@ async def chat(
         prev_messages = await _load_conversation_messages(session, conv.id)
         memory_context = await get_memory_context_for_prompt(session, user_id, message)
         knowledge_context = await get_knowledge_context_for_prompt(message)
+        skills_context = await get_skills_context_for_prompt(session, skill_ids)
         history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
         history_text = format_conversation_history(history_dicts)
         system_prompt = build_system_prompt(
@@ -96,6 +99,7 @@ async def chat(
             knowledge_context=knowledge_context,
             conversation_history=history_text,
             teacher_description=teacher_description,
+            skills_context=skills_context,
         )
         llm_messages = [LLMMessage(role="system", content=system_prompt)]
         for m in prev_messages:
@@ -143,6 +147,7 @@ async def chat_stream(
     message: str,
     conversation_id: str | None = None,
     teacher_description: str | None = None,
+    skill_ids: list[str] | None = None,
     provider: str | None = None,
 ) -> AsyncGenerator[dict[str, Any], None]:
     factory = get_session_factory()
@@ -159,6 +164,7 @@ async def chat_stream(
         prev_messages = await _load_conversation_messages(session, conv.id)
         memory_context = await get_memory_context_for_prompt(session, user_id, message)
         knowledge_context = await get_knowledge_context_for_prompt(message)
+        skills_context = await get_skills_context_for_prompt(session, skill_ids)
         history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
         history_text = format_conversation_history(history_dicts)
         system_prompt = build_system_prompt(
@@ -166,6 +172,7 @@ async def chat_stream(
             knowledge_context=knowledge_context,
             conversation_history=history_text,
             teacher_description=teacher_description,
+            skills_context=skills_context,
         )
         llm_messages = [LLMMessage(role="system", content=system_prompt)]
         for m in prev_messages:
