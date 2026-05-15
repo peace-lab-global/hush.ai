@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from collections.abc import AsyncGenerator
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hushai.meditation.api.auth import extract_bearer_token, get_current_user_id
+from hushai.meditation.app import limiter
 from hushai.meditation.core.engine import chat, chat_stream
 from hushai.meditation.db.session import get_session
 from hushai.meditation.schemas import (
@@ -37,7 +38,9 @@ async def _require_user(
 
 
 @router.post("/", response_model=ChatResponse, responses={401: {"model": ErrorResponse}})
+@limiter.limit("30/minute")
 async def chat_endpoint(
+    request: Request,
     req: ChatRequest,
     user_id: str = Depends(_require_user),
 ) -> ChatResponse:
@@ -47,6 +50,7 @@ async def chat_endpoint(
             message=req.message,
             conversation_id=req.conversation_id,
             skill_ids=req.skill_ids,
+            provider=req.provider,
         )
         return ChatResponse(**result)
     except RuntimeError as e:
@@ -54,7 +58,9 @@ async def chat_endpoint(
 
 
 @router.post("/stream", responses={401: {"model": ErrorResponse}})
+@limiter.limit("30/minute")
 async def chat_stream_endpoint(
+    request: Request,
     req: ChatRequest,
     user_id: str = Depends(_require_user),
 ) -> StreamingResponse:
@@ -65,6 +71,7 @@ async def chat_stream_endpoint(
                 message=req.message,
                 conversation_id=req.conversation_id,
                 skill_ids=req.skill_ids,
+                provider=req.provider,
             ):
                 data = StreamChunk(**chunk).model_dump_json(exclude_none=True)
                 yield f"data: {data}\n\n"

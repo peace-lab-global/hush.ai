@@ -8,12 +8,16 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from hushai.meditation.config import get_config
 from hushai.meditation.db.session import close_db, init_db
 
 logger = logging.getLogger("hushai.meditation")
 
+limiter = Limiter(key_func=get_remote_address)
 _app: FastAPI | None = None
 
 
@@ -42,9 +46,12 @@ def create_app() -> FastAPI:
         docs_url="/debug",
         redoc_url="/redoc",
     )
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    cors_origins = cfg.cors_origins if not cfg.debug else ["*"]
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=cfg.cors_origins,
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -68,8 +75,8 @@ def create_app() -> FastAPI:
     app.include_router(admin_web_router)
 
     # 挂载静态文件（路径相对本文件，不依赖进程 cwd）
-    from fastapi.staticfiles import StaticFiles
     from fastapi.responses import RedirectResponse
+    from fastapi.staticfiles import StaticFiles
 
     _frontend_static = Path(__file__).resolve().parent / "static"
     _admin_static = Path(__file__).resolve().parent / "admin" / "static"
@@ -107,9 +114,9 @@ def run() -> None:
 
     cfg = get_config()
     uvicorn.run(
-        "hushai.meditation.app:get_app()",
+        "hushai.meditation.app:get_app",
         host=cfg.host,
         port=cfg.port,
         reload=cfg.debug,
-        factory="get_app",
+        factory=True,
     )

@@ -91,9 +91,7 @@ def prepare_import_content(
     title = meta.get("title")
     tags_raw = meta.get("tags")
     if tags_raw:
-        extra_tags.extend(
-            [x.strip() for x in re.split(r"[,，]", tags_raw) if x.strip()]
-        )
+        extra_tags.extend([x.strip() for x in re.split(r"[,，]", tags_raw) if x.strip()])
 
     plain = markdown_to_plain_text(body)
     if not title:
@@ -149,7 +147,7 @@ async def import_text(
     vector_data: list[dict[str, Any]] = []
     for i, chunk_text in enumerate(chunks_text):
         chunk = KnowledgeChunk(
-            title=title if i == 0 else None,
+            title=title,
             content=chunk_text,
             tags=tags or [],
             parent_id=parent_id,

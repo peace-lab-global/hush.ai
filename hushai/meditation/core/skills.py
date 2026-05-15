@@ -44,7 +44,7 @@ async def get_skills_context_for_prompt(
 
     result = await session.execute(stmt)
     rows = list(result.scalars().all())
-    
+
     if skill_ids is not None:
         by_id = {s.id: s for s in rows}
         parts: list[str] = []

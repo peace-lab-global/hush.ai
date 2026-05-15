@@ -61,18 +61,18 @@ class TestBuildSystemPrompt:
     async def test_get_skills_context_auto_mount(self):
         from hushai.meditation.core.skills import get_skills_context_for_prompt
         from hushai.meditation.db.models import Skill
-        
+
         mock_session = AsyncMock()
         mock_result = MagicMock()
         skill = Skill(id="s1", name="自动技能", content="自动内容", is_active=True)
         mock_result.scalars.return_value.all.return_value = [skill]
         mock_session.execute.return_value = mock_result
-        
+
         # 测试 skill_ids=None (自动挂载)
         result = await get_skills_context_for_prompt(mock_session, None)
         assert "自动技能" in result
         assert "自动内容" in result
-        
+
         # 测试 skill_ids=[] (不挂载)
         result = await get_skills_context_for_prompt(mock_session, [])
         assert result == ""
@@ -299,9 +299,7 @@ tags: 冥想, 入门
 
 正文 **内容**。
 """
-        plain, title, tags = prepare_import_content(
-            raw, filename="x.md", is_markdown=True
-        )
+        plain, title, tags = prepare_import_content(raw, filename="x.md", is_markdown=True)
         assert title == "测试文档"
         assert "冥想" in tags
         assert "markdown" in tags

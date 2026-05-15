@@ -6,8 +6,9 @@ from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 from typing import Any
 
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, OpenAIError
 
+from hushai.llm import format_openai_error
 from hushai.meditation.config import MeditationConfig, get_config
 
 _providers: dict[str, dict[str, str]] = {}
@@ -87,10 +88,13 @@ async def chat_completion(
         "max_tokens": max_tokens,
         "stream": stream,
     }
-    resp = await client.chat.completions.create(**kwargs)
+    try:
+        resp = await client.chat.completions.create(**kwargs)
+    except OpenAIError as exc:
+        raise RuntimeError(format_openai_error(exc)) from None
     if stream:
         parts: list[str] = []
-        async for chunk in resp:
+        async for chunk in resp:  # type: ignore[union-attr]
             delta = chunk.choices[0].delta.content
             if delta:
                 parts.append(delta)
@@ -111,14 +115,17 @@ async def chat_completion_stream(
     client = _get_client(provider, cfg)
     model = model or _get_model(provider)
     msg_dicts = [{"role": m.role, "content": m.content} for m in messages]
-    resp = await client.chat.completions.create(
-        model=model,
-        messages=msg_dicts,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        stream=True,
-    )
-    async for chunk in resp:
+    try:
+        resp = await client.chat.completions.create(
+            model=model,
+            messages=msg_dicts,  # type: ignore[arg-type]
+            temperature=temperature,
+            max_tokens=max_tokens,
+            stream=True,
+        )
+    except OpenAIError as exc:
+        raise RuntimeError(format_openai_error(exc)) from None
+    async for chunk in resp:  # type: ignore[union-attr]
         delta = chunk.choices[0].delta.content
         if delta:
             yield delta

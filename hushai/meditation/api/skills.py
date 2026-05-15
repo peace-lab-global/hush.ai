@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Header, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,9 +15,9 @@ from hushai.meditation.db.models import Skill
 from hushai.meditation.db.session import get_session
 from hushai.meditation.schemas import (
     ErrorResponse,
+    SkillImportedRow,
     SkillImportRequest,
     SkillImportResult,
-    SkillImportedRow,
     SkillListResponse,
     SkillPublicItem,
 )
@@ -54,10 +54,7 @@ async def list_active_skills(session: AsyncSession = Depends(get_session)) -> Sk
     result = await session.execute(stmt)
     rows = list(result.scalars().all())
     return SkillListResponse(
-        skills=[
-            SkillPublicItem(id=s.id, name=s.name, description=s.description)
-            for s in rows
-        ]
+        skills=[SkillPublicItem(id=s.id, name=s.name, description=s.description) for s in rows]
     )
 
 

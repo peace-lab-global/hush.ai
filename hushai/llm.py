@@ -57,6 +57,7 @@ MODE_SUFFIXES: Final[dict[str, str]] = {
     "focus": ANTI_PROCRASTINATION_PROMPT,
     "hype": HYPE_PROMPT,
     "plain": "",
+    "pua": "",
 }
 
 # 独立系统提示：不叠用「哲理老人」，避免与施压者角色扮演冲突

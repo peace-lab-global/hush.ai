@@ -38,7 +38,7 @@ class MeditationConfig:
     host: str = "0.0.0.0"
     port: int = 8000
     debug: bool = False
-    cors_origins: list[str] = field(default_factory=lambda: ["*"])
+    cors_origins: list[str] = field(default_factory=list)
     llm_providers: dict[str, dict[str, str]] = field(default_factory=dict)
 
     @classmethod

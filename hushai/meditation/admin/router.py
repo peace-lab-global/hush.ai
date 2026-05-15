@@ -28,9 +28,11 @@ router = APIRouter(prefix="/admin", tags=["admin-web"])
 _ADMIN_TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(_ADMIN_TEMPLATES_DIR))
 
+
 # 添加 tojson 过滤器
 def tojson_filter(value, indent=None):
     return json.dumps(value, ensure_ascii=False, indent=indent)
+
 
 templates.env.filters["tojson"] = tojson_filter
 
@@ -629,7 +631,9 @@ async def skills_page(
         count_query = count_query.where(Skill.name.ilike(like) | Skill.description.ilike(like))
 
     result = await session.execute(
-        base_query.order_by(Skill.sort_order.asc(), Skill.created_at.desc()).offset(offset).limit(limit)
+        base_query.order_by(Skill.sort_order.asc(), Skill.created_at.desc())
+        .offset(offset)
+        .limit(limit)
     )
     skills = list(result.scalars().all())
     total = (await session.execute(count_query)).scalar() or 0
@@ -839,6 +843,7 @@ async def settings_update(
         return RedirectResponse(url="/admin/login", status_code=302)
 
     from dataclasses import replace
+
     from hushai.meditation.config import set_config
 
     old_cfg = get_config()

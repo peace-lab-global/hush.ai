@@ -102,9 +102,7 @@ async def import_knowledge_file(
     raw = (await file.read()).decode("utf-8")
     fn = file.filename or "upload.txt"
     is_md = bool(as_markdown) or fn.lower().endswith((".md", ".markdown"))
-    plain, derived_title, extra_tags = prepare_import_content(
-        raw, filename=fn, is_markdown=is_md
-    )
+    plain, derived_title, extra_tags = prepare_import_content(raw, filename=fn, is_markdown=is_md)
     if not plain.strip():
         raise HTTPException(status_code=400, detail="文件解析后内容为空")
     tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []

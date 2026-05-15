@@ -99,12 +99,15 @@ async def store_memories(
         )
         session.add(mem)
         await session.flush()
-        vector.add_memory_embedding(
-            memory_id=mem.id,
-            content=content,
-            user_id=user_id,
-            category=category,
-        )
+        try:
+            vector.add_memory_embedding(
+                memory_id=mem.id,
+                content=content,
+                user_id=user_id,
+                category=category,
+            )
+        except Exception:
+            logger.warning("记忆向量写入失败: memory_id=%s", mem.id, exc_info=True)
         stored.append(mem)
     return stored
 
@@ -163,7 +166,7 @@ async def get_memory_context_for_prompt(
     memories = await retrieve_relevant_memories(session, user_id, current_message)
     if not memories:
         return ""
-    lines: list[str] = ["【关于这位客户，你记得以下信息】"]
+    lines: list[str] = []
     for m in memories:
         label = _category_label(m.category)
         lines.append(f"- [{label}] {m.summary or m.content[:80]}")
