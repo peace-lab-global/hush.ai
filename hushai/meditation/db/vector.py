@@ -44,9 +44,11 @@ def _make_embedding_function() -> Any:
     cfg = get_config()
     provider = cfg.embedding_provider
     if provider == "openai":
-        from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
+        from chromadb.utils.embedding_functions import DefaultEmbeddingFunction, OpenAIEmbeddingFunction
 
         api_key = cfg.embedding_api_key or cfg.openai_api_key
+        if not api_key:
+            return DefaultEmbeddingFunction()
         base_url = cfg.embedding_base_url or cfg.openai_base_url or None
         return OpenAIEmbeddingFunction(
             api_key=api_key,
@@ -96,7 +98,7 @@ def add_knowledge_chunks(
         if c.get("parent_id"):
             meta["parent_id"] = c["parent_id"]
         metadatas.append(meta)
-    col.upsert(ids=ids, documents=documents, metadatas=metadatas)
+    col.upsert(ids=ids, documents=documents, metadatas=metadatas)  # type: ignore[arg-type]
 
 
 def search_knowledge(query: str, top_k: int = 5) -> list[dict[str, Any]]:
@@ -118,7 +120,7 @@ def search_knowledge(query: str, top_k: int = 5) -> list[dict[str, Any]]:
                 "content": doc,
                 "score": 1.0 - dist,
                 "title": meta.get("title"),
-                "tags": meta.get("tags", "").split(",") if meta.get("tags") else [],
+                "tags": str(meta.get("tags", "")).split(",") if meta.get("tags") else [],
                 "source": meta.get("source"),
             }
         )

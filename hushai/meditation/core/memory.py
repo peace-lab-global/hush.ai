@@ -202,4 +202,4 @@ async def archive_old_memories(
         .values(status="archived")
     )
     result = await session.execute(stmt)
-    return result.rowcount  # type: ignore[attr-defined]
+    return result.rowcount  # type: ignore[no-any-return,attr-defined]

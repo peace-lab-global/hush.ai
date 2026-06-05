@@ -12,3 +12,4 @@ coverage.xml
 htmlcov/
 .venv/
 venv/
+.env

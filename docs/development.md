@@ -203,3 +203,93 @@ python3 -m pytest tests/ -q
 - 测试：核心模块单元测试通过；新增功能必须补测试。
 - 文档：API 路由与请求响应模型在 FastAPI 文档可见；开发文档（本文件）与根 README 保持一致。
 - 安全：不记录/不输出密钥；错误信息不泄露敏感上下文。
+
+## 11. 新增功能（2024）
+
+### 11.1 Token 刷新机制
+
+- 新增 `RefreshTokenRequest` / `RefreshTokenResponse` Pydantic 模型
+- 新增 `POST /api/auth/refresh` 端点，支持 access_token 刷新
+- `User` 模型新增 `refresh_token_hash` 字段（bcrypt 哈希存储）
+- 前端登录返回 `refresh_token`，自动刷新机制处理 401 错误
+
+实现：`hushai/meditation/api/login.py`、`hushai/meditation/schemas.py`
+
+### 11.2 流式输出
+
+- 新增 `POST /api/chat/stream` SSE 端点
+- 前端 `createStreamingMsg()` / `finalizeStreamingMsg()` 实现实时流式渲染
+- 支持 Markdown 实时解析渲染
+
+实现：`hushai/meditation/api/chat.py`、`hushai/meditation/core/engine.py`
+
+### 11.3 对话历史 API
+
+- `GET /api/chat/conversations` - 获取用户对话列表
+- `GET /api/chat/conversations/{id}/messages` - 获取对话消息
+- 前端新增侧边抽屉 `convDrawer` 展示历史对话
+
+实现：`hushai/meditation/api/chat.py`
+
+### 11.4 Markdown 渲染
+
+- 前端 `parseMarkdown()` 支持 `**粗体**`、`*斜体*`、`` `代码` ``、`[链接](url)` 语法
+- CSS 样式支持对话气泡格式化
+
+实现：`hushai/meditation/static/index.html`
+
+### 11.5 LLM 降级策略
+
+- `core/llm.py` 重构，支持多 Provider 自动 failover
+- 降级顺序：primary → deepseek → zhipu → kimi → openai
+- 单 Provider 失败自动切换下一 Provider
+
+实现：`hushai/meditation/core/llm.py`
+
+### 11.6 敏感内容过滤
+
+- 新增 `core/safety.py` 模块
+- `check_safety()` 检测危机内容（自杀倾向、暴力等）
+- 危机检测结果返回心理援助热线等资源信息
+- 集成到对话引擎 `chat()` 和 `chat_stream()`
+
+实现：`hushai/meditation/core/safety.py`、`hushai/meditation/core/engine.py`
+
+### 11.7 管理后台增强
+
+**AdminUser 管理**：
+- `AdminUser` 模型，bcrypt 密码哈希
+- 数据库认证（多管理员 CRUD）
+- 启动时自动从环境变量初始化默认管理员
+
+**审计日志**：
+- `AuditLog` 模型记录管理员操作
+- `GET /admin/audit-logs` 页面，支持按操作类型/管理员筛选
+
+**批量操作**：
+- `POST /api/conversations/batch-delete` - 批量删除对话（软删除）
+- `POST /api/memories/batch-delete` - 批量删除记忆
+- `POST /api/knowledge/batch-delete` - 批量删除知识条目
+- 前端复选框选择 + 确认对话框
+
+**数据导出**：
+- `GET /admin/export/conversations` - 导出对话（CSV/Excel）
+- `GET /admin/export/audit-logs` - 导出审计日志（CSV/Excel）
+- `GET /admin/export/users` - 导出用户（CSV/Excel）
+- `GET /admin/export/memories` - 导出记忆（CSV/Excel）
+- `GET /admin/export/knowledge` - 导出知识库（CSV/Excel）
+- 保留当前筛选条件
+
+实现：`hushai/meditation/admin/router.py`、`hushai/meditation/admin/export.py`
+
+### 11.8 工程质量提升
+
+**CI/CD**：
+- 新增 Bandit 安全扫描步骤
+- pre-commit hooks 扩展（trailing-whitespace、end-of-file-fixer、large-file check）
+- 覆盖率阈值统一为 70%
+
+**依赖管理**：
+- 新增 `pandas>=2.0.0` 和 `openpyxl>=3.0.0` 用于数据导出
+
+实现：`.github/workflows/ci.yml`、`.pre-commit-config.yaml`、`Makefile`

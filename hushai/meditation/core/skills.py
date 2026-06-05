@@ -16,25 +16,23 @@ async def get_skills_context_for_prompt(
     skill_ids: list[str] | None,
 ) -> str:
     """获取技能上下文。如果 skill_ids 为 None，则获取所有已启用的技能。"""
-    if skill_ids is not None:
-        if not skill_ids:
-            return ""
+    ordered_ids: list[str] | None = None
+    if skill_ids is not None and skill_ids:
         seen: set[str] = set()
-        ordered: list[str] = []
+        ordered_ids = []
         for sid in skill_ids:
-            if sid in seen or len(ordered) >= MAX_SKILLS_PER_MESSAGE:
+            if sid in seen or len(ordered_ids) >= MAX_SKILLS_PER_MESSAGE:
                 continue
             seen.add(sid)
-            ordered.append(sid)
-        if not ordered:
+            ordered_ids.append(sid)
+        if not ordered_ids:
             return ""
         stmt = (
             select(Skill)
-            .where(Skill.id.in_(ordered), Skill.is_active.is_(True))
+            .where(Skill.id.in_(ordered_ids), Skill.is_active.is_(True))
             .order_by(Skill.sort_order.asc(), Skill.name.asc())
         )
     else:
-        # 自动挂载所有已启用的技能
         stmt = (
             select(Skill)
             .where(Skill.is_active.is_(True))
@@ -45,14 +43,13 @@ async def get_skills_context_for_prompt(
     result = await session.execute(stmt)
     rows = list(result.scalars().all())
 
-    if skill_ids is not None:
+    if ordered_ids is not None:
         by_id = {s.id: s for s in rows}
-        parts: list[str] = []
-        for sid in ordered:
-            s = by_id.get(sid)
-            if not s:
-                continue
-            parts.append(f"## {s.name}\n{s.content.strip()}")
+        parts = [
+            f"## {by_id[sid].name}\n{by_id[sid].content.strip()}"
+            for sid in ordered_ids
+            if sid in by_id
+        ]
     else:
         parts = [f"## {s.name}\n{s.content.strip()}" for s in rows]
 

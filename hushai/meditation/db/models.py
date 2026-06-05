@@ -40,6 +40,7 @@ class User(Base):
     wx_session_key: Mapped[Optional[str]] = mapped_column(String(256))
     nickname: Mapped[Optional[str]] = mapped_column(String(128))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(512))
+    refresh_token_hash: Mapped[Optional[str]] = mapped_column(String(256), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
@@ -133,3 +134,54 @@ class KnowledgeChunk(Base):
     metadata_: Mapped[Optional[dict]] = mapped_column("metadata", JSON)
 
     children: Mapped[List[KnowledgeChunk]] = relationship()
+
+
+class Scene(Base):
+    """冥想场景，用于区分不同应用场景的系统提示与引导策略。"""
+
+    __tablename__ = "scenes"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(128))
+    slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    description: Mapped[Optional[str]] = mapped_column(String(512))
+    system_prompt: Mapped[str] = mapped_column(Text)
+    opening_message: Mapped[Optional[str]] = mapped_column(Text)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+
+class AdminUser(Base):
+    """管理后台用户，支持多管理员账号。"""
+
+    __tablename__ = "admin_users"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    username: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String(256))
+    display_name: Mapped[Optional[str]] = mapped_column(String(128))
+    is_active: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+
+class AuditLog(Base):
+    """管理员操作审计日志。"""
+
+    __tablename__ = "audit_logs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    admin_username: Mapped[str] = mapped_column(String(64), index=True)
+    action: Mapped[str] = mapped_column(String(64), index=True)
+    resource_type: Mapped[str] = mapped_column(String(32))
+    resource_id: Mapped[Optional[str]] = mapped_column(String(36))
+    detail: Mapped[Optional[str]] = mapped_column(Text)
+    ip_address: Mapped[Optional[str]] = mapped_column(String(45))
+    user_agent: Mapped[Optional[str]] = mapped_column(String(512))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)

@@ -47,7 +47,7 @@ async def list_memories(
         memories=[
             MemoryItem(
                 id=m.id,
-                category=m.category,
+                category=m.category,  # type: ignore[arg-type]
                 content=m.content,
                 summary=m.summary or "",
                 importance=m.importance,

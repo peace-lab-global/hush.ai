@@ -4,6 +4,12 @@
 
 {% block page_title %}知识库管理{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 知识库管理
+</nav>
+{% endblock %}
+
 {% block content %}
 <!-- 搜索栏 -->
 <div class="toolbar">
@@ -24,6 +30,14 @@
     </form>
     <div class="toolbar-actions">
         <div class="toolbar-info">共 {{ total }} 条知识</div>
+        <div class="btn-group">
+            <a href="/admin/export/knowledge?format=csv{% if search %}&search={{ search }}{% endif %}" class="btn btn-secondary">
+                <i class="fas fa-file-csv"></i> CSV
+            </a>
+            <a href="/admin/export/knowledge?format=xlsx{% if search %}&search={{ search }}{% endif %}" class="btn btn-secondary">
+                <i class="fas fa-file-excel"></i> Excel
+            </a>
+        </div>
         <a href="/admin/knowledge-import" class="btn btn-success">
             <i class="fas fa-plus"></i> 导入知识
         </a>
@@ -108,31 +122,20 @@
 {% block extra_js %}
 <script>
 async function deleteKnowledge(itemId) {
-    if (!confirm('确定要删除这条知识条目吗？此操作不可恢复。')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/admin/api/knowledge/${itemId}`, {
+    confirmAction('确认删除', '确定要删除这条知识条目吗？此操作不可恢复。', function() {
+        asyncRequest('/admin/api/knowledge/' + itemId, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
+            loadingText: '正在删除知识...',
+            onSuccess: function() {
+                toastSuccess('删除成功', '知识条目已删除');
+                var card = document.querySelector('[data-item-id="' + itemId + '"]');
+                if (card) {
+                    card.style.opacity = '0';
+                    setTimeout(function() { card.remove(); }, 300);
+                }
             }
         });
-        
-        if (response.ok) {
-            const card = document.querySelector(`[data-item-id="${itemId}"]`);
-            if (card) {
-                card.style.opacity = '0';
-                setTimeout(() => card.remove(), 300);
-            }
-        } else {
-            const data = await response.json();
-            alert(data.detail || '删除失败');
-        }
-    } catch (error) {
-        alert('网络错误');
-    }
+    }, 'fa-trash-alt');
 }
 </script>
 {% endblock %}

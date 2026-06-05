@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ '编辑场景' if scene else '新建场景' }}{% endblock %}
+
+{% block page_title %}{{ '编辑场景' if scene else '新建场景' }}{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb" aria-label="面包屑">
+    <a href="/admin/">仪表盘</a> / <a href="/admin/scenes">场景管理</a> / {% if scene %}{{ scene.name }}{% else %}新建{% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="alert alert-error" style="margin-bottom:1.5rem;">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ error }}</span>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ '/admin/scenes/' + scene.id + '/edit' if scene else '/admin/scenes/new' }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">场景名称 <span style="color:var(--danger)">*</span></label>
+                    <input type="text" id="name" name="name" class="form-control"
+                           value="{{ scene.name if scene else '' }}" required maxlength="128"
+                           placeholder="例如：MBCT 正念认知疗法">
+                </div>
+                <div class="form-group">
+                    <label for="slug">唯一标识 <span style="color:var(--danger)">*</span></label>
+                    <input type="text" id="slug" name="slug" class="form-control"
+                           value="{{ scene.slug if scene else '' }}" required maxlength="64"
+                           placeholder="例如：mbct" pattern="[a-z0-9_-]+"
+                           title="仅限小写字母、数字、下划线和横线">
+                    <small style="color:var(--text-light);font-size:0.75rem;">用于系统内部调用，不可重复</small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">场景描述</label>
+                <input type="text" id="description" name="description" class="form-control"
+                       value="{{ scene.description if scene else '' }}" maxlength="512"
+                       placeholder="简短描述该场景的适用情境与目标人群...">
+            </div>
+
+            <div class="form-group">
+                <label for="system_prompt">系统提示词 <span style="color:var(--danger)">*</span></label>
+                <textarea id="system_prompt" name="system_prompt" class="form-control" rows="12" required
+                          placeholder="输入该场景下的系统提示词，将注入 AI 的系统提示中...">{{ scene.system_prompt if scene else '' }}</textarea>
+                <small style="color:var(--text-light);font-size:0.75rem;">支持多行文本，将直接作为系统提示注入对话</small>
+            </div>
+
+            <div class="form-group">
+                <label for="opening_message">开场白</label>
+                <textarea id="opening_message" name="opening_message" class="form-control" rows="4"
+                          placeholder="用户进入该场景时，AI 的第一句问候语...">{{ scene.opening_message if scene else '' }}</textarea>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="sort_order">排序权重</label>
+                    <input type="number" id="sort_order" name="sort_order" class="form-control"
+                           value="{{ scene.sort_order if scene else 0 }}">
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end;gap:0.5rem;padding-bottom:1.25rem;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                        <input type="checkbox" name="is_active" {% if not scene or scene.is_active %}checked{% endif %}>
+                        <span>启用该场景</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ '保存修改' if scene else '创建场景' }}
+                </button>
+                <a href="/admin/scenes" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

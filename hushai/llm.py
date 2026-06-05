@@ -117,13 +117,19 @@ def chat_once(user_message: str) -> str:
         max_retries=get_max_retries(),
     )
 
+    model = get_model()
+    extra_body: dict[str, Any] | None = None
+    if "kimi-k2" in model:
+        extra_body = {"thinking": {"type": "enabled"}}
+
     try:
         response = client.chat.completions.create(
-            model=get_model(),
+            model=model,
             messages=[
                 {"role": "system", "content": build_system_prompt()},
                 {"role": "user", "content": user_message},
             ],
+            extra_body=extra_body,
         )
     except OpenAIError as e:
         raise RuntimeError(format_openai_error(e)) from None

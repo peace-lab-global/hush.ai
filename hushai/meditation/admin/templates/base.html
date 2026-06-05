@@ -16,9 +16,37 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link">跳到主内容</a>
+    
+    <!-- Toast 通知容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Loading 遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+        <div class="loading-spinner loading-spinner-lg"></div>
+        <div class="loading-text" id="loadingText">处理中...</div>
+        <div class="loading-subtext" id="loadingSubtext"></div>
+    </div>
+    
+    <!-- Modal 容器 -->
+    <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal" id="modalDialog">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"></div>
+                <button class="modal-close" onclick="closeModal()" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+    
     <div class="admin-container">
         {% if admin_user %}
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle" title="收起/展开菜单" type="button">
+                <i class="fas fa-chevron-left" id="toggleIcon"></i>
+            </button>
             <div class="sidebar-header">
                 <div class="logo">
                     <i class="fas fa-spa"></i>
@@ -30,34 +58,74 @@
                     <i class="fas fa-tachometer-alt"></i>
                     <span>仪表盘</span>
                 </a>
-                <a href="/admin/users" class="nav-item {% if '/admin/users' in request.url.path %}active{% endif %}">
-                    <i class="fas fa-users"></i>
-                    <span>用户管理</span>
-                </a>
-                <a href="/admin/conversations" class="nav-item {% if '/admin/conversations' in request.url.path %}active{% endif %}">
-                    <i class="fas fa-comments"></i>
-                    <span>对话记录</span>
-                </a>
-                <a href="/admin/memories" class="nav-item {% if '/admin/memories' in request.url.path %}active{% endif %}">
-                    <i class="fas fa-brain"></i>
-                    <span>记忆管理</span>
-                </a>
-                <a href="/admin/knowledge" class="nav-item {% if '/admin/knowledge' in request.url.path and '/knowledge-import' not in request.url.path %}active{% endif %}">
-                    <i class="fas fa-book"></i>
-                    <span>知识库</span>
-                </a>
-                <a href="/admin/knowledge-import" class="nav-item {% if '/admin/knowledge-import' in request.url.path %}active{% endif %}">
-                    <i class="fas fa-file-import"></i>
-                    <span>导入知识</span>
-                </a>
-                <a href="/admin/skills" class="nav-item {% if request.url.path == '/admin/skills' or (request.url.path.startswith('/admin/skills/') and not request.url.path.startswith('/admin/skills-import')) %}active{% endif %}">
-                    <i class="fas fa-wand-magic-sparkles"></i>
-                    <span>技能管理</span>
-                </a>
-                <a href="/admin/skills-import" class="nav-item {% if '/admin/skills-import' in request.url.path %}active{% endif %}">
-                    <i class="fas fa-file-import"></i>
-                    <span>导入技能</span>
-                </a>
+
+                <div class="nav-group">
+                    <div class="nav-group-header" data-group="user" onclick="toggleGroup(this)">
+                        <span>用户运营</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="nav-group-items" id="group-user">
+                        <a href="/admin/users" class="nav-item {% if '/admin/users' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                        </a>
+                        <a href="/admin/conversations" class="nav-item {% if '/admin/conversations' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-comments"></i>
+                            <span>对话记录</span>
+                        </a>
+                        <a href="/admin/memories" class="nav-item {% if '/admin/memories' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-brain"></i>
+                            <span>记忆管理</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-header" data-group="content" onclick="toggleGroup(this)">
+                        <span>内容运营</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="nav-group-items" id="group-content">
+                        <a href="/admin/knowledge" class="nav-item {% if '/admin/knowledge' in request.url.path and '/knowledge-import' not in request.url.path %}active{% endif %}">
+                            <i class="fas fa-book"></i>
+                            <span>知识库</span>
+                        </a>
+                        <a href="/admin/knowledge-import" class="nav-item {% if '/admin/knowledge-import' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-file-import"></i>
+                            <span>导入知识</span>
+                        </a>
+                        <a href="/admin/skills" class="nav-item {% if request.url.path == '/admin/skills' or (request.url.path.startswith('/admin/skills/') and not request.url.path.startswith('/admin/skills-import')) %}active{% endif %}">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <span>技能管理</span>
+                        </a>
+                        <a href="/admin/skills-import" class="nav-item {% if '/admin/skills-import' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-file-import"></i>
+                            <span>导入技能</span>
+                        </a>
+                        <a href="/admin/scenes" class="nav-item {% if '/admin/scenes' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-theater-masks"></i>
+                            <span>场景管理</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-header" data-group="system" onclick="toggleGroup(this)">
+                        <span>系统管理</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="nav-group-items" id="group-system">
+                        <a href="/admin/admin-users" class="nav-item {% if '/admin/admin-users' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-user-shield"></i>
+                            <span>管理员</span>
+                        </a>
+                        <a href="/admin/audit-logs" class="nav-item {% if '/admin/audit-logs' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-history"></i>
+                            <span>审计日志</span>
+                        </a>
+                    </div>
+                </div>
+
                 <a href="/admin/settings" class="nav-item {% if '/admin/settings' in request.url.path %}active{% endif %}">
                     <i class="fas fa-cog"></i>
                     <span>系统设置</span>
@@ -94,6 +162,315 @@
         </main>
     </div>
     
+    <script>
+    (function() {
+        // ========== Toast 通知 ==========
+        window.showToast = function(type, title, message, duration) {
+            var container = document.getElementById('toastContainer');
+            var toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            
+            var icons = {
+                success: 'fa-check-circle',
+                error: 'fa-times-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.innerHTML = 
+                '<div class="toast-icon"><i class="fas ' + icons[type] + '"></i></div>' +
+                '<div class="toast-content">' +
+                    '<div class="toast-title">' + escapeHtml(title) + '</div>' +
+                    (message ? '<div class="toast-message">' + escapeHtml(message) + '</div>' : '') +
+                '</div>' +
+                '<button class="toast-close" onclick="this.parentElement.remove()" type="button">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>';
+            
+            container.appendChild(toast);
+            
+            var autoRemove = duration !== 0;
+            if (autoRemove === undefined) autoRemove = true;
+            if (duration === undefined) duration = 5000;
+            
+            if (autoRemove && duration > 0) {
+                setTimeout(function() {
+                    toast.classList.add('toast-out');
+                    setTimeout(function() { toast.remove(); }, 250);
+                }, duration);
+            }
+            
+            return toast;
+        };
+        
+        window.toastSuccess = function(title, message) {
+            return showToast('success', title, message);
+        };
+        
+        window.toastError = function(title, message) {
+            return showToast('error', title, message, 8000);
+        };
+        
+        window.toastWarning = function(title, message) {
+            return showToast('warning', title, message, 6000);
+        };
+        
+        window.toastInfo = function(title, message) {
+            return showToast('info', title, message);
+        };
+        
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        // ========== Loading 遮罩 ==========
+        window.showLoading = function(text, subtext) {
+            var overlay = document.getElementById('loadingOverlay');
+            var textEl = document.getElementById('loadingText');
+            var subtextEl = document.getElementById('loadingSubtext');
+            
+            if (textEl) textEl.textContent = text || '处理中...';
+            if (subtextEl) subtextEl.textContent = subtext || '';
+            
+            overlay.style.display = 'flex';
+            return overlay;
+        };
+        
+        window.hideLoading = function() {
+            var overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.style.display = 'none';
+        };
+        
+        // ========== Modal 对话框 ==========
+        window.modalCallback = null;
+        
+        window.showModal = function(options) {
+            var backdrop = document.getElementById('modalBackdrop');
+            var dialog = document.getElementById('modalDialog');
+            var title = document.getElementById('modalTitle');
+            var body = document.getElementById('modalBody');
+            var footer = document.getElementById('modalFooter');
+            
+            // 支持 large modal
+            if (options.size === 'lg') {
+                dialog.classList.add('modal-lg');
+            } else {
+                dialog.classList.remove('modal-lg');
+            }
+            
+            // 设置标题
+            if (options.icon) {
+                title.innerHTML = '<i class="fas ' + options.icon + '"></i> ' + escapeHtml(options.title || '');
+            } else {
+                title.textContent = options.title || '';
+            }
+            
+            // 设置内容
+            if (typeof options.content === 'string') {
+                body.innerHTML = options.content;
+            } else if (options.content) {
+                body.innerHTML = '';
+                body.appendChild(options.content);
+            } else {
+                body.innerHTML = '';
+            }
+            
+            // 设置按钮
+            footer.innerHTML = '';
+            if (options.buttons) {
+                options.buttons.forEach(function(btn) {
+                    var button = document.createElement('button');
+                    button.className = 'btn ' + (btn.className || 'btn-secondary');
+                    button.textContent = btn.text || '';
+                    button.type = 'button';
+                    
+                    if (btn.danger) button.classList.add('btn-danger');
+                    if (btn.primary) button.classList.add('btn-primary');
+                    
+                    button.onclick = function() {
+                        if (btn.onClick) btn.onClick();
+                        if (btn.closeOnClick !== false) closeModal();
+                        if (btn.callback) btn.callback();
+                    };
+                    
+                    footer.appendChild(button);
+                });
+            } else {
+                // 默认关闭按钮
+                var closeBtn = document.createElement('button');
+                closeBtn.className = 'btn btn-secondary';
+                closeBtn.textContent = '关闭';
+                closeBtn.type = 'button';
+                closeBtn.onclick = closeModal;
+                footer.appendChild(closeBtn);
+            }
+            
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // ESC 关闭
+            window.modalCallback = options.onClose;
+        };
+        
+        window.closeModal = function() {
+            var backdrop = document.getElementById('modalBackdrop');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+            if (window.modalCallback) {
+                window.modalCallback();
+                window.modalCallback = null;
+            }
+        };
+        
+        window.confirmDelete = function(title, name, onConfirm) {
+            showModal({
+                title: '确认删除',
+                icon: 'fa-trash-alt',
+                content: '<div style="text-align:center;">' +
+                    '<div class="modal-confirm-icon danger"><i class="fas fa-trash-alt"></i></div>' +
+                    '<p style="font-size:1rem;font-weight:500;margin-bottom:0.5rem;">确定要删除 ' + escapeHtml(name) + ' 吗？</p>' +
+                    '<p style="color:var(--text-secondary);font-size:0.875rem;">此操作不可恢复</p>' +
+                '</div>',
+                buttons: [
+                    { text: '取消', className: 'btn-secondary' },
+                    { text: '删除', danger: true, primary: true, callback: onConfirm }
+                ]
+            });
+        };
+        
+        window.confirmAction = function(title, message, onConfirm, icon) {
+            showModal({
+                title: title,
+                icon: icon || 'fa-question-circle',
+                content: '<div style="text-align:center;">' +
+                    '<div class="modal-confirm-icon ' + (icon === 'fa-exclamation-triangle' ? 'warning' : 'info') + '"><i class="fas ' + (icon || 'fa-question-circle') + '"></i></div>' +
+                    '<p style="font-size:1rem;font-weight:500;margin-bottom:0.5rem;">' + escapeHtml(message) + '</p>' +
+                '</div>',
+                buttons: [
+                    { text: '取消', className: 'btn-secondary' },
+                    { text: '确认', primary: true, callback: onConfirm }
+                ]
+            });
+        };
+        
+        // 点击遮罩关闭
+        document.getElementById('modalBackdrop').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // ESC 键关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+        
+        // ========== 异步请求包装 ==========
+        window.asyncRequest = function(url, options) {
+            options = options || {};
+            var method = options.method || 'GET';
+            var body = options.body;
+            var loadingText = options.loadingText;
+            var loadingSubtext = options.loadingSubtext;
+            var onSuccess = options.onSuccess;
+            var onError = options.onError;
+            
+            showLoading(loadingText, loadingSubtext);
+            
+            var csrfToken = document.cookie.match(/admin_csrf_token=([^;]+)/);
+            csrfToken = csrfToken ? csrfToken[1] : '';
+            
+            var fetchOptions = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                }
+            };
+            
+            if (body) {
+                fetchOptions.body = typeof body === 'string' ? body : JSON.stringify(body);
+            }
+            
+            fetch(url, fetchOptions)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    hideLoading();
+                    if (data.success !== undefined && !data.success) {
+                        toastError('操作失败', data.detail || '未知错误');
+                        if (onError) onError(data);
+                    } else {
+                        if (onSuccess) onSuccess(data);
+                    }
+                })
+                .catch(function(e) {
+                    hideLoading();
+                    toastError('请求失败', e.message);
+                    if (onError) onError(e);
+                });
+        };
+        
+        // ========== 侧边栏折叠 ==========
+        var sidebar = document.getElementById('sidebar');
+        var mainContent = document.getElementById('main-content');
+        var toggleBtn = document.getElementById('sidebarToggle');
+        var toggleIcon = document.getElementById('toggleIcon');
+        var STORAGE_KEY = 'admin_sidebar_collapsed';
+
+        function setCollapsed(collapsed) {
+            if (collapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                toggleIcon.classList.remove('fa-chevron-left');
+                toggleIcon.classList.add('fa-chevron-right');
+            } else {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('expanded');
+                toggleIcon.classList.remove('fa-chevron-right');
+                toggleIcon.classList.add('fa-chevron-left');
+            }
+            localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+        }
+
+        var saved = localStorage.getItem(STORAGE_KEY);
+        if (saved === '1') {
+            setCollapsed(true);
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                setCollapsed(!sidebar.classList.contains('collapsed'));
+            });
+        }
+
+        window.toggleGroup = function(header) {
+            var groupId = header.getAttribute('data-group');
+            var items = document.getElementById('group-' + groupId);
+            var isCollapsed = items.classList.contains('collapsed');
+            if (isCollapsed) {
+                items.classList.remove('collapsed');
+                header.classList.remove('collapsed');
+                localStorage.setItem('admin_group_' + groupId, '0');
+            } else {
+                items.classList.add('collapsed');
+                header.classList.add('collapsed');
+                localStorage.setItem('admin_group_' + groupId, '1');
+            }
+        };
+
+        document.querySelectorAll('.nav-group-header').forEach(function(header) {
+            var groupId = header.getAttribute('data-group');
+            var savedGroup = localStorage.getItem('admin_group_' + groupId);
+            if (savedGroup === '1') {
+                var items = document.getElementById('group-' + groupId);
+                if (items) {
+                    items.classList.add('collapsed');
+                    header.classList.add('collapsed');
+                }
+            }
+        });
+    })();
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

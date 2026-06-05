@@ -46,6 +46,7 @@ dev = [
   "pre-commit>=3.0",
   "pip-audit>=2.6",
   "build>=1.0",
+  "bandit>=1.7",
 ]
 meditation = [
   "fastapi>=0.110.0",
@@ -63,11 +64,14 @@ meditation = [
   "jinja2>=3.0.0",
   "python-multipart>=0.0.9",
   "slowapi>=0.1.9",
+  "pandas>=2.0.0",
+  "openpyxl>=3.0.0",
 ]
 
 [project.scripts]
 hush = "hushai.cli:main"
 hush-meditation = "hushai.meditation.app:run"
+hush-init-knowledge = "hushai.meditation.commands.init_knowledge:main"
 
 [tool.setuptools]
 packages = ["hushai"]
@@ -118,3 +122,9 @@ packages = ["hushai"]
 [[tool.mypy.overrides]]
 module = "openai.*"
 ignore_missing_imports = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "socksio>=1.0.0",
+]

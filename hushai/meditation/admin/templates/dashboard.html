@@ -5,6 +5,58 @@
 {% block page_title %}仪表盘{% endblock %}
 
 {% block content %}
+<!-- 快捷操作 -->
+<div class="quick-actions-grid">
+    <a href="/admin/users" class="quick-action-card">
+        <div class="quick-action-icon"><i class="fas fa-users"></i></div>
+        <div class="quick-action-text">
+            <span class="quick-action-title">用户管理</span>
+            <span class="quick-action-desc">查看和管理所有用户</span>
+        </div>
+        <i class="fas fa-chevron-right quick-action-arrow"></i>
+    </a>
+    <a href="/admin/conversations" class="quick-action-card">
+        <div class="quick-action-icon"><i class="fas fa-comments"></i></div>
+        <div class="quick-action-text">
+            <span class="quick-action-title">对话记录</span>
+            <span class="quick-action-desc">查看用户对话历史</span>
+        </div>
+        <i class="fas fa-chevron-right quick-action-arrow"></i>
+    </a>
+    <a href="/admin/memories" class="quick-action-card">
+        <div class="quick-action-icon"><i class="fas fa-brain"></i></div>
+        <div class="quick-action-text">
+            <span class="quick-action-title">记忆管理</span>
+            <span class="quick-action-desc">查看用户记忆摘要</span>
+        </div>
+        <i class="fas fa-chevron-right quick-action-arrow"></i>
+    </a>
+    <a href="/admin/knowledge" class="quick-action-card">
+        <div class="quick-action-icon"><i class="fas fa-book"></i></div>
+        <div class="quick-action-text">
+            <span class="quick-action-title">知识库</span>
+            <span class="quick-action-desc">管理知识库内容</span>
+        </div>
+        <i class="fas fa-chevron-right quick-action-arrow"></i>
+    </a>
+    <a href="/admin/skills" class="quick-action-card">
+        <div class="quick-action-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div class="quick-action-text">
+            <span class="quick-action-title">技能管理</span>
+            <span class="quick-action-desc">配置 AI 技能插件</span>
+        </div>
+        <i class="fas fa-chevron-right quick-action-arrow"></i>
+    </a>
+    <a href="/admin/scenes" class="quick-action-card">
+        <div class="quick-action-icon"><i class="fas fa-theater-masks"></i></div>
+        <div class="quick-action-text">
+            <span class="quick-action-title">场景管理</span>
+            <span class="quick-action-desc">配置对话场景模式</span>
+        </div>
+        <i class="fas fa-chevron-right quick-action-arrow"></i>
+    </a>
+</div>
+
 <!-- 统计卡片 -->
 <div class="stats-grid">
     <div class="stat-card">

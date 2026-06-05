@@ -5,7 +5,14 @@ from __future__ import annotations
 import contextlib
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
+
+from dotenv import load_dotenv
+
+_env_path = Path(__file__).parent.parent.parent / ".env"
+if _env_path.is_file():
+    load_dotenv(_env_path, override=True)
 
 
 @dataclass(frozen=True)
@@ -27,6 +34,9 @@ class MeditationConfig:
     zhipu_api_key: str = ""
     zhipu_base_url: str = "https://open.bigmodel.cn/api/paas/v4"
     zhipu_model: str = "glm-4-flash"
+    kimi_api_key: str = ""
+    kimi_base_url: str = "https://api.moonshot.cn/v1"
+    kimi_model: str = "moonshot-v1-8k"
     memory_top_k: int = 5
     knowledge_top_k: int = 3
     conversation_max_turns: int = 20
@@ -40,6 +50,7 @@ class MeditationConfig:
     debug: bool = False
     cors_origins: list[str] = field(default_factory=list)
     llm_providers: dict[str, dict[str, str]] = field(default_factory=dict)
+    remote_knowledge_sources: dict[str, dict[str, str]] = field(default_factory=dict)
 
     @classmethod
     def from_env(cls) -> MeditationConfig:
@@ -62,6 +73,9 @@ class MeditationConfig:
             "MEDITATION_ZHIPU_API_KEY": ("zhipu_api_key", str),
             "MEDITATION_ZHIPU_BASE_URL": ("zhipu_base_url", str),
             "MEDITATION_ZHIPU_MODEL": ("zhipu_model", str),
+            "MEDITATION_KIMI_API_KEY": ("kimi_api_key", str),
+            "MEDITATION_KIMI_BASE_URL": ("kimi_base_url", str),
+            "MEDITATION_KIMI_MODEL": ("kimi_model", str),
             "MEDITATION_MEMORY_TOP_K": ("memory_top_k", int),
             "MEDITATION_KNOWLEDGE_TOP_K": ("knowledge_top_k", int),
             "MEDITATION_CONVERSATION_MAX_TURNS": ("conversation_max_turns", int),

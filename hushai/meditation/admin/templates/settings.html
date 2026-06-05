@@ -4,6 +4,12 @@
 
 {% block page_title %}系统设置{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 系统设置
+</nav>
+{% endblock %}
+
 {% block content %}
 {% if success %}
 <div class="alert alert-success">{{ success }}</div>
@@ -12,7 +18,7 @@
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 
-<form method="POST" action="/admin/settings">
+<form method="POST" action="/admin/settings" id="settingsForm">
     <!-- API 配置 (只读展示，暂不支持通过 UI 修改核心服务端口等) -->
     <div class="card">
         <div class="card-header">
@@ -51,6 +57,7 @@
                         <option value="openai" {% if config.default_llm_provider == 'openai' %}selected{% endif %}>OpenAI</option>
                         <option value="deepseek" {% if config.default_llm_provider == 'deepseek' %}selected{% endif %}>DeepSeek</option>
                         <option value="zhipu" {% if config.default_llm_provider == 'zhipu' %}selected{% endif %}>智谱 AI</option>
+                        <option value="kimi" {% if config.default_llm_provider == 'kimi' %}selected{% endif %}>Kimi (Moonshot)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -123,9 +130,74 @@
                         <input type="text" name="zhipu_model" value="{{ config.zhipu_model }}" class="form-control">
                     </div>
                 </div>
+
+                <div class="provider-section">
+                    <h4>Kimi (月之暗面 Moonshot)</h4>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="password" name="kimi_api_key" value="{{ config.kimi_api_key }}" class="form-control" placeholder="sk-...">
+                    </div>
+                    <div class="form-group">
+                        <label>Base URL</label>
+                        <input type="text" name="kimi_base_url" value="{{ config.kimi_base_url }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>模型</label>
+                        <input type="text" name="kimi_model" value="{{ config.kimi_model }}" class="form-control">
+                    </div>
+                </div>
             </div>
 
             <div class="form-actions" style="margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">保存并立即生效</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 远程知识源配置 -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-cloud-download-alt"></i> 远程知识源</h3>
+            <p class="card-subtitle">配置 Coze、IMA 或 URL 知识库，自动拉取 MD 文档入库</p>
+        </div>
+        <div class="card-body">
+            <div class="remote-source-info">
+                <p>支持三种远程知识源类型：</p>
+                <ul>
+                    <li><strong>Coze 知识库</strong>：配置 Coze Personal Access Token 和知识库 ID，自动拉取全部文档</li>
+                    <li><strong>IMA 腾讯智能助手</strong>：将 IMA 文档导出/分享链接粘贴到 URL 列表</li>
+                    <li><strong>通用 URL</strong>：任意可公开访问的 Markdown 文档链接</li>
+                </ul>
+            </div>
+
+            <div class="settings-subtitle">Coze 知识库配置</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>API Base URL</label>
+                    <input type="text" name="coze_api_base" value="{{ config.remote_knowledge_sources.get('coze', {}).get('api_base', 'https://api.coze.cn') }}" class="form-control" placeholder="https://api.coze.cn">
+                </div>
+                <div class="form-group">
+                    <label>Personal Access Token</label>
+                    <input type="password" name="coze_api_token" value="{{ config.remote_knowledge_sources.get('coze', {}).get('api_token', '') }}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>知识库 ID (dataset_id)</label>
+                    <input type="text" name="coze_dataset_id" value="{{ config.remote_knowledge_sources.get('coze', {}).get('dataset_id', '') }}" class="form-control">
+                </div>
+            </div>
+
+            <div class="settings-subtitle">IMA / URL 文档列表</div>
+            <div class="form-group">
+                <label>IMA 文档 URL（每行一个）</label>
+                <textarea name="ima_urls" rows="4" class="form-control" placeholder="https://ima.qq.com/share/xxx&#10;https://raw.githubusercontent.com/...">{{ config.remote_knowledge_sources.get('ima', {}).get('urls', '') }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Coze 文档 URL（每行一个，无需 Token 时使用）</label>
+                <textarea name="coze_urls" rows="4" class="form-control" placeholder="https://www.coze.cn/space/xxx/doc/xxx">{{ config.remote_knowledge_sources.get('coze_url', {}).get('urls', '') }}</textarea>
+            </div>
+
+            <div class="form-actions" style="margin-top: 1.5rem;">
+                <input type="hidden" name="save_remote_sources" value="1">
                 <button type="submit" class="btn btn-primary">保存并立即生效</button>
             </div>
         </div>
@@ -247,4 +319,66 @@
     opacity: 0.7;
 }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    var form = document.getElementById('settingsForm');
+    var originalValues = {};
+    
+    // 记录初始值
+    var inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(input) {
+        if (input.name) {
+            originalValues[input.name] = input.value;
+        }
+    });
+    
+    var formChanged = false;
+    
+    // 监听变化
+    inputs.forEach(function(input) {
+        input.addEventListener('change', function() {
+            checkFormChange();
+        });
+        input.addEventListener('input', function() {
+            checkFormChange();
+        });
+    });
+    
+    function checkFormChange() {
+        var currentChanged = false;
+        inputs.forEach(function(input) {
+            if (input.name && originalValues[input.name] !== input.value) {
+                currentChanged = true;
+            }
+        });
+        formChanged = currentChanged;
+    }
+    
+    // 离开页面时警告
+    window.addEventListener('beforeunload', function(e) {
+        if (formChanged) {
+            e.preventDefault();
+            e.returnValue = '有未保存的更改，确定要离开吗？';
+            return e.returnValue;
+        }
+    });
+    
+    // 表单提交时移除警告
+    form.addEventListener('submit', function() {
+        formChanged = false;
+    });
+    
+    // 点击导航链接时检查
+    document.querySelectorAll('a.nav-item').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            if (formChanged && !confirm('有未保存的更改，确定要离开吗？')) {
+                e.preventDefault();
+            }
+        });
+    });
+})();
+</script>
 {% endblock %}

@@ -31,6 +31,13 @@ async def lifespan(app: FastAPI):
     logger.info("冥想老师服务启动中...")
     await init_db()
     logger.info("数据库初始化完成")
+
+    from hushai.meditation.admin.auth import init_default_admin
+
+    created = await init_default_admin()
+    if created:
+        logger.info("已创建默认管理员账户，请及时修改密码")
+
     yield
     await close_db()
     logger.info("冥想老师服务已关闭")
@@ -47,7 +54,7 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
     )
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
     cors_origins = cfg.cors_origins if not cfg.debug else ["*"]
     app.add_middleware(
         CORSMiddleware,

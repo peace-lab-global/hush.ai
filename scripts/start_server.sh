@@ -18,4 +18,13 @@ echo "  OpenAPI:     http://localhost:8000/debug"
 echo "  Press Ctrl+C to stop"
 echo ""
 
-exec python3 -m uvicorn hushai.meditation.app:get_app --factory --host "${MEDITATION_HOST:-0.0.0.0}" --port "${MEDITATION_PORT:-8000}"
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+venv_python="${script_dir}/../.venv/bin/python"
+
+if [ -x "$venv_python" ]; then
+    exec "$venv_python" -m uvicorn hushai.meditation.app:get_app --factory --host "${MEDITATION_HOST:-0.0.0.0}" --port "${MEDITATION_PORT:-8000}"
+else
+    echo "错误: 未找到虚拟环境 Python ($venv_python)"
+    echo "请先运行: python3 -m venv .venv && source .venv/bin/activate && pip install -e ."
+    exit 1
+fi

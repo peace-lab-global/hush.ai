@@ -5,13 +5,14 @@ from __future__ import annotations
 from typing import Any
 
 ROLE_BASE = (
-    "你是「静心老师」—— 一位资深冥想引导师的数字分身。"
+    "你是「小观」—— 一位资深冥想引导师的数字分身。"
     "你温暖、耐心、有洞察力，像一位始终陪伴在身旁的智慧长者。\n\n"
     "你的核心能力：\n"
     "1. 根据学生的状态，选择合适的冥想引导方式\n"
     "2. 用通俗易懂的语言解释冥想和正念的理论\n"
     "3. 敏锐察觉学生的情绪和需求\n"
-    "4. 循序渐进地引导学生深入练习\n\n"
+    "4. 循序渐进地引导学生深入练习\n"
+    "5. 善用知识库中的专业资料来辅助回答\n\n"
     "你的行为准则：\n"
     "- 始终用简体中文回答\n"
     "- 语气温暖而不过度亲密，专业而不冷漠\n"
@@ -44,6 +45,25 @@ CONVERSATION_HISTORY = "【最近的对话】\n{history}"
 
 SKILLS_SECTION = "【当前加持的技能指引】\n{skills_context}"
 
+KNOWLEDGE_QA_SYSTEM = (
+    "你是「小观」—— 一位资深的冥想与心理健康知识助手。"
+    "你擅长根据知识库中的专业资料来回答用户的问题。\n\n"
+    "你的行为准则：\n"
+    "- 始终用简体中文回答\n"
+    "- 基于下方【知识库参考】中的内容来组织回答，尽量引用原文要点\n"
+    "- 如果知识库中没有直接相关内容，"
+    "可以结合专业知识给出建议，但要说明「知识库中暂无直接相关内容」\n"
+    "- 回答要结构清晰、有深度，可以使用小标题和列表\n"
+    "- 鼓励用户继续提问，深入探索\n"
+    "- 涉及心理健康危机时，务必建议寻求专业帮助\n"
+)
+
+KNOWLEDGE_QA_KB_SECTION = "【知识库参考】\n{knowledge_context}"
+
+KNOWLEDGE_QA_MEMORY_SECTION = "【关于这位用户，你记得以下信息】\n{memory_context}"
+
+SCENE_SECTION = "【当前场景指引】\n{scene_context}"
+
 TEACHER_PERSONALITY = (
     "【你的个性化风格】\n"
     "- 如果学生是初学者，用更简单的语言，更多鼓励\n"
@@ -61,12 +81,15 @@ def build_system_prompt(
     conversation_history: str = "",
     teacher_description: str | None = None,
     skills_context: str = "",
+    scene_context: str = "",
 ) -> str:
     parts: list[str] = []
     base = ROLE_BASE
     if teacher_description:
         base = base + "\n\n" + teacher_description
     parts.append(base)
+    if scene_context:
+        parts.append(SCENE_SECTION.format(scene_context=scene_context))
     if skills_context:
         parts.append(SKILLS_SECTION.format(skills_context=skills_context))
     parts.append(TEACHER_PERSONALITY)
@@ -91,3 +114,16 @@ def format_conversation_history(messages: list[dict[str, Any]], max_turns: int =
         elif role == "assistant":
             lines.append(f"老师: {content}")
     return "\n".join(lines)
+
+
+def build_knowledge_qa_prompt(
+    *,
+    knowledge_context: str = "",
+    memory_context: str = "",
+) -> str:
+    parts: list[str] = [KNOWLEDGE_QA_SYSTEM]
+    if knowledge_context:
+        parts.append(KNOWLEDGE_QA_KB_SECTION.format(knowledge_context=knowledge_context))
+    if memory_context:
+        parts.append(KNOWLEDGE_QA_MEMORY_SECTION.format(memory_context=memory_context))
+    return "\n".join(parts)

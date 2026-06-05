@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from collections.abc import AsyncGenerator
 from typing import Any
@@ -10,7 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hushai.meditation.config import get_config
-from hushai.meditation.core.knowledge import get_knowledge_context_for_prompt
+from hushai.meditation.core.knowledge import get_knowledge_context_for_prompt, search_knowledge_base
 from hushai.meditation.core.llm import LLMMessage, chat_completion, chat_completion_stream
 from hushai.meditation.core.memory import (
     extract_memories,
@@ -18,9 +19,12 @@ from hushai.meditation.core.memory import (
     store_memories,
 )
 from hushai.meditation.core.prompt import (
+    build_knowledge_qa_prompt,
     build_system_prompt,
     format_conversation_history,
 )
+from hushai.meditation.core.safety import check_safety, format_safety_message
+from hushai.meditation.core.scenes import get_scene_context_for_prompt
 from hushai.meditation.core.skills import get_skills_context_for_prompt
 from hushai.meditation.db.models import Conversation, Message
 from hushai.meditation.db.session import get_session_factory
@@ -76,6 +80,7 @@ async def chat(
     teacher_description: str | None = None,
     skill_ids: list[str] | None = None,
     provider: str | None = None,
+    scene_id: str | None = None,
 ) -> dict[str, Any]:
     factory = get_session_factory()
     async with factory() as session:
@@ -93,6 +98,7 @@ async def chat(
             memory_context = await get_memory_context_for_prompt(session, user_id, message)
             knowledge_context = await get_knowledge_context_for_prompt(message)
             skills_context = await get_skills_context_for_prompt(session, skill_ids)
+            scene_context = await get_scene_context_for_prompt(session, scene_id)
             history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
             history_text = format_conversation_history(history_dicts)
             system_prompt = build_system_prompt(
@@ -101,6 +107,7 @@ async def chat(
                 conversation_history=history_text,
                 teacher_description=teacher_description,
                 skills_context=skills_context,
+                scene_context=scene_context,
             )
             llm_messages = [LLMMessage(role="system", content=system_prompt)]
             for m in prev_messages:
@@ -111,6 +118,11 @@ async def chat(
                 temperature=0.7,
                 max_tokens=1024,
             )
+
+            safety_result = check_safety(message)
+            if not safety_result.is_safe:
+                reply = format_safety_message(safety_result, reply)
+
             assistant_msg = Message(
                 conversation_id=conv.id,
                 role="assistant",
@@ -155,6 +167,7 @@ async def chat_stream(
     teacher_description: str | None = None,
     skill_ids: list[str] | None = None,
     provider: str | None = None,
+    scene_id: str | None = None,
 ) -> AsyncGenerator[dict[str, Any], None]:
     factory = get_session_factory()
     async with factory() as session:
@@ -173,6 +186,7 @@ async def chat_stream(
             memory_context = await get_memory_context_for_prompt(session, user_id, message)
             knowledge_context = await get_knowledge_context_for_prompt(message)
             skills_context = await get_skills_context_for_prompt(session, skill_ids)
+            scene_context = await get_scene_context_for_prompt(session, scene_id)
             history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
             history_text = format_conversation_history(history_dicts)
             system_prompt = build_system_prompt(
@@ -181,10 +195,23 @@ async def chat_stream(
                 conversation_history=history_text,
                 teacher_description=teacher_description,
                 skills_context=skills_context,
+                scene_context=scene_context,
             )
             llm_messages = [LLMMessage(role="system", content=system_prompt)]
             for m in prev_messages:
                 llm_messages.append(LLMMessage(role=m.role, content=m.content))
+
+            safety_result = check_safety(message)
+
+            if not safety_result.is_safe:
+                warning_text = (
+                    f"\n\n【温馨提示】{safety_result.message}\n\n{safety_result.suggestion}"
+                )
+                for char in warning_text:
+                    yield {"delta": char, "done": False, "conversation_id": conv.id}
+                    await asyncio.sleep(0.02)
+                yield {"delta": "", "done": True, "conversation_id": conv.id}
+                return
 
             collected_parts: list[str] = []
             async for delta in chat_completion_stream(
@@ -227,3 +254,76 @@ async def chat_stream(
         finally:
             if not committed:
                 await session.rollback()
+
+
+async def knowledge_qa(
+    *,
+    user_id: str,
+    message: str,
+    conversation_id: str | None = None,
+    provider: str | None = None,
+) -> dict[str, Any]:
+    factory = get_session_factory()
+    async with factory() as session:
+        try:
+            conv = await _get_or_create_conversation(session, user_id, conversation_id)
+            user_msg = Message(
+                conversation_id=conv.id,
+                role="user",
+                content=message,
+            )
+            session.add(user_msg)
+            await session.flush()
+
+            kb_results = await search_knowledge_base(message, top_k=8)
+            kb_context_parts: list[str] = []
+            for r in kb_results:
+                src = f"（来源: {r.get('source', '知识库')}）" if r.get("source") else ""
+                kb_context_parts.append(f"- {r['content'][:300]}{src}")
+            kb_context = "\n".join(kb_context_parts) if kb_context_parts else ""
+
+            memory_context = await get_memory_context_for_prompt(session, user_id, message)
+
+            system_prompt = build_knowledge_qa_prompt(
+                knowledge_context=kb_context,
+                memory_context=memory_context,
+            )
+
+            prev_messages = await _load_conversation_messages(session, conv.id)
+            llm_messages = [LLMMessage(role="system", content=system_prompt)]
+            for m in prev_messages:
+                llm_messages.append(LLMMessage(role=m.role, content=m.content))
+
+            reply = await chat_completion(
+                llm_messages,
+                provider=provider,
+                temperature=0.5,
+                max_tokens=1500,
+            )
+            assistant_msg = Message(
+                conversation_id=conv.id,
+                role="assistant",
+                content=reply,
+            )
+            session.add(assistant_msg)
+            await session.flush()
+
+            if not conv.title:
+                conv.title = message[:64]
+
+            await session.commit()
+            return {
+                "reply": reply,
+                "conversation_id": conv.id,
+                "sources": [
+                    {
+                        "id": r.get("id"),
+                        "title": r.get("title"),
+                        "score": round(r.get("score", 0), 3),
+                    }
+                    for r in kb_results[:5]
+                ],
+            }
+        except Exception:
+            await session.rollback()
+            raise

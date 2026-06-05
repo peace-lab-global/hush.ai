@@ -4,6 +4,12 @@
 
 {% block page_title %}技能管理{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 技能管理
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="toolbar">
     <form class="search-form" method="GET" action="/admin/skills">

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}审计日志{% endblock %}
+
+{% block page_title %}审计日志{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 审计日志
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+    <div class="toolbar-info">
+        共 {{ total }} 条记录
+    </div>
+    <div class="toolbar-actions">
+        <div class="btn-group">
+            <a href="/admin/export/audit-logs?format=csv{% if action %}&action={{ action }}{% endif %}{% if admin_username %}&admin_username={{ admin_username }}{% endif %}" class="btn btn-secondary">
+                <i class="fas fa-file-csv"></i> CSV
+            </a>
+            <a href="/admin/export/audit-logs?format=xlsx{% if action %}&action={{ action }}{% endif %}{% if admin_username %}&admin_username={{ admin_username }}{% endif %}" class="btn btn-secondary">
+                <i class="fas fa-file-excel"></i> Excel
+            </a>
+        </div>
+        <a href="/admin/" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> 返回
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-history"></i> 操作日志</h3>
+    </div>
+    <div class="card-body">
+        <form method="get" class="filter-form" style="margin-bottom: 1.5rem;">
+            <div class="form-group">
+                <label for="action">操作类型</label>
+                <select name="action" id="action" onchange="this.form.submit()">
+                    <option value="">全部</option>
+                    {% for a in actions %}
+                    <option value="{{ a }}" {% if action == a %}selected{% endif %}>{{ a }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="admin_username">管理员</label>
+                <select name="admin_username" id="admin_username" onchange="this.form.submit()">
+                    <option value="">全部</option>
+                    {% for u in usernames %}
+                    <option value="{{ u }}" {% if admin_username == u %}selected{% endif %}>{{ u }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        {% if logs %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>管理员</th>
+                    <th>操作</th>
+                    <th>资源类型</th>
+                    <th>资源ID</th>
+                    <th>详情</th>
+                    <th>IP地址</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ log.admin_username }}</td>
+                    <td>
+                        <span class="badge badge-info">{{ log.action }}</span>
+                    </td>
+                    <td>{{ log.resource_type }}</td>
+                    <td>
+                        {% if log.resource_id %}
+                        <code class="openid">{{ log.resource_id[:8] }}...</code>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        {{ log.detail or '-' }}
+                    </td>
+                    <td>{{ log.ip_address or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>暂无日志记录</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if total_pages > 1 %}
+<div class="pagination">
+    {% if page > 1 %}
+    <a href="?page={{ page - 1 }}{% if action %}&action={{ action }}{% endif %}{% if admin_username %}&admin_username={{ admin_username }}{% endif %}" class="page-btn">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+    {% endif %}
+
+    {% for p in range(1, total_pages + 1) %}
+        {% if p == page %}
+        <span class="page-btn active">{{ p }}</span>
+        {% elif p <= 3 or p > total_pages - 3 or (p >= page - 1 and p <= page + 1) %}
+        <a href="?page={{ p }}{% if action %}&action={{ action }}{% endif %}{% if admin_username %}&admin_username={{ admin_username }}{% endif %}" class="page-btn">{{ p }}</a>
+        {% elif p == 4 or p == total_pages - 3 %}
+        <span class="page-btn">...</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if page < total_pages %}
+    <a href="?page={{ page + 1 }}{% if action %}&action={{ action }}{% endif %}{% if admin_username %}&admin_username={{ admin_username }}{% endif %}" class="page-btn">
+        <i class="fas fa-chevron-right"></i>
+    </a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

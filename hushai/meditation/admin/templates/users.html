@@ -4,6 +4,12 @@
 
 {% block page_title %}用户管理{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 用户管理
+</nav>
+{% endblock %}
+
 {% block content %}
 <!-- 搜索栏 -->
 <div class="toolbar">
@@ -24,6 +30,14 @@
     </form>
     <div class="toolbar-info">
         共 {{ total }} 位用户
+    </div>
+    <div class="btn-group">
+        <a href="/admin/export/users?format=csv{% if search %}&search={{ search }}{% endif %}" class="btn btn-secondary">
+            <i class="fas fa-file-csv"></i> CSV
+        </a>
+        <a href="/admin/export/users?format=xlsx{% if search %}&search={{ search }}{% endif %}" class="btn btn-secondary">
+            <i class="fas fa-file-excel"></i> Excel
+        </a>
     </div>
 </div>
 
@@ -127,27 +141,17 @@
 {% block extra_js %}
 <script>
 async function toggleUserStatus(userId, enable) {
-    if (!confirm(`确定要${enable ? '启用' : '禁用'}该用户吗？`)) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/admin/api/users/${userId}/toggle-status`, {
+    var action = enable ? '启用' : '禁用';
+    confirmAction('确认' + action, '确定要' + action + '该用户吗？', function() {
+        asyncRequest('/admin/api/users/' + userId + '/toggle-status', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+            loadingText: '正在' + action + '用户...',
+            onSuccess: function() {
+                toastSuccess(action + '成功', '用户状态已更新');
+                setTimeout(function() { location.reload(); }, 500);
             }
         });
-        
-        if (response.ok) {
-            location.reload();
-        } else {
-            const data = await response.json();
-            alert(data.detail || '操作失败');
-        }
-    } catch (error) {
-        alert('网络错误');
-    }
+    }, enable ? 'fa-check' : 'fa-ban');
 }
 </script>
 {% endblock %}

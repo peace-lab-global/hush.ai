@@ -4,6 +4,12 @@
 
 {% block page_title %}{% if skill %}编辑技能{% else %}新建技能{% endif %}{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb" aria-label="面包屑">
+    <a href="/admin/">仪表盘</a> / <a href="/admin/skills">技能管理</a> / {% if skill %}编辑{% else %}新建{% endif %}
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="page-actions">
     <a href="/admin/skills" class="btn btn-secondary">

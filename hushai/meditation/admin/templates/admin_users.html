@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}管理员管理{% endblock %}
+
+{% block page_title %}管理员管理{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 管理员管理
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+    <div class="toolbar-info">
+        共 {{ admin_users|length }} 个管理员账户
+    </div>
+    <div class="toolbar-actions">
+        <a href="/admin/admin-users/new" class="btn btn-primary">
+            <i class="fas fa-plus"></i> 新建管理员
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-user-shield"></i> 管理员列表</h3>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        {% if admin_users %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>显示名称</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admin_users %}
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <span class="user-name">{{ admin.username }}</span>
+                        </div>
+                    </td>
+                    <td>{{ admin.display_name or '-' }}</td>
+                    <td>
+                        {% if admin.is_active %}
+                        <span class="badge badge-success">正常</span>
+                        {% else %}
+                        <span class="badge badge-danger">已禁用</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ admin.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <div class="actions">
+                            <a href="/admin/admin-users/{{ admin.id }}/edit" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-edit"></i> 编辑
+                            </a>
+                            <button type="button" class="btn btn-sm btn-danger" 
+                                    onclick="confirmDeleteAdmin('{{ admin.id }}', '{{ admin.username }}')"
+                                    title="删除管理员">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-shield"></i>
+            <p>暂无管理员账户</p>
+            <a href="/admin/admin-users/new" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-plus"></i> 创建第一个管理员
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-info-circle"></i> 说明</h3>
+    </div>
+    <div class="card-body">
+        <ul style="color: var(--text-secondary); line-height: 2;">
+            <li>管理员账户用于登录管理后台，与普通用户账户分离</li>
+            <li>密码至少6个字符，建议使用强密码</li>
+            <li>禁用的管理员无法登录管理后台</li>
+            <li>无法删除当前登录的管理员账户</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+async function confirmDeleteAdmin(id, username) {
+    confirmAction('确认删除', '确定要删除管理员 "' + username + '" 吗？此操作不可恢复。', function() {
+        asyncRequest('/api/admin-users/' + id, {
+            method: 'DELETE',
+            loadingText: '正在删除管理员...',
+            onSuccess: function() {
+                toastSuccess('删除成功', '管理员已删除');
+                setTimeout(function() { window.location.reload(); }, 500);
+            }
+        });
+    }, 'fa-trash-alt');
+}
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-.PHONY: install dev fmt lint typecheck test check build clean
+.PHONY: install dev fmt lint typecheck test security check build clean
 
 PYTHON ?= python3
 
@@ -17,6 +17,9 @@ lint:
 
 typecheck:
 	$(PYTHON) -m mypy hushai
+
+security:
+	$(PYTHON) -m bandit -r hushai -x tests
 
 test:
 	$(PYTHON) -m pytest -v --cov=hushai --cov-report=term-missing --cov-fail-under=70

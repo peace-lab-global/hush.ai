@@ -27,6 +27,7 @@ class ChatRequest(BaseModel):
     stream: bool = False
     skill_ids: Optional[list[str]] = Field(default=None, max_length=MAX_SKILLS_PER_MESSAGE)
     provider: Optional[str] = None
+    scene_id: Optional[str] = None
 
     @field_validator("skill_ids", mode="before")
     @classmethod
@@ -54,15 +55,40 @@ class ChatResponse(BaseModel):
     memory_updated: bool = False
 
 
+class KnowledgeSourceItem(BaseModel):
+    id: str | None = None
+    title: str | None = None
+    score: float = 0.0
+
+
+class KnowledgeQAResponse(BaseModel):
+    reply: str
+    conversation_id: str
+    sources: list[KnowledgeSourceItem] = []
+
+
 class WxLoginRequest(BaseModel):
     code: str = Field(..., min_length=1)
 
 
 class LoginResponse(BaseModel):
     access_token: str
+    refresh_token: str
     token_type: str = "bearer"
     user_id: str
     nickname: Optional[str] = None
+    expires_in: int = 604800
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
+class RefreshTokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    expires_in: int = 604800
 
 
 class MemoryItem(BaseModel):
@@ -190,6 +216,25 @@ class SkillImportResult(BaseModel):
     items: list[SkillImportedRow]
 
 
+class RemoteImportRequest(BaseModel):
+    """远程知识源导入请求。"""
+
+    source_type: Literal["url", "coze", "ima"] = "url"
+    urls: Optional[list[str]] = Field(
+        default=None, description="URL 列表（source_type=url/ima 时使用）"
+    )
+    config: dict[str, Any] = Field(
+        default_factory=dict, description="源配置 (api_token, dataset_id 等)"
+    )
+    tags: list[str] = Field(default_factory=list)
+
+
+class RemoteImportResult(BaseModel):
+    imported: int
+    results: list[dict[str, Any]]
+    errors: list[str] = Field(default_factory=list)
+
+
 class ErrorResponse(BaseModel):
     error: str
     detail: Optional[str] = None
@@ -199,3 +244,15 @@ class StreamChunk(BaseModel):
     delta: str
     done: bool = False
     conversation_id: Optional[str] = None
+
+
+class ScenePublicItem(BaseModel):
+    id: str
+    name: str
+    slug: str
+    description: Optional[str] = None
+    opening_message: Optional[str] = None
+
+
+class SceneListResponse(BaseModel):
+    scenes: list[ScenePublicItem]

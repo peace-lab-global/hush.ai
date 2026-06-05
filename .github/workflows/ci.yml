@@ -46,6 +46,9 @@ jobs:
       - name: Mypy
         run: python -m mypy hushai
 
+      - name: Bandit security lint
+        run: python -m bandit -r hushai -x tests
+
       - name: Pytest with coverage
         run: python -m pytest --cov=hushai --cov-report=xml --cov-report=term-missing --cov-fail-under=70
 

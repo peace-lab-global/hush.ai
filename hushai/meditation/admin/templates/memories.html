@@ -4,6 +4,12 @@
 
 {% block page_title %}记忆管理{% endblock %}
 
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / 记忆管理
+</nav>
+{% endblock %}
+
 {% block content %}
 <!-- 筛选栏 -->
 <div class="toolbar">
@@ -39,6 +45,14 @@
     </form>
     <div class="toolbar-info">
         共 {{ total }} 条记忆
+    </div>
+    <div class="btn-group">
+        <a href="/admin/export/memories?format=csv{% if user_id %}&user_id={{ user_id }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="btn btn-secondary">
+            <i class="fas fa-file-csv"></i> CSV
+        </a>
+        <a href="/admin/export/memories?format=xlsx{% if user_id %}&user_id={{ user_id }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="btn btn-secondary">
+            <i class="fas fa-file-excel"></i> Excel
+        </a>
     </div>
 </div>
 
@@ -119,32 +133,20 @@
 {% block extra_js %}
 <script>
 async function deleteMemory(memoryId) {
-    if (!confirm('确定要删除这条记忆吗？此操作不可恢复。')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/admin/api/memories/${memoryId}`, {
+    confirmAction('确认删除', '确定要删除这条记忆吗？此操作不可恢复。', function() {
+        asyncRequest('/admin/api/memories/' + memoryId, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
+            loadingText: '正在删除记忆...',
+            onSuccess: function() {
+                toastSuccess('删除成功', '记忆已删除');
+                var card = document.querySelector('[data-memory-id="' + memoryId + '"]');
+                if (card) {
+                    card.style.opacity = '0';
+                    setTimeout(function() { card.remove(); }, 300);
+                }
             }
         });
-        
-        if (response.ok) {
-            // 移除对应的记忆卡片
-            const card = document.querySelector(`[data-memory-id="${memoryId}"]`);
-            if (card) {
-                card.style.opacity = '0';
-                setTimeout(() => card.remove(), 300);
-            }
-        } else {
-            const data = await response.json();
-            alert(data.detail || '删除失败');
-        }
-    } catch (error) {
-        alert('网络错误');
-    }
+    }, 'fa-trash-alt');
 }
 </script>
 {% endblock %}
