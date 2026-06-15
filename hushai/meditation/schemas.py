@@ -28,6 +28,7 @@ class ChatRequest(BaseModel):
     skill_ids: Optional[list[str]] = Field(default=None, max_length=MAX_SKILLS_PER_MESSAGE)
     provider: Optional[str] = None
     scene_id: Optional[str] = None
+    teacher_id: Optional[str] = None
 
     @field_validator("skill_ids", mode="before")
     @classmethod

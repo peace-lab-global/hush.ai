@@ -297,6 +297,37 @@ body::before{
 .mode-btn:hover{border-color:var(--stone-400);color:var(--stone-600)}
 .mode-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
+/* Teacher selector */
+.teacher-selector{
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--stone-100);
+  display:none;animation:fadeUp .4s var(--ease-out-expo) both;
+}
+.teacher-selector.show{display:block}
+.teacher-label{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;
+  color:var(--stone-400);text-transform:uppercase;margin-bottom:10px;
+}
+.teacher-chips{display:flex;flex-wrap:wrap;gap:8px}
+.teacher-chip{
+  display:flex;align-items:center;gap:8px;padding:6px 14px;
+  border:1px solid var(--stone-200);background:var(--paper);
+  color:var(--stone-500);font-size:12px;cursor:pointer;
+  transition:all .3s var(--ease-out-quart);
+}
+.teacher-chip:hover{border-color:var(--stone-400);color:var(--ink)}
+.teacher-chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper-warm)}
+.teacher-chip-ava{
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:12px;font-weight:400;
+  background:var(--ink);color:var(--paper);
+}
+.teacher-chip.active .teacher-chip-ava{background:var(--ink)}
+.teacher-chip:not(.active) .teacher-chip-ava{background:var(--stone-300)}
+.teacher-chip-info{display:flex;flex-direction:column}
+.teacher-chip-name{font-size:12px;font-weight:500}
+.teacher-chip-desc{font-size:10px;color:var(--stone-400);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
 /* ═══════════════════════════════════════════════════════
    SCENE SELECTOR
    ═══════════════════════════════════════════════════════ */
@@ -713,6 +744,199 @@ body::before{
   .status-dot,.voice-bar.show span,.typing-dots span{animation:none!important}
   .login-btn::before,.scene-chip::before{transition:none!important}
 }
+
+/* ═══════════════════════════════════════════════════════
+   MEDITATION COMPONENTS
+   ═══════════════════════════════════════════════════════ */
+
+/* Streak indicator */
+.streak-indicator{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;
+  color:var(--stone-500);padding:3px 8px;
+  border:1px solid var(--stone-200);border-radius:12px;
+}
+.streak-indicator .streak-fire{color:#c9a227}
+
+/* Mood modal */
+.mood-modal-mask{
+  position:fixed;inset:0;z-index:300;background:rgba(10,10,10,.5);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.mood-modal-mask.open{opacity:1;pointer-events:auto}
+.mood-modal{
+  position:fixed;left:50%;top:50%;z-index:301;
+  transform:translate(-50%,-50%) scale(.95);
+  transition:transform .35s var(--ease-out-expo);
+  background:var(--paper);border:1px solid var(--stone-100);
+  padding:32px;max-width:360px;width:90%;text-align:center;
+  border-radius:2px;
+}
+.mood-modal-mask.open .mood-modal{transform:translate(-50%,-50%) scale(1)}
+.mood-modal h3{
+  font-family:var(--font-display);font-size:22px;font-weight:400;
+  margin-bottom:8px;color:var(--ink);
+}
+.mood-modal p{font-size:13px;color:var(--stone-500);margin-bottom:24px}
+.mood-slider-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px}
+.mood-slider{
+  -webkit-appearance:none;appearance:none;width:80%;height:4px;
+  background:var(--stone-200);border-radius:2px;outline:none;
+}
+.mood-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+  background:var(--ink);cursor:pointer;border:3px solid var(--paper);
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.mood-labels{display:flex;justify-content:space-between;width:80%;font-size:11px;color:var(--stone-400)}
+.mood-value{
+  font-family:var(--font-mono);font-size:36px;font-weight:300;
+  color:var(--ink);line-height:1;
+}
+.mood-modal-btns{display:flex;gap:10px}
+.mood-modal-btns button{flex:1;padding:12px;border:1px solid var(--stone-200);background:var(--paper);color:var(--stone-600);font-size:12px;cursor:pointer;transition:all .25s}
+.mood-modal-btns button:hover{border-color:var(--stone-400)}
+.mood-modal-btns button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.mood-modal-btns button.primary:hover{background:var(--stone-600)}
+
+/* Breathing guide */
+.breathing-guide{
+  position:fixed;inset:0;z-index:250;
+  background:rgba(250,249,247,.97);display:none;
+  flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .4s;
+}
+.breathing-guide.open{display:flex;opacity:1}
+.breathing-circle{
+  width:180px;height:180px;border-radius:50%;
+  border:2px solid var(--stone-200);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 4s ease-in-out,border-color .3s;
+  position:relative;
+}
+.breathing-circle.inhale{transform:scale(1.4);border-color:var(--ink)}
+.breathing-circle.hold{transform:scale(1.4);border-color:var(--stone-400)}
+.breathing-circle.exhale{transform:scale(1);border-color:var(--stone-300)}
+.breathing-text{
+  font-family:var(--font-mono);font-size:14px;letter-spacing:.2em;
+  color:var(--stone-500);text-transform:uppercase;position:absolute;
+}
+.breathing-instruction{
+  margin-top:40px;font-size:14px;color:var(--stone-400);text-align:center;
+  letter-spacing:.05em;
+}
+.breathing-close{
+  position:absolute;top:24px;right:24px;
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--stone-200);
+  background:var(--paper);color:var(--stone-500);font-size:20px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .25s;
+}
+.breathing-close:hover{border-color:var(--ink);color:var(--ink)}
+.breathing-presets{
+  display:flex;gap:8px;margin-top:24px;
+}
+.breathing-preset{
+  padding:8px 16px;border:1px solid var(--stone-200);
+  background:var(--paper);color:var(--stone-500);font-size:12px;
+  cursor:pointer;transition:all .25s;
+}
+.breathing-preset.active,.breathing-preset:hover{
+  border-color:var(--ink);color:var(--ink);
+}
+
+/* Progress drawer */
+.progress-drawer-mask{
+  position:fixed;inset:0;z-index:200;background:rgba(10,10,10,.3);
+  opacity:0;transition:opacity .35s;pointer-events:none;
+}
+.progress-drawer-mask.open{opacity:1;pointer-events:auto}
+.progress-drawer{
+  position:fixed;left:50%;top:0;bottom:0;z-index:201;
+  transform:translate(-50%,-100%);
+  transition:transform .45s var(--ease-out-expo);
+  background:var(--paper);border-radius:0;
+  max-width:560px;width:100%;overflow-y:auto;
+}
+.progress-drawer.open{transform:translate(-50%,0)}
+.progress-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 28px 16px;border-bottom:1px solid var(--stone-100);
+  position:sticky;top:0;background:var(--paper);z-index:1;
+}
+.progress-title{
+  font-family:var(--font-display);font-size:20px;font-weight:400;
+  color:var(--ink);letter-spacing:.02em;
+}
+.progress-close{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--stone-200);
+  background:var(--paper);color:var(--stone-400);font-size:20px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .25s;
+}
+.progress-close:hover{border-color:var(--ink);color:var(--ink)}
+.progress-body{padding:24px 28px 40px}
+.progress-stats-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;
+}
+.progress-stat-card{
+  background:var(--paper-warm);padding:16px;border:1px solid var(--stone-100);
+  text-align:center;
+}
+.progress-stat-value{
+  font-family:var(--font-display);font-size:28px;font-weight:400;color:var(--ink);
+}
+.progress-stat-label{
+  font-size:11px;color:var(--stone-500);letter-spacing:.05em;margin-top:4px;
+}
+.progress-section{margin-bottom:24px}
+.progress-section-title{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;
+  color:var(--stone-400);text-transform:uppercase;margin-bottom:12px;
+}
+.progress-week{display:flex;gap:8px;justify-content:space-between}
+.progress-day{
+  flex:1;text-align:center;padding:12px 4px;
+  border:1px solid var(--stone-100);background:var(--paper);
+}
+.progress-day.has-session{border-color:var(--ink);background:var(--paper-warm)}
+.progress-day-name{font-size:10px;color:var(--stone-400)}
+.progress-day-count{font-size:16px;font-weight:500;color:var(--ink);margin-top:4px}
+.progress-day.empty{color:var(--stone-300)}
+
+/* Timer mode */
+.timer-mode-btn{
+  padding:5px 10px;border:1px solid var(--stone-200);
+  background:transparent;color:var(--stone-500);font-size:10px;
+  font-family:var(--font-mono);letter-spacing:.08em;cursor:pointer;
+  transition:all .25s;
+}
+.timer-mode-btn:hover{border-color:var(--stone-400)}
+.timer-mode-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.timer-display{
+  font-family:var(--font-mono);font-size:48px;font-weight:300;
+  color:var(--ink);letter-spacing:.05em;text-align:center;
+  padding:20px 0;
+}
+.timer-presets{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.timer-preset{
+  padding:10px 20px;border:1px solid var(--stone-200);
+  background:var(--paper);color:var(--stone-500);font-size:13px;
+  cursor:pointer;transition:all .25s;
+}
+.timer-preset.active,.timer-preset:hover{border-color:var(--ink);color:var(--ink)}
+.timer-start{
+  width:64px;height:64px;border-radius:50%;border:2px solid var(--ink);
+  background:var(--paper);color:var(--ink);font-size:13px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .25s;margin:0 auto;
+}
+.timer-start:hover{background:var(--ink);color:var(--paper)}
+.timer-start.running{background:var(--ink);color:var(--paper)}
+
+@media(prefers-reduced-motion:reduce){
+  .breathing-circle{transition:none!important}
+}
 </style>
 </head>
 <body>
@@ -750,6 +974,8 @@ body::before{
         <span>XIAO GUAN</span>
       </div>
       <div class="header-actions">
+        <button type="button" class="header-btn" id="progressBtn" title="查看我的进度">进度</button>
+        <button type="button" class="header-btn" id="breathingBtn" title="呼吸练习">呼吸</button>
         <button type="button" class="header-btn" id="historyBtn" title="查看对话历史">历史</button>
         <button type="button" class="header-btn" id="newConvBtn" title="清空当前对话并开始新会话">新对话</button>
       </div>
@@ -761,6 +987,10 @@ body::before{
     <div class="header-modes">
       <button type="button" class="mode-btn active" id="modeChat" title="冥想陪伴模式">冥想陪伴</button>
       <button type="button" class="mode-btn" id="modeKB" title="知识库问答模式">知识库问答</button>
+    </div>
+    <div class="teacher-selector" id="teacherSelector">
+      <div class="teacher-label">冥想搭子</div>
+      <div class="teacher-chips" id="teacherChips"></div>
     </div>
     <div class="scene-selector" id="sceneSelector">
       <div class="scene-label">场景</div>
@@ -854,6 +1084,76 @@ body::before{
     <div class="set-btn-row">
       <button class="set-btn" id="resetVoiceBtn">恢复默认</button>
       <button class="set-btn primary" id="previewVoiceBtn">试听</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ MOOD CHECK-IN MODAL ═════ -->
+<div class="mood-modal-mask" id="moodModalMask">
+  <div class="mood-modal">
+    <h3 id="moodModalTitle">开始冥想</h3>
+    <p>此刻你的心情如何？</p>
+    <div class="mood-slider-wrap">
+      <div class="mood-value" id="moodValue">5</div>
+      <input type="range" class="mood-slider" id="moodSlider" min="1" max="10" value="5">
+      <div class="mood-labels">
+        <span>低落</span><span>平静</span><span>愉悦</span>
+      </div>
+    </div>
+    <div class="mood-modal-btns">
+      <button type="button" id="moodSkipBtn">跳过</button>
+      <button type="button" class="primary" id="moodConfirmBtn">开始冥想</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ BREATHING GUIDE ═════ -->
+<div class="breathing-guide" id="breathingGuide">
+  <button class="breathing-close" id="breathingClose">&times;</button>
+  <div class="breathing-circle" id="breathingCircle">
+    <span class="breathing-text" id="breathingText">准备</span>
+  </div>
+  <p class="breathing-instruction" id="breathingInstruction">选择一个呼吸节奏开始练习</p>
+  <div class="breathing-presets">
+    <button class="breathing-preset active" data-pattern="4-7-8">4-7-8 呼吸</button>
+    <button class="breathing-preset" data-pattern="box">方形呼吸</button>
+    <button class="breathing-preset" data-pattern="calm">平静呼吸</button>
+  </div>
+</div>
+
+<!-- ═════ PROGRESS DRAWER ═════ -->
+<div class="progress-drawer-mask" id="progressDrawerMask"></div>
+<div class="progress-drawer" id="progressDrawer">
+  <div class="progress-head">
+    <span class="progress-title">我的进度</span>
+    <button class="progress-close" id="progressClose">&times;</button>
+  </div>
+  <div class="progress-body" id="progressBody">
+    <div class="progress-stats-grid">
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="statTotalSessions">0</div>
+        <div class="progress-stat-label">总冥想次数</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="statTotalMinutes">0</div>
+        <div class="progress-stat-label">总练习分钟</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="statStreak">0</div>
+        <div class="progress-stat-label">连续天数</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" id="statAvgMood">-</div>
+        <div class="progress-stat-label">平均情绪</div>
+      </div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-section-title">本周进度</div>
+      <div class="progress-week" id="progressWeek"></div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-section-title">最近练习</div>
+      <div id="progressRecent"></div>
     </div>
   </div>
 </div>
@@ -1065,6 +1365,78 @@ body::before{
     }).catch(function(){});
   }
 
+  /* ===== teacher (冥想搭子) ===== */
+  var allTeachers=[];
+  var selectedTeacherId=localStorage.getItem('ll_teacher_id')||'';
+
+  function loadTeachers(){
+    if(!token)return;
+    fetch(API+'/api/teachers/list',{
+      headers:{'Authorization':'Bearer '+token}
+    }).then(function(r){
+      if(r.status===401){clearAuthAndShowLogin();return}
+      if(!r.ok)throw 0;
+      return r.json();
+    }).then(function(d){
+      allTeachers=d.teachers||[];
+      if(d.selected_id&&!selectedTeacherId){
+        selectedTeacherId=d.selected_id;
+        localStorage.setItem('ll_teacher_id',selectedTeacherId);
+      }
+      renderTeacherChips();
+      if(allTeachers.length)$('teacherSelector').classList.add('show');
+    }).catch(function(){});
+  }
+
+  function renderTeacherChips(){
+    var box=$('teacherChips');
+    if(!box)return;
+    box.innerHTML='';
+    allTeachers.forEach(function(t){
+      var btn=document.createElement('button');
+      btn.type='button';
+      btn.className='teacher-chip'+(t.id===selectedTeacherId?' active':'');
+      btn.innerHTML='<div class="teacher-chip-ava">'+t.avatar+'</div>'+
+        '<div class="teacher-chip-info">'+
+        '<div class="teacher-chip-name">'+t.name+'</div>'+
+        '<div class="teacher-chip-desc">'+(t.description||'')+'</div></div>';
+      btn.addEventListener('click',function(){
+        selectTeacher(t.id);
+      });
+      box.appendChild(btn);
+    });
+  }
+
+  function selectTeacher(id){
+    selectedTeacherId=id;
+    localStorage.setItem('ll_teacher_id',id);
+    renderTeacherChips();
+    var teacher=allTeachers.find(function(t){return t.id===id});
+    if(teacher){
+      if(teacher.voice_gender){
+        voiceCfg.gender=teacher.voice_gender;
+        localStorage.setItem('ll_gender',voiceCfg.gender);
+        var filterBtns=document.querySelectorAll('#genderFilter .set-filter-btn');
+        filterBtns.forEach(function(b){b.classList.remove('active')});
+        filterBtns.forEach(function(b){
+          if(b.getAttribute('data-gender')===voiceCfg.gender)b.classList.add('active');
+        });
+        renderVoices();
+      }
+      var currentAva=document.querySelector('.msg-ava.teacher');
+      if(currentAva)currentAva.textContent=teacher.avatar;
+    }
+    fetch(API+'/api/teachers/select',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({teacher_id:id})
+    }).catch(function(){});
+  }
+
+  function getSelectedTeacher(){
+    return allTeachers.find(function(t){return t.id===selectedTeacherId})||null;
+  }
+
   /* ===== voice config ===== */
   var DEFAULT_RATE=0.9,DEFAULT_PITCH=1.1;
   var voiceCfg={
@@ -1210,7 +1582,7 @@ body::before{
   $('newConvBtn').addEventListener('click',resetConversation);
 
   /* login */
-  if(token){loginOv.style.display='none';loadSkills();loadScenes()}
+  if(token){loginOv.style.display='none';loadSkills();loadScenes();loadTeachers()}
   loginBtn.addEventListener('click',doLogin);
   nickIn.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
   nickIn.addEventListener('input',function(){loginErr.textContent=''});
@@ -1229,7 +1601,7 @@ body::before{
       refreshToken=d.refresh_token||'';localStorage.setItem('ll_refresh_token',refreshToken);
       loginOv.style.opacity='0';loginOv.style.transition='opacity .6s';
       setTimeout(function(){loginOv.style.display='none'},600);
-      loadSkills();loadScenes();
+      loadSkills();loadScenes();loadTeachers();
     }).catch(function(){
       loginErr.textContent='无法连接服务，请检查网络后重试。';
       loginBtn.querySelector('span').textContent='开始对话';loginBtn.disabled=false;
@@ -1333,7 +1705,12 @@ body::before{
   function makeAva(role){
     var d=document.createElement('div');
     d.className='msg-ava '+(role==='assistant'?'teacher':'user');
-    d.textContent=role==='assistant'?'观':(nick.charAt(0)||'你');
+    if(role==='assistant'){
+      var teacher=getSelectedTeacher();
+      d.textContent=teacher?teacher.avatar:'观';
+    }else{
+      d.textContent=nick.charAt(0)||'你';
+    }
     return d;
   }
 
@@ -1344,7 +1721,10 @@ body::before{
     d.appendChild(makeAva(role));
     var body=document.createElement('div');body.className='msg-body';
     var nm=document.createElement('div');nm.className='msg-name';
-    nm.textContent=role==='assistant'?'小观':'你';
+    if(role==='assistant'){
+      var t=getSelectedTeacher();
+      nm.textContent=t?t.name:'小观';
+    }else{nm.textContent='你'}
     var bubble=document.createElement('div');bubble.className='msg-bubble';
     bubble.innerHTML=parseMarkdown(text);
     body.appendChild(nm);body.appendChild(bubble);
@@ -1369,7 +1749,8 @@ body::before{
     var d=document.createElement('div');d.className='msg teacher';d.id='typing';
     d.appendChild(makeAva('assistant'));
     var body=document.createElement('div');body.className='msg-body';
-    var nm=document.createElement('div');nm.className='msg-name';nm.textContent='小观';
+    var nm=document.createElement('div');nm.className='msg-name';
+    var t=getSelectedTeacher();nm.textContent=t?t.name:'小观';
     var bubble=document.createElement('div');bubble.className='msg-bubble';
     bubble.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
     body.appendChild(nm);body.appendChild(bubble);
@@ -1383,7 +1764,8 @@ body::before{
     var d=document.createElement('div');d.className='msg teacher';
     d.appendChild(makeAva('assistant'));
     var body=document.createElement('div');body.className='msg-body';
-    var nm=document.createElement('div');nm.className='msg-name';nm.textContent='小观';
+    var nm=document.createElement('div');nm.className='msg-name';
+    var t=getSelectedTeacher();nm.textContent=t?t.name:'小观';
     var bubble=document.createElement('div');bubble.className='msg-bubble';bubble.id='streamBubble';
     body.appendChild(nm);body.appendChild(bubble);
     d.appendChild(body);
@@ -1425,6 +1807,7 @@ body::before{
     var payload={message:text,conversation_id:(kbMode?kbConvId:convId)||null};
     if(!kbMode&&selectedSkillIds.length)payload.skill_ids=selectedSkillIds;
     if(!kbMode&&selectedSceneId)payload.scene_id=selectedSceneId;
+    if(!kbMode&&selectedTeacherId)payload.teacher_id=selectedTeacherId;
 
     var fullText='';
     var finalConvId=null;
@@ -1505,6 +1888,222 @@ body::before{
       }
     };
     tryStream();
+  }
+
+  /* ===== MOOD CHECK-IN MODAL ===== */
+  var moodModalMask=$('moodModalMask'),moodSlider=$('moodSlider'),moodValue=$('moodValue');
+  var moodConfirmBtn=$('moodConfirmBtn'),moodSkipBtn=$('moodSkipBtn');
+  var currentMood=5;
+
+  function openMoodModal(){
+    moodModalMask.classList.add('open');
+    currentMood=5;
+    moodSlider.value=5;
+    moodValue.textContent='5';
+  }
+  function closeMoodModal(){
+    moodModalMask.classList.remove('open');
+  }
+  if(moodSlider){
+    moodSlider.addEventListener('input',function(){
+      currentMood=parseInt(moodSlider.value);
+      moodValue.textContent=currentMood;
+    });
+  }
+  if(moodConfirmBtn){
+    moodConfirmBtn.addEventListener('click',function(){
+      closeMoodModal();
+      doMoodCheckin(currentMood);
+    });
+  }
+  if(moodSkipBtn){
+    moodSkipBtn.addEventListener('click',function(){
+      closeMoodModal();
+    });
+  }
+  moodModalMask.addEventListener('click',function(e){
+    if(e.target===moodModalMask)closeMoodModal();
+  });
+
+  function doMoodCheckin(mood){
+    fetch(API+'/api/meditation/mood-checkin',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({mood:mood})
+    }).then(function(r){
+      if(r.status===401){clearAuthAndShowLogin();return}
+    }).catch(function(){});
+  }
+
+  /* ===== BREATHING GUIDE ===== */
+  var breathingGuide=$('breathingGuide'),breathingCircle=$('breathingCircle');
+  var breathingText=$('breathingText'),breathingInstruction=$('breathingInstruction');
+  var breathingClose=$('breathingClose');
+  var breathingPresets=document.querySelectorAll('.breathing-preset');
+  var breathingTimer=null;
+  var currentPattern='4-7-8';
+  var patterns={
+    '4-7-8':{inhale:4000,hold:7000,exhale:8000},
+    'box':{inhale:4000,hold:4000,exhale:4000,holdAfter:4000},
+    'calm':{inhale:4000,hold:2000,exhale:6000}
+  };
+
+  function openBreathingGuide(){
+    breathingGuide.classList.add('open');
+    startBreathing(currentPattern);
+  }
+  function closeBreathingGuide(){
+    breathingGuide.classList.remove('open');
+    stopBreathing();
+  }
+  if(breathingClose){
+    breathingClose.addEventListener('click',closeBreathingGuide);
+  }
+  if($('breathingBtn')){
+    $('breathingBtn').addEventListener('click',function(){
+      if(breathingGuide.classList.contains('open')){
+        closeBreathingGuide();
+      }else{
+        openBreathingGuide();
+      }
+    });
+  }
+  breathingPresets.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      breathingPresets.forEach(function(b){b.classList.remove('active')});
+      btn.classList.add('active');
+      currentPattern=btn.getAttribute('data-pattern');
+      stopBreathing();
+      startBreathing(currentPattern);
+    });
+  });
+
+  function stopBreathing(){
+    if(breathingTimer){clearTimeout(breathingTimer);breathingTimer=null}
+    breathingCircle.className='breathing-circle';
+    breathingText.textContent='准备';
+  }
+
+  function startBreathing(pattern){
+    var p=patterns[pattern]||patterns['4-7-8'];
+    function phase(name,duration,nextClass,nextPhase){
+      breathingText.textContent=name;
+      breathingCircle.className='breathing-circle '+nextClass;
+      breathingTimer=setTimeout(nextPhase,duration);
+    }
+    function inhale(){
+      phase('吸气',p.inhale,'inhale',hold);
+    }
+    function hold(){
+      if(p.hold){phase('屏息',p.hold,'hold',exhale)}
+      else{exhale()}
+    }
+    function exhale(){
+      phase('呼气',p.exhale,'exhale',p.holdAfter?holdAfter:inhale);
+    }
+    function holdAfter(){
+      phase('屏息',p.holdAfter,'hold',inhale);
+    }
+    inhale();
+  }
+
+  /* ===== PROGRESS DRAWER ===== */
+  var progressDrawer=$('progressDrawer'),progressDrawerMask=$('progressDrawerMask');
+  var progressClose=$('progressClose'),progressBtn=$('progressBtn');
+
+  function openProgressDrawer(){
+    progressDrawer.classList.add('open');progressDrawerMask.classList.add('open');
+    loadProgressStats();
+  }
+  function closeProgressDrawer(){
+    progressDrawer.classList.remove('open');progressDrawerMask.classList.remove('open');
+  }
+  if(progressBtn)progressBtn.addEventListener('click',openProgressDrawer);
+  if(progressClose)progressClose.addEventListener('click',closeProgressDrawer);
+  if(progressDrawerMask)progressDrawerMask.addEventListener('click',closeProgressDrawer);
+
+  function loadProgressStats(){
+    fetch(API+'/api/meditation/stats',{
+      headers:{'Authorization':'Bearer '+token}
+    }).then(function(r){
+      if(r.status===401){clearAuthAndShowLogin();return Promise.reject()}
+      return r.json();
+    }).then(function(d){
+      $('statTotalSessions').textContent=d.total_sessions||0;
+      $('statTotalMinutes').textContent=Math.round((d.total_duration_seconds||0)/60);
+      $('statStreak').textContent=d.current_streak||0;
+      $('statAvgMood').textContent=d.avg_mood?d.avg_mood.toFixed(1):'-';
+      loadWeeklyProgress();
+      renderRecentSessions(d.recent_sessions||[]);
+    }).catch(function(){});
+  }
+
+  function loadWeeklyProgress(){
+    fetch(API+'/api/meditation/weekly',{
+      headers:{'Authorization':'Bearer '+token}
+    }).then(function(r){
+      if(r.status===401)return Promise.reject();
+      return r.json();
+    }).then(function(d){
+      renderWeeklyDays(d.days||[]);
+    }).catch(function(){});
+  }
+
+  function renderWeeklyDays(days){
+    var container=$('progressWeek');
+    if(!container)return;
+    container.innerHTML='';
+    days.forEach(function(day){
+      var div=document.createElement('div');
+      div.className='progress-day'+(day.sessions>0?' has-session':'');
+      div.innerHTML='<div class="progress-day-name">'+day.day_name+'</div>'+
+        '<div class="progress-day-count">'+(day.sessions>0?day.sessions:'—')+'</div>';
+      container.appendChild(div);
+    });
+  }
+
+  function renderRecentSessions(sessions){
+    var container=$('progressRecent');
+    if(!container)return;
+    if(!sessions.length){
+      container.innerHTML='<div style="color:var(--stone-400);font-size:13px;text-align:center;padding:20px">暂无记录</div>';
+      return;
+    }
+    container.innerHTML='';
+    sessions.forEach(function(s){
+      var div=document.createElement('div');
+      div.style.cssText='padding:12px 0;border-bottom:1px solid var(--stone-100)';
+      var dateStr=s.started_at?new Date(s.started_at).toLocaleDateString('zh-CN'):'';
+      var durStr=Math.round(s.duration_seconds/60)+'分钟';
+      var moodStr=s.mood_after?'情绪 '+s.mood_after+'/10':'无情绪记录';
+      div.innerHTML='<div style="font-size:13px;color:var(--ink)">'+dateStr+' · '+durStr+'</div>'+
+        '<div style="font-size:11px;color:var(--stone-400);margin-top:2px">'+moodStr+'</div>';
+      container.appendChild(div);
+    });
+  }
+
+  /* ===== TIMER MEDITATION ===== */
+  var timerInterval=null;
+  var timerSeconds=0;
+  var timerRunning=false;
+
+  function formatTime(seconds){
+    var m=Math.floor(seconds/60);
+    var s=seconds%60;
+    return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+
+  function showMoodReminder(){
+    openMoodModal();
+  }
+
+  /* Auto-show mood check-in on first visit after login */
+  var moodShownKey='ll_mood_shown_'+new Date().toDateString();
+  if(token&&!localStorage.getItem(moodShownKey)){
+    setTimeout(function(){
+      openMoodModal();
+      localStorage.setItem(moodShownKey,'1');
+    },3000);
   }
 })();
 </script>

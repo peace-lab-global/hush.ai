@@ -26,7 +26,7 @@ from hushai.meditation.core.prompt import (
 from hushai.meditation.core.safety import check_safety, format_safety_message
 from hushai.meditation.core.scenes import get_scene_context_for_prompt
 from hushai.meditation.core.skills import get_skills_context_for_prompt
-from hushai.meditation.db.models import Conversation, Message
+from hushai.meditation.db.models import Conversation, Message, Teacher
 from hushai.meditation.db.session import get_session_factory
 
 logger = logging.getLogger(__name__)
@@ -81,6 +81,7 @@ async def chat(
     skill_ids: list[str] | None = None,
     provider: str | None = None,
     scene_id: str | None = None,
+    teacher_id: str | None = None,
 ) -> dict[str, Any]:
     factory = get_session_factory()
     async with factory() as session:
@@ -101,6 +102,13 @@ async def chat(
             scene_context = await get_scene_context_for_prompt(session, scene_id)
             history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
             history_text = format_conversation_history(history_dicts)
+
+            if teacher_id:
+                result = await session.execute(select(Teacher).where(Teacher.id == teacher_id))
+                teacher = result.scalar_one_or_none()
+                if teacher:
+                    teacher_description = teacher.system_prompt
+
             system_prompt = build_system_prompt(
                 memory_context=memory_context,
                 knowledge_context=knowledge_context,
@@ -168,6 +176,7 @@ async def chat_stream(
     skill_ids: list[str] | None = None,
     provider: str | None = None,
     scene_id: str | None = None,
+    teacher_id: str | None = None,
 ) -> AsyncGenerator[dict[str, Any], None]:
     factory = get_session_factory()
     async with factory() as session:
@@ -189,6 +198,13 @@ async def chat_stream(
             scene_context = await get_scene_context_for_prompt(session, scene_id)
             history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
             history_text = format_conversation_history(history_dicts)
+
+            if teacher_id:
+                result = await session.execute(select(Teacher).where(Teacher.id == teacher_id))
+                teacher = result.scalar_one_or_none()
+                if teacher:
+                    teacher_description = teacher.system_prompt
+
             system_prompt = build_system_prompt(
                 memory_context=memory_context,
                 knowledge_context=knowledge_context,

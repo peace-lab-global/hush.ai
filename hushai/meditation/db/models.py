@@ -41,6 +41,9 @@ class User(Base):
     nickname: Mapped[Optional[str]] = mapped_column(String(128))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(512))
     refresh_token_hash: Mapped[Optional[str]] = mapped_column(String(256), index=True)
+    selected_teacher_id: Mapped[Optional[str]] = mapped_column(
+        String(36), ForeignKey("teachers.id")
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
@@ -50,6 +53,9 @@ class User(Base):
 
     conversations: Mapped[List[Conversation]] = relationship(back_populates="user")
     memories: Mapped[List[Memory]] = relationship(back_populates="user")
+    meditation_sessions: Mapped[List["MeditationSession"]] = relationship(back_populates="user")
+    daily_progress: Mapped[List["DailyProgress"]] = relationship(back_populates="user")
+    selected_teacher: Mapped[Optional["Teacher"]] = relationship(foreign_keys=[selected_teacher_id])
 
 
 class Conversation(Base):
@@ -185,3 +191,63 @@ class AuditLog(Base):
     ip_address: Mapped[Optional[str]] = mapped_column(String(45))
     user_agent: Mapped[Optional[str]] = mapped_column(String(512))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class MeditationSession(Base):
+    """冥想会话记录。"""
+
+    __tablename__ = "meditation_sessions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    conversation_id: Mapped[Optional[str]] = mapped_column(ForeignKey("conversations.id"))
+    scene_id: Mapped[Optional[str]] = mapped_column(ForeignKey("scenes.id"))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    duration_seconds: Mapped[int] = mapped_column(Integer, default=0)
+    mood_before: Mapped[Optional[int]] = mapped_column(Integer)
+    mood_after: Mapped[Optional[int]] = mapped_column(Integer)
+    note: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class DailyProgress(Base):
+    """用户每日进度统计。"""
+
+    __tablename__ = "daily_progress"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    meditation_count: Mapped[int] = mapped_column(Integer, default=0)
+    total_duration_seconds: Mapped[int] = mapped_column(Integer, default=0)
+    mood_avg: Mapped[Optional[float]] = mapped_column(Float)
+    streak_day: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+    __table_args__ = (Index("ix_daily_progress_user_date", "user_id", "date"),)
+
+
+class Teacher(Base):
+    """冥想导师角色，不同导师有不同的引导风格和系统提示。"""
+
+    __tablename__ = "teachers"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(64))
+    slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    description: Mapped[Optional[str]] = mapped_column(String(512))
+    avatar: Mapped[Optional[str]] = mapped_column(String(128))
+    system_prompt: Mapped[str] = mapped_column(Text)
+    default_voice: Mapped[Optional[str]] = mapped_column(String(128))
+    voice_gender: Mapped[Optional[str]] = mapped_column(String(16))
+    style_tags: Mapped[Optional[str]] = mapped_column(String(256))
+    is_active: Mapped[bool] = mapped_column(default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )

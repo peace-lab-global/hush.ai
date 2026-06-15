@@ -71,6 +71,7 @@ async def chat_endpoint(
             skill_ids=req.skill_ids,
             provider=req.provider,
             scene_id=req.scene_id,
+            teacher_id=req.teacher_id,
         )
         return ChatResponse(**result)
     except RuntimeError as e:
@@ -93,6 +94,7 @@ async def chat_stream_endpoint(
                 skill_ids=req.skill_ids,
                 provider=req.provider,
                 scene_id=req.scene_id,
+                teacher_id=req.teacher_id,
             ):
                 data = StreamChunk(**chunk).model_dump_json(exclude_none=True)
                 yield f"data: {data}\n\n"
