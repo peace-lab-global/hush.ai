@@ -2,16 +2,31 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hushai.meditation.api.auth import get_current_user_id
+from hushai.meditation.api.auth import extract_bearer_token, get_current_user_id
 from hushai.meditation.db.models import Teacher, User
 from hushai.meditation.db.session import get_session
 
 router = APIRouter(prefix="/api/teachers", tags=["teachers"])
+
+
+def _extract_token(authorization: str) -> str:
+    return extract_bearer_token(authorization)
+
+
+async def _require_user(
+    authorization: str = Header(..., alias="Authorization"),
+    session: AsyncSession = Depends(get_session),
+) -> str:
+    token = _extract_token(authorization)
+    try:
+        return await get_current_user_id(token, session)
+    except RuntimeError as e:
+        raise HTTPException(status_code=401, detail=str(e)) from None
 
 
 class TeacherItem(BaseModel):
@@ -42,11 +57,11 @@ class TeacherDetailResponse(BaseModel):
 
 @router.get("/list", response_model=TeacherListResponse)
 async def list_teachers(
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     result = await db.execute(
-        select(Teacher).where(Teacher.is_active == True).order_by(Teacher.sort_order.asc())
+        select(Teacher).where(Teacher.is_active.is_(True)).order_by(Teacher.sort_order.asc())
     )
     teachers = result.scalars().all()
 
@@ -74,7 +89,7 @@ async def list_teachers(
 @router.get("/{teacher_id}", response_model=TeacherDetailResponse)
 async def get_teacher(
     teacher_id: str,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     result = await db.execute(select(Teacher).where(Teacher.id == teacher_id))
@@ -106,7 +121,7 @@ class SelectTeacherResponse(BaseModel):
 @router.post("/select", response_model=SelectTeacherResponse)
 async def select_teacher(
     req: SelectTeacherRequest,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     result = await db.execute(select(Teacher).where(Teacher.id == req.teacher_id))

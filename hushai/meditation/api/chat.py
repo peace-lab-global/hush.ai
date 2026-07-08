@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import AsyncGenerator
-from typing import Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hushai.meditation.api.auth import extract_bearer_token, get_current_user_id
@@ -32,8 +31,8 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 class ConversationItem(BaseModel):
     id: str
     title: str | None
-    created_at: Any
-    updated_at: Any
+    created_at: str
+    updated_at: str
 
 
 class ConversationListResponse(BaseModel):
@@ -169,12 +168,12 @@ async def list_conversations(
         Conversation.user_id == user_id,
         Conversation.is_active.is_(True),
     )
-    count_result = await session.execute(
-        select(Conversation.id).where(
-            Conversation.user_id == user_id, Conversation.is_active.is_(True)
-        )
+    total = await session.scalar(
+        select(func.count())
+        .select_from(Conversation)
+        .where(Conversation.user_id == user_id, Conversation.is_active.is_(True))
     )
-    total = len(count_result.scalars().all())
+    total = int(total or 0)
 
     result = await session.execute(
         base.order_by(Conversation.updated_at.desc()).offset(offset).limit(limit)
@@ -195,7 +194,7 @@ class MessageItem(BaseModel):
     id: str
     role: str
     content: str
-    created_at: Any
+    created_at: str
 
 
 class MessageListResponse(BaseModel):

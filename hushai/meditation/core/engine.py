@@ -31,6 +31,9 @@ from hushai.meditation.db.session import get_session_factory
 
 logger = logging.getLogger(__name__)
 
+# 记忆提取触发的间隔：每 N 条用户消息提取一次。
+_MEMORY_EXTRACTION_INTERVAL = 2
+
 
 async def _get_or_create_conversation(
     session: AsyncSession,
@@ -72,6 +75,94 @@ async def _load_conversation_messages(
     return list(result.scalars().all())
 
 
+async def _resolve_teacher_prompt(
+    session: AsyncSession,
+    teacher_id: str | None,
+    teacher_description: str | None,
+) -> str | None:
+    """根据 teacher_id 查库得到 system_prompt；无 id 则沿用传入的描述。"""
+    if not teacher_id:
+        return teacher_description
+    result = await session.execute(select(Teacher).where(Teacher.id == teacher_id))
+    teacher = result.scalar_one_or_none()
+    return teacher.system_prompt if teacher else teacher_description
+
+
+async def _prepare_turn_context(
+    session: AsyncSession,
+    user_id: str,
+    conv: Conversation,
+    message: str,
+    skill_ids: list[str] | None,
+    scene_id: str | None,
+    teacher_id: str | None,
+    teacher_description: str | None,
+) -> list[LLMMessage]:
+    """组装下一轮对话的 LLM messages（system + 历史）。
+
+    供 ``chat`` / ``chat_stream`` 共用，消除重复的上下文构建逻辑。
+    """
+    prev_messages = await _load_conversation_messages(session, conv.id)
+    memory_context = await get_memory_context_for_prompt(session, user_id, message)
+    knowledge_context = await get_knowledge_context_for_prompt(message)
+    skills_context = await get_skills_context_for_prompt(session, skill_ids)
+    scene_context = await get_scene_context_for_prompt(session, scene_id)
+
+    history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
+    history_text = format_conversation_history(history_dicts)
+
+    resolved_teacher = await _resolve_teacher_prompt(session, teacher_id, teacher_description)
+    system_prompt = build_system_prompt(
+        memory_context=memory_context,
+        knowledge_context=knowledge_context,
+        conversation_history=history_text,
+        teacher_description=resolved_teacher,
+        skills_context=skills_context,
+        scene_context=scene_context,
+    )
+
+    llm_messages = [LLMMessage(role="system", content=system_prompt)]
+    for m in prev_messages:
+        llm_messages.append(LLMMessage(role=m.role, content=m.content))
+    return llm_messages
+
+
+async def _maybe_extract_and_title(
+    session: AsyncSession,
+    conv: Conversation,
+    user_id: str,
+    all_messages: list[Message],
+    provider: str | None,
+) -> bool:
+    """按周期触发记忆提取，并在首轮补全会话标题。返回是否更新了记忆。"""
+    user_turn_count = sum(1 for m in all_messages if m.role == "user")
+    memory_updated = False
+    if user_turn_count % _MEMORY_EXTRACTION_INTERVAL == 0:
+        try:
+            memories_data = await extract_memories(all_messages, provider=provider)
+            if memories_data:
+                await store_memories(session, user_id, memories_data, conv.id)
+                memory_updated = True
+        except Exception:
+            logger.warning("记忆提取失败", exc_info=True)
+
+    if not conv.title:
+        first_user_msg = next((m for m in all_messages if m.role == "user"), None)
+        if first_user_msg:
+            conv.title = first_user_msg.content[:64]
+    return memory_updated
+
+
+def _persist_user_message(
+    session: AsyncSession,
+    conv: Conversation,
+    message: str,
+) -> Message:
+    user_msg = Message(conversation_id=conv.id, role="user", content=message)
+    session.add(user_msg)
+    return user_msg
+
+
 async def chat(
     *,
     user_id: str,
@@ -87,39 +178,36 @@ async def chat(
     async with factory() as session:
         try:
             conv = await _get_or_create_conversation(session, user_id, conversation_id)
-            user_msg = Message(
-                conversation_id=conv.id,
-                role="user",
-                content=message,
-            )
-            session.add(user_msg)
+
+            # 安全检查必须在调用 LLM 之前：危机内容不应被送往外部模型。
+            safety_result = check_safety(message)
+            if not safety_result.is_safe:
+                reply = format_safety_message(safety_result, "")
+                assistant_msg = Message(conversation_id=conv.id, role="assistant", content=reply)
+                session.add(assistant_msg)
+                await session.flush()
+                if not conv.title:
+                    conv.title = message[:64]
+                await session.commit()
+                return {
+                    "reply": reply,
+                    "conversation_id": conv.id,
+                    "memory_updated": False,
+                }
+
+            _persist_user_message(session, conv, message)
             await session.flush()
 
-            prev_messages = await _load_conversation_messages(session, conv.id)
-            memory_context = await get_memory_context_for_prompt(session, user_id, message)
-            knowledge_context = await get_knowledge_context_for_prompt(message)
-            skills_context = await get_skills_context_for_prompt(session, skill_ids)
-            scene_context = await get_scene_context_for_prompt(session, scene_id)
-            history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
-            history_text = format_conversation_history(history_dicts)
-
-            if teacher_id:
-                result = await session.execute(select(Teacher).where(Teacher.id == teacher_id))
-                teacher = result.scalar_one_or_none()
-                if teacher:
-                    teacher_description = teacher.system_prompt
-
-            system_prompt = build_system_prompt(
-                memory_context=memory_context,
-                knowledge_context=knowledge_context,
-                conversation_history=history_text,
-                teacher_description=teacher_description,
-                skills_context=skills_context,
-                scene_context=scene_context,
+            llm_messages = await _prepare_turn_context(
+                session,
+                user_id,
+                conv,
+                message,
+                skill_ids,
+                scene_id,
+                teacher_id,
+                teacher_description,
             )
-            llm_messages = [LLMMessage(role="system", content=system_prompt)]
-            for m in prev_messages:
-                llm_messages.append(LLMMessage(role=m.role, content=m.content))
             reply = await chat_completion(
                 llm_messages,
                 provider=provider,
@@ -127,34 +215,14 @@ async def chat(
                 max_tokens=1024,
             )
 
-            safety_result = check_safety(message)
-            if not safety_result.is_safe:
-                reply = format_safety_message(safety_result, reply)
-
-            assistant_msg = Message(
-                conversation_id=conv.id,
-                role="assistant",
-                content=reply,
-            )
+            assistant_msg = Message(conversation_id=conv.id, role="assistant", content=reply)
             session.add(assistant_msg)
             await session.flush()
 
-            all_conv_messages = prev_messages + [assistant_msg]
-            memory_updated = False
-            user_turn_count = sum(1 for m in all_conv_messages if m.role == "user")
-            if user_turn_count % 2 == 0:
-                try:
-                    memories_data = await extract_memories(all_conv_messages, provider=provider)
-                    if memories_data:
-                        await store_memories(session, user_id, memories_data, conv.id)
-                        memory_updated = True
-                except Exception:
-                    logger.warning("记忆提取失败", exc_info=True)
-
-            if not conv.title:
-                first_user_msg = next((m for m in all_conv_messages if m.role == "user"), None)
-                if first_user_msg:
-                    conv.title = first_user_msg.content[:64]
+            prev_messages = await _load_conversation_messages(session, conv.id)
+            memory_updated = await _maybe_extract_and_title(
+                session, conv, user_id, prev_messages, provider
+            )
 
             await session.commit()
             return {
@@ -183,42 +251,9 @@ async def chat_stream(
         committed = False
         try:
             conv = await _get_or_create_conversation(session, user_id, conversation_id)
-            user_msg = Message(
-                conversation_id=conv.id,
-                role="user",
-                content=message,
-            )
-            session.add(user_msg)
-            await session.flush()
 
-            prev_messages = await _load_conversation_messages(session, conv.id)
-            memory_context = await get_memory_context_for_prompt(session, user_id, message)
-            knowledge_context = await get_knowledge_context_for_prompt(message)
-            skills_context = await get_skills_context_for_prompt(session, skill_ids)
-            scene_context = await get_scene_context_for_prompt(session, scene_id)
-            history_dicts = [{"role": m.role, "content": m.content} for m in prev_messages[:-1]]
-            history_text = format_conversation_history(history_dicts)
-
-            if teacher_id:
-                result = await session.execute(select(Teacher).where(Teacher.id == teacher_id))
-                teacher = result.scalar_one_or_none()
-                if teacher:
-                    teacher_description = teacher.system_prompt
-
-            system_prompt = build_system_prompt(
-                memory_context=memory_context,
-                knowledge_context=knowledge_context,
-                conversation_history=history_text,
-                teacher_description=teacher_description,
-                skills_context=skills_context,
-                scene_context=scene_context,
-            )
-            llm_messages = [LLMMessage(role="system", content=system_prompt)]
-            for m in prev_messages:
-                llm_messages.append(LLMMessage(role=m.role, content=m.content))
-
+            # 安全检查必须在调用 LLM 之前：危机内容不应被送往外部模型。
             safety_result = check_safety(message)
-
             if not safety_result.is_safe:
                 warning_text = (
                     f"\n\n【温馨提示】{safety_result.message}\n\n{safety_result.suggestion}"
@@ -226,8 +261,31 @@ async def chat_stream(
                 for char in warning_text:
                     yield {"delta": char, "done": False, "conversation_id": conv.id}
                     await asyncio.sleep(0.02)
+                assistant_msg = Message(
+                    conversation_id=conv.id, role="assistant", content=warning_text.strip()
+                )
+                session.add(assistant_msg)
+                await session.flush()
+                if not conv.title:
+                    conv.title = message[:64]
+                await session.commit()
+                committed = True
                 yield {"delta": "", "done": True, "conversation_id": conv.id}
                 return
+
+            _persist_user_message(session, conv, message)
+            await session.flush()
+
+            llm_messages = await _prepare_turn_context(
+                session,
+                user_id,
+                conv,
+                message,
+                skill_ids,
+                scene_id,
+                teacher_id,
+                teacher_description,
+            )
 
             collected_parts: list[str] = []
             async for delta in chat_completion_stream(
@@ -240,29 +298,12 @@ async def chat_stream(
                 yield {"delta": delta, "done": False, "conversation_id": conv.id}
 
             full_reply = "".join(collected_parts)
-            assistant_msg = Message(
-                conversation_id=conv.id,
-                role="assistant",
-                content=full_reply,
-            )
+            assistant_msg = Message(conversation_id=conv.id, role="assistant", content=full_reply)
             session.add(assistant_msg)
             await session.flush()
 
-            all_msgs = prev_messages + [assistant_msg]
-            user_turn_count = sum(1 for m in all_msgs if m.role == "user")
-            if user_turn_count % 2 == 0:
-                try:
-                    memories_data = await extract_memories(all_msgs, provider=provider)
-                    if memories_data:
-                        await store_memories(session, user_id, memories_data, conv.id)
-                except Exception:
-                    logger.warning("记忆提取失败", exc_info=True)
-
-            all_conv_messages = prev_messages + [assistant_msg]
-            if not conv.title:
-                first_user_msg = next((m for m in all_conv_messages if m.role == "user"), None)
-                if first_user_msg:
-                    conv.title = first_user_msg.content[:64]
+            prev_messages = await _load_conversation_messages(session, conv.id)
+            await _maybe_extract_and_title(session, conv, user_id, prev_messages, provider)
 
             await session.commit()
             committed = True

@@ -17,7 +17,9 @@ async def get_skills_context_for_prompt(
 ) -> str:
     """获取技能上下文。如果 skill_ids 为 None，则获取所有已启用的技能。"""
     ordered_ids: list[str] | None = None
-    if skill_ids is not None and skill_ids:
+    if skill_ids is not None:
+        if not skill_ids:
+            return ""
         seen: set[str] = set()
         ordered_ids = []
         for sid in skill_ids:

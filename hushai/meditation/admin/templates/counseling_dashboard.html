@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}咨询数据看板{% endblock %}
+{% block page_title %}咨询数据看板{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb">
+    <a href="/admin/">仪表盘</a> / <a href="/admin/counseling-dashboard">心理咨询</a> / 数据看板
+</nav>
+{% endblock %}
+
+{% block content %}
+<!-- 统计卡片 -->
+<div class="stats-grid">
+    <div class="stat-card stat-card-primary">
+        <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.approved_counselors }}</div>
+            <div class="stat-label">认证咨询师</div>
+            <div class="stat-sub">待审核 {{ stats.pending_counselors }} · 在线 {{ stats.online_counselors }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-card-success">
+        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.total_appointments }}</div>
+            <div class="stat-label">总预约数</div>
+            <div class="stat-sub">待处理 {{ stats.pending_appointments }} · 已确认 {{ stats.confirmed_appointments }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-card-warning">
+        <div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">¥{{ "%.2f"|format(stats.total_revenue) }}</div>
+            <div class="stat-label">累计收入</div>
+            <div class="stat-sub">今日新增 {{ stats.today_orders }} 单</div>
+        </div>
+    </div>
+    <div class="stat-card stat-card-info">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.total_service_hours }}h</div>
+            <div class="stat-label">累计服务时长</div>
+            <div class="stat-sub">共 {{ stats.total_service_records }} 条记录</div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- 待审核咨询师 -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-user-clock"></i> 待审核入驻</h3>
+        </div>
+        <div class="card-body">
+            {% if pending_review %}
+            <table class="data-table">
+                <thead>
+                    <tr><th>姓名</th><th>申请时间</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in pending_review %}
+                    <tr>
+                        <td>{{ c.real_name }}</td>
+                        <td>{{ c.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="/admin/counselors/{{ c.id }}" class="btn btn-sm btn-primary">查看</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">暂无待审核申请</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 今日预约 -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-calendar-day"></i> 今日预约 ({{ today.isoformat() }})</h3>
+        </div>
+        <div class="card-body">
+            {% if today_appointments %}
+            <table class="data-table">
+                <thead>
+                    <tr><th>时间</th><th>状态</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                    {% for a in today_appointments %}
+                    <tr>
+                        <td>{{ a.start_time.strftime('%H:%M') }} - {{ a.end_time.strftime('%H:%M') }}</td>
+                        <td>
+                            <span class="badge badge-{{ 'warning' if a.status == 'pending' else ('success' if a.status == 'confirmed' else 'secondary') }}">
+                                {{ a.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/admin/appointments/{{ a.id }}" class="btn btn-sm btn-secondary">详情</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">今日暂无预约</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

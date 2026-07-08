@@ -24,8 +24,13 @@ class _FakeTTYStdin:
 def test_main_no_api_key(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
+    tmp_path: pytest.TempPathFactory,
 ) -> None:
     monkeypatch.delenv("LLM_APPKEY", raising=False)
+    monkeypatch.setattr(
+        "hushai.settings.default_config_path",
+        lambda: tmp_path / "nonexistent.json",  # type: ignore[operator]
+    )
     monkeypatch.setattr("hushai.cli.sys.stdin", _FakeTTYStdin())
     assert main(["hello"]) == 1
     err = capsys.readouterr().err
@@ -83,8 +88,13 @@ def test_main_stdin_empty(
 def test_main_json_errors(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
+    tmp_path: pytest.TempPathFactory,
 ) -> None:
     monkeypatch.delenv("LLM_APPKEY", raising=False)
+    monkeypatch.setattr(
+        "hushai.settings.default_config_path",
+        lambda: tmp_path / "nonexistent.json",  # type: ignore[operator]
+    )
     monkeypatch.setattr("hushai.cli.sys.stdin", _FakeTTYStdin())
     assert main(["--json-errors", "hi"]) == 1
     err = capsys.readouterr().err.strip()

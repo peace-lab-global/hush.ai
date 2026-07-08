@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import io
 from datetime import datetime
 from typing import Any
 
 from fastapi.responses import StreamingResponse
-import io
 
 
 def export_to_csv(data: list[dict[str, Any]], filename: str) -> StreamingResponse:

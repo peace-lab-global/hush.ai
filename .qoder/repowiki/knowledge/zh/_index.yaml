@@ -1,0 +1,148 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: main
+nodes_managed: true
+exported_at: "2026-07-08T05:25:53Z"
+modules:
+    "":
+        dir_name: hush.ai 冥想老师与开放认知平台（Python 多包仓库）
+        title: hush.ai 冥想老师与开放认知平台（Python 多包仓库）
+        scope:
+            - README.md
+            - CONTRIBUTING.md
+            - GOVERNANCE.md
+            - SECURITY.md
+            - MAINTAINERS.md
+            - CODE_OF_CONDUCT.md
+            - Makefile
+            - pyproject.toml
+            - alembic.ini
+            - docker-compose.yml
+            - skills-lock.json
+            - .editorconfig
+            - .env.example
+            - .gitignore
+            - .pre-commit-config.yaml
+            - CHANGELOG.md
+            - LICENSE
+            - NOTICE
+            - package-lock.json
+            - package.json
+            - uv.lock
+        source_files: []
+        children:
+            - docs
+            - knowledge_base
+            - meditation_app
+            - scripts
+            - tests
+        depends_on: []
+        related_to: []
+    docs:
+        dir_name: 项目文档与部署指南
+        title: 项目文档与部署指南
+        scope:
+            - docs/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: meditation_app/admin_ui
+            - path: meditation_app/api_routes
+    knowledge_base:
+        dir_name: 开放认知数据库（Open Cognition）
+        title: 开放认知数据库（Open Cognition）
+        scope:
+            - knowledge/open-cognition/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: scripts
+    meditation_app:
+        dir_name: 冥想老师 AI 分身服务（FastAPI 单体应用）
+        title: 冥想老师 AI 分身服务（FastAPI 单体应用）
+        scope:
+            - hushai/meditation/
+        source_files: []
+        children:
+            - meditation_app/admin_ui
+            - meditation_app/api_routes
+            - meditation_app/core_engine
+            - meditation_app/database_layer
+        depends_on: []
+        related_to:
+            - path: scripts
+    meditation_app/admin_ui:
+        dir_name: 管理后台 Web 界面（FastAPI + Jinja2）
+        title: 管理后台 Web 界面（FastAPI + Jinja2）
+        scope:
+            - hushai/meditation/admin/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: docs
+            - path: meditation_app/core_engine
+            - path: meditation_app/database_layer
+    meditation_app/api_routes:
+        dir_name: 冥想应用 FastAPI 路由层
+        title: 冥想应用 FastAPI 路由层
+        scope:
+            - hushai/meditation/api/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: docs
+            - path: meditation_app/core_engine
+            - path: meditation_app/database_layer
+    meditation_app/core_engine:
+        dir_name: 冥想老师核心引擎（对话编排、记忆与知识库）
+        title: 冥想老师核心引擎（对话编排、记忆与知识库）
+        scope:
+            - hushai/meditation/core/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: meditation_app/admin_ui
+            - path: meditation_app/api_routes
+            - path: meditation_app/database_layer
+            - path: tests
+    meditation_app/database_layer:
+        dir_name: 冥想应用数据库层（SQLAlchemy ORM + Alembic 迁移 + ChromaDB 向量检索）
+        title: 冥想应用数据库层（SQLAlchemy ORM + Alembic 迁移 + ChromaDB 向量检索）
+        scope:
+            - hushai/meditation/db/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: meditation_app/admin_ui
+            - path: meditation_app/api_routes
+            - path: meditation_app/core_engine
+            - path: tests
+    scripts:
+        dir_name: 冥想老师服务运维与测试脚本集
+        title: 冥想老师服务运维与测试脚本集
+        scope:
+            - scripts/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: knowledge_base
+            - path: meditation_app
+    tests:
+        dir_name: hush.ai 单元测试套件
+        title: hush.ai 单元测试套件
+        scope:
+            - tests/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: meditation_app/core_engine
+            - path: meditation_app/database_layer

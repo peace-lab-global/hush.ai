@@ -12,7 +12,6 @@ import bcrypt
 from fastapi import HTTPException, Request
 from jose import JWTError, jwt  # type: ignore[import-untyped]
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from hushai.meditation.config import get_config
 from hushai.meditation.db.models import AdminUser
@@ -145,14 +144,20 @@ def get_csrf_from_request(request: Request) -> str | None:
 
 
 def set_csrf_cookie(response, csrf_token: str) -> None:
-    """设置 CSRF 令牌到响应 cookie。"""
+    """设置 CSRF 令牌到响应 cookie。
+
+    ``secure`` 跟随配置：开发环境（HTTP）不启用以免本地无法写入，生产
+    （HTTPS）启用。CSRF token 需对前端 JS 可见（用于读取后放入 X-CSRF-Token），
+    故 ``httponly=False``。
+    """
+    cfg = get_config()
     response.set_cookie(
         CSRF_TOKEN_COOKIE_NAME,
         csrf_token,
         httponly=False,
         max_age=86400,
         samesite="strict",
-        secure=False,
+        secure=not cfg.debug,
     )
 
 
@@ -170,9 +175,8 @@ def require_csrf(func):
 
     @wraps(func)
     async def wrapper(request: Request, *args, **kwargs):
-        if request.method in ("POST", "PUT", "DELETE", "PATCH"):
-            if not verify_csrf_token(request):
-                raise HTTPException(status_code=403, detail="CSRF 验证失败")
+        if request.method in ("POST", "PUT", "DELETE", "PATCH") and not verify_csrf_token(request):
+            raise HTTPException(status_code=403, detail="CSRF 验证失败")
         return await func(request, *args, **kwargs)
 
     return wrapper

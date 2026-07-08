@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timezone
 from typing import List, Optional
 
 from sqlalchemy import (
     JSON,
+    Boolean,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -15,6 +17,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    Time,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -41,6 +44,11 @@ class User(Base):
     nickname: Mapped[Optional[str]] = mapped_column(String(128))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(512))
     refresh_token_hash: Mapped[Optional[str]] = mapped_column(String(256), index=True)
+    # refresh token 的 SHA-256 hex（非密钥），仅用于 O(1) 查找命中的用户，
+    # 再用 refresh_token_hash 做最终校验。避免全表 bcrypt 扫描。
+    refresh_token_selector: Mapped[Optional[str]] = mapped_column(
+        String(64), unique=True, index=True
+    )
     selected_teacher_id: Mapped[Optional[str]] = mapped_column(
         String(36), ForeignKey("teachers.id")
     )
@@ -210,6 +218,8 @@ class MeditationSession(Base):
     note: Mapped[Optional[str]] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
+    user: Mapped[User] = relationship(back_populates="meditation_sessions")
+
 
 class DailyProgress(Base):
     """用户每日进度统计。"""
@@ -229,6 +239,8 @@ class DailyProgress(Base):
     )
 
     __table_args__ = (Index("ix_daily_progress_user_date", "user_id", "date"),)
+
+    user: Mapped[User] = relationship(back_populates="daily_progress")
 
 
 class Teacher(Base):
@@ -251,3 +263,179 @@ class Teacher(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  咨询服务模型（心理咨询行业功能）
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class Counselor(Base):
+    """心理咨询师。"""
+
+    __tablename__ = "counselors"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    real_name: Mapped[str] = mapped_column(String(64))
+    phone: Mapped[Optional[str]] = mapped_column(String(32))
+    email: Mapped[Optional[str]] = mapped_column(String(128))
+    avatar_url: Mapped[Optional[str]] = mapped_column(String(512))
+    specialties: Mapped[Optional[list]] = mapped_column(JSON)
+    certifications: Mapped[Optional[list]] = mapped_column(JSON)
+    bio: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(
+        String(16), default="pending", index=True
+    )  # pending / approved / rejected / disabled
+    hourly_rate: Mapped[float] = mapped_column(Float, default=0.0)
+    rating: Mapped[float] = mapped_column(Float, default=5.0)
+    total_sessions: Mapped[int] = mapped_column(Integer, default=0)
+    is_online: Mapped[bool] = mapped_column(Boolean, default=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+    user: Mapped["User"] = relationship(foreign_keys=[user_id])
+    schedules: Mapped[List["CounselorSchedule"]] = relationship(back_populates="counselor")
+    appointments: Mapped[List["Appointment"]] = relationship(back_populates="counselor")
+
+
+class CounselorSchedule(Base):
+    """咨询师排班时段。"""
+
+    __tablename__ = "counselor_schedules"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
+    schedule_date: Mapped[date] = mapped_column(Date, index=True)
+    start_time: Mapped[time] = mapped_column(Time)
+    end_time: Mapped[time] = mapped_column(Time)
+    slot_duration_minutes: Mapped[int] = mapped_column(Integer, default=50)
+    max_bookings: Mapped[int] = mapped_column(Integer, default=1)
+    is_available: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+    counselor: Mapped["Counselor"] = relationship(back_populates="schedules")
+
+    __table_args__ = (
+        Index(
+            "ix_counselor_schedule_unique",
+            "counselor_id",
+            "schedule_date",
+            "start_time",
+            unique=True,
+        ),
+    )
+
+
+class Appointment(Base):
+    """咨询预约。"""
+
+    __tablename__ = "appointments"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    schedule_id: Mapped[Optional[str]] = mapped_column(ForeignKey("counselor_schedules.id"))
+    appointment_date: Mapped[date] = mapped_column(Date, index=True)
+    start_time: Mapped[time] = mapped_column(Time)
+    end_time: Mapped[time] = mapped_column(Time)
+    status: Mapped[str] = mapped_column(
+        String(16), default="pending", index=True
+    )  # pending / confirmed / completed / cancelled / rejected
+    cancel_reason: Mapped[Optional[str]] = mapped_column(Text)
+    client_notes: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+    counselor: Mapped["Counselor"] = relationship(back_populates="appointments")
+    user: Mapped["User"] = relationship(foreign_keys=[user_id])
+    order: Mapped[Optional["ConsultationOrder"]] = relationship(back_populates="appointment")
+    service_record: Mapped[Optional["ServiceRecord"]] = relationship(back_populates="appointment")
+
+
+class ConsultationOrder(Base):
+    """咨询订单。"""
+
+    __tablename__ = "consultation_orders"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    appointment_id: Mapped[str] = mapped_column(ForeignKey("appointments.id"), index=True)
+    counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    order_type: Mapped[str] = mapped_column(String(16), default="single")  # single / package
+    package_name: Mapped[Optional[str]] = mapped_column(String(128))
+    amount: Mapped[float] = mapped_column(Float, default=0.0)
+    paid_amount: Mapped[float] = mapped_column(Float, default=0.0)
+    status: Mapped[str] = mapped_column(
+        String(16), default="unpaid", index=True
+    )  # unpaid / paid / refunded
+    wx_transaction_id: Mapped[Optional[str]] = mapped_column(String(64))
+    wx_prepay_id: Mapped[Optional[str]] = mapped_column(String(64))
+    paid_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    refunded_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+    appointment: Mapped["Appointment"] = relationship(back_populates="order")
+    counselor: Mapped["Counselor"] = relationship(foreign_keys=[counselor_id])
+    user: Mapped["User"] = relationship(foreign_keys=[user_id])
+    service_record: Mapped[Optional["ServiceRecord"]] = relationship(back_populates="order")
+
+
+class ServiceRecord(Base):
+    """咨询服务记录（敏感字段加密存储）。"""
+
+    __tablename__ = "service_records"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    order_id: Mapped[Optional[str]] = mapped_column(
+        ForeignKey("consultation_orders.id"), index=True
+    )
+    appointment_id: Mapped[Optional[str]] = mapped_column(ForeignKey("appointments.id"), index=True)
+    counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    service_type: Mapped[str] = mapped_column(String(32), default="standard")
+    duration_minutes: Mapped[int] = mapped_column(Integer, default=0)
+    summary_encrypted: Mapped[Optional[str]] = mapped_column("summary", Text)
+    counselor_notes_encrypted: Mapped[Optional[str]] = mapped_column("counselor_notes", Text)
+    status: Mapped[str] = mapped_column(
+        String(16), default="in_progress"
+    )  # in_progress / completed / archived
+    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+    order: Mapped[Optional["ConsultationOrder"]] = relationship(back_populates="service_record")
+    appointment: Mapped[Optional["Appointment"]] = relationship(back_populates="service_record")
+    counselor: Mapped["Counselor"] = relationship(foreign_keys=[counselor_id])
+    user: Mapped["User"] = relationship(foreign_keys=[user_id])
+
+
+class AppointmentSettings(Base):
+    """预约配置（全局或咨询师级别）。"""
+
+    __tablename__ = "appointment_settings"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    counselor_id: Mapped[Optional[str]] = mapped_column(
+        ForeignKey("counselors.id"), unique=True, index=True
+    )
+    max_booking_count: Mapped[int] = mapped_column(Integer, default=5)
+    min_advance_hours: Mapped[int] = mapped_column(Integer, default=2)
+    slot_duration_minutes: Mapped[int] = mapped_column(Integer, default=50)
+    reminder_before_minutes: Mapped[int] = mapped_column(Integer, default=5)
+    info_collection_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_open: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+    counselor: Mapped[Optional["Counselor"]] = relationship(foreign_keys=[counselor_id])

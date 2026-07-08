@@ -112,16 +112,26 @@ ignore = ["B008", "UP006", "UP035", "UP037", "UP045"]
 known-first-party = ["hushai"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.13"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
 strict_optional = true
 packages = ["hushai"]
+exclude = [".venv", "build", "dist"]
 
 [[tool.mypy.overrides]]
 module = "openai.*"
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "openpyxl.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "click.*"
+ignore_missing_imports = true
+follow_imports = "skip"
 
 [dependency-groups]
 dev = [

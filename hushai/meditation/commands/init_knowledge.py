@@ -6,12 +6,9 @@ from __future__ import annotations
 import argparse
 import asyncio
 import hashlib
-import os
 import re
-import shutil
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 from typing import Final
 
@@ -25,10 +22,10 @@ load_dotenv(_PROJECT_ROOT / ".env")
 # 将项目根目录加入 sys.path（开发模式）
 sys.path.insert(0, str(_PROJECT_ROOT))
 
-from hushai.meditation.config import reset_config
-from hushai.meditation.core.knowledge import import_text, prepare_import_content
-from hushai.meditation.db.session import close_db, get_session_factory, init_db
-from hushai.meditation.db.vector import knowledge_collection
+from hushai.meditation.config import reset_config  # noqa: E402
+from hushai.meditation.core.knowledge import import_text, prepare_import_content  # noqa: E402
+from hushai.meditation.db.session import close_db, get_session_factory, init_db  # noqa: E402
+from hushai.meditation.db.vector import knowledge_collection  # noqa: E402
 
 DEFAULT_REPO_URL: Final[str] = "https://github.com/peace-lab-global/open-cognition.git"
 DEFAULT_SOURCE_DIR: Final[Path] = _PROJECT_ROOT / "knowledge" / "open-cognition"
@@ -103,7 +100,7 @@ def _get_already_imported_sources() -> set[str]:
         results = col.get(include=["metadatas"])
         sources: set[str] = set()
         if results and results.get("metadatas"):
-            for meta in results["metadatas"]:
+            for meta in results["metadatas"]:  # type: ignore[union-attr]
                 if meta and meta.get("source"):
                     sources.add(str(meta["source"]))
         return sources
@@ -137,7 +134,13 @@ async def _do_import(
     """执行导入，返回统计信息。"""
     md_files = _collect_md_files(source_dir, domain_filter)
     if not md_files:
-        return {"total_files": 0, "imported": 0, "skipped": 0, "chunks": 0, "errors": ["未找到匹配的 Markdown 文件"]}
+        return {
+            "total_files": 0,
+            "imported": 0,
+            "skipped": 0,
+            "chunks": 0,
+            "errors": ["未找到匹配的 Markdown 文件"],
+        }
 
     existing_sources: set[str] = set()
     if skip_existing and not dry_run:
@@ -153,7 +156,13 @@ async def _do_import(
             tag_str = ", ".join(tags) if tags else "—"
             status = "已存在" if str(rel) in existing_sources else "新导入"
             print(f"  [{status}] {rel} | 领域: [{tag_str}]")
-        return {"total_files": len(md_files), "imported": 0, "skipped": 0, "chunks": 0, "errors": []}
+        return {
+            "total_files": len(md_files),
+            "imported": 0,
+            "skipped": 0,
+            "chunks": 0,
+            "errors": [],
+        }
 
     # 初始化数据库
     await init_db()
@@ -223,13 +232,14 @@ async def _do_import(
 def _print_report(result: dict[str, int | list[str]]) -> None:
     """打印导入报告。"""
     print(f"\n{'=' * 55}")
-    print(f"  知识库导入报告")
+    print("  知识库导入报告")
     print(f"{'=' * 55}")
     print(f"  总文件数 : {result['total_files']}")
     print(f"  新导入   : {result['imported']}")
     print(f"  跳过     : {result['skipped']}")
     print(f"  总分块   : {result['chunks']}")
     errors = result.get("errors", [])
+    assert isinstance(errors, list)
     if errors:
         print(f"  失败     : {len(errors)}")
         for e in errors[:5]:
@@ -237,7 +247,7 @@ def _print_report(result: dict[str, int | list[str]]) -> None:
         if len(errors) > 5:
             print(f"    ... 还有 {len(errors) - 5} 个错误")
     else:
-        print(f"  失败     : 0")
+        print("  失败     : 0")
     print(f"{'=' * 55}")
 
 

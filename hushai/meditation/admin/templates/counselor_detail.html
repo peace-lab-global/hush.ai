@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}咨询师详情{% endblock %}
+{% block page_title %}咨询师详情 - {{ counselor.real_name }}{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb"><a href="/admin/">仪表盘</a> / <a href="/admin/counselors">咨询师管理</a> / 详情</nav>
+{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+    <!-- 基本信息 -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fas fa-id-card"></i> 基本信息</h3></div>
+        <div class="card-body">
+            <div class="detail-grid">
+                <div class="detail-item"><label>姓名</label><span>{{ counselor.real_name }}</span></div>
+                <div class="detail-item"><label>手机号</label><span>{{ mask_phone(counselor.phone) if counselor.phone else '-' }}</span></div>
+                <div class="detail-item"><label>邮箱</label><span>{{ counselor.email or '-' }}</span></div>
+                <div class="detail-item"><label>时薪</label><span>¥{{ "%.0f"|format(counselor.hourly_rate) }}</span></div>
+                <div class="detail-item"><label>评分</label><span>{{ "%.1f"|format(counselor.rating) }} / 5.0</span></div>
+                <div class="detail-item"><label>总咨询数</label><span>{{ counselor.total_sessions }}</span></div>
+                <div class="detail-item">
+                    <label>状态</label>
+                    <span class="badge badge-{% if counselor.status == 'approved' %}success{% elif counselor.status == 'pending' %}warning{% elif counselor.status == 'rejected' %}danger{% else %}secondary{% endif %}">
+                        {{ counselor.status }}
+                    </span>
+                </div>
+                <div class="detail-item"><label>上线</label><span>{{ '是' if counselor.is_online else '否' }}</span></div>
+                <div class="detail-item"><label>注册时间</label><span>{{ counselor.created_at.strftime('%Y-%m-%d %H:%M') }}</span></div>
+            </div>
+            {% if counselor.specialties %}
+            <div class="detail-item" style="margin-top:1rem">
+                <label>擅长领域</label>
+                <div class="tag-list">
+                    {% for s in counselor.specialties %}<span class="tag">{{ s }}</span>{% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% if counselor.bio %}
+            <div class="detail-item" style="margin-top:1rem">
+                <label>个人简介</label>
+                <p>{{ counselor.bio }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 审核操作 -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fas fa-gavel"></i> 审核操作</h3></div>
+        <div class="card-body">
+            <div class="stats-grid" style="margin-bottom:1.5rem">
+                <div class="stat-card"><div class="stat-info"><div class="stat-value">{{ schedule_count }}</div><div class="stat-label">排班数</div></div></div>
+                <div class="stat-card"><div class="stat-info"><div class="stat-value">{{ appt_count }}</div><div class="stat-label">总预约</div></div></div>
+                <div class="stat-card"><div class="stat-info"><div class="stat-value">{{ pending_appt }}</div><div class="stat-label">待处理</div></div></div>
+            </div>
+
+            {% if counselor.status == 'pending' %}
+            <div class="form-group">
+                <label>审核备注</label>
+                <textarea id="reviewReason" class="form-control" rows="3" placeholder="可选：填写审核意见"></textarea>
+            </div>
+            <div class="btn-group">
+                <button onclick="reviewAction('approve')" class="btn btn-success"><i class="fas fa-check"></i> 通过认证</button>
+                <button onclick="reviewAction('reject')" class="btn btn-danger"><i class="fas fa-times"></i> 拒绝入驻</button>
+            </div>
+            {% elif counselor.status == 'approved' %}
+            <button onclick="reviewAction('disable')" class="btn btn-warning"><i class="fas fa-ban"></i> 禁用咨询师</button>
+            {% elif counselor.status == 'disabled' %}
+            <button onclick="reviewAction('approve')" class="btn btn-success"><i class="fas fa-check"></i> 重新启用</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+async function reviewAction(action) {
+    const reason = document.getElementById('reviewReason')?.value || '';
+    try {
+        const resp = await fetch('/admin/counselors/{{ counselor.id }}/review?action=' + action + '&reason=' + encodeURIComponent(reason), { method: 'POST' });
+        const data = await resp.json();
+        if (data.success) {
+            showToast('success', '操作成功', '状态已更新为: ' + data.status);
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast('error', '操作失败', data.detail || '');
+        }
+    } catch (e) {
+        showToast('error', '请求失败', e.message);
+    }
+}
+</script>
+{% endblock %}

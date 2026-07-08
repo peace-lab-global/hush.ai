@@ -219,9 +219,6 @@ async def _fetch_single(
         return None
 
     fn = _resolve_filename_from_url(doc.url)
-    is_md = fn.lower().endswith((".md", ".markdown")) or "markdown" in str(
-        resp.headers.get("content-type", "")
-    ).lower()
     return content, doc.title or fn, doc.tags, doc.source
 
 
@@ -297,7 +294,6 @@ async def _import_documents(
     session,
 ) -> dict[str, Any]:
     """内部：抓取并导入文档列表。"""
-    from hushai.meditation.core.knowledge import import_text, prepare_import_content
 
     results: list[dict[str, Any]] = []
     errors: list[str] = []
@@ -305,9 +301,8 @@ async def _import_documents(
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_FETCHES)
 
     async def _fetch_one(doc: RemoteDocument) -> None:
-        async with semaphore:
-            async with httpx.AsyncClient(timeout=FETCH_TIMEOUT) as client:
-                fetched = await _fetch_single(client, doc, extra_headers)
+        async with semaphore, httpx.AsyncClient(timeout=FETCH_TIMEOUT) as client:
+            fetched = await _fetch_single(client, doc, extra_headers)
         if fetched is None:
             errors.append(f"{doc.url}: 抓取失败")
             return

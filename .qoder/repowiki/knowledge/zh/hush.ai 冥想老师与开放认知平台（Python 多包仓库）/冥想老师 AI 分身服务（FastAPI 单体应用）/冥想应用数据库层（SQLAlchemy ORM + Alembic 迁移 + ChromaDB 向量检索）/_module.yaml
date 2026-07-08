@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: meditation_app/database_layer
+title: 冥想应用数据库层（SQLAlchemy ORM + Alembic 迁移 + ChromaDB 向量检索）
+scope:
+    - hushai/meditation/db/
+source_files: []
+depends_on: []
+related_to:
+    - path: meditation_app/admin_ui
+    - path: meditation_app/api_routes
+    - path: meditation_app/core_engine
+    - path: tests

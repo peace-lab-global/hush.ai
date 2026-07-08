@@ -8,8 +8,17 @@ build/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage *
 coverage.xml
 htmlcov/
 .venv/
 venv/
 .env
+
+# 运行时数据 / 本地数据库
+*.db
+*.sqlite3
+chroma_data/
+
+# macOS
+.DS_Store

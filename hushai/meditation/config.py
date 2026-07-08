@@ -51,6 +51,14 @@ class MeditationConfig:
     cors_origins: list[str] = field(default_factory=list)
     llm_providers: dict[str, dict[str, str]] = field(default_factory=dict)
     remote_knowledge_sources: dict[str, dict[str, str]] = field(default_factory=dict)
+    # 微信支付配置
+    wx_mch_id: str = ""
+    wx_pay_api_key: str = ""
+    wx_pay_cert_path: str = ""
+    wx_pay_serial_no: str = ""
+    wx_pay_notify_url: str = ""
+    # 加密配置
+    encryption_key: str = ""
 
     @classmethod
     def from_env(cls) -> MeditationConfig:
@@ -86,6 +94,12 @@ class MeditationConfig:
             "MEDITATION_HOST": ("host", str),
             "MEDITATION_PORT": ("port", int),
             "MEDITATION_DEBUG": ("debug", bool),
+            "MEDITATION_WX_MCH_ID": ("wx_mch_id", str),
+            "MEDITATION_WX_PAY_API_KEY": ("wx_pay_api_key", str),
+            "MEDITATION_WX_PAY_CERT_PATH": ("wx_pay_cert_path", str),
+            "MEDITATION_WX_PAY_SERIAL_NO": ("wx_pay_serial_no", str),
+            "MEDITATION_WX_PAY_NOTIFY_URL": ("wx_pay_notify_url", str),
+            "MEDITATION_ENCRYPTION_KEY": ("encryption_key", str),
         }
         for env_key, (field_name, typ) in mapping.items():
             val = os.environ.get(env_key)

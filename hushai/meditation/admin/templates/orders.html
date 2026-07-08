@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}订单管理{% endblock %}
+{% block page_title %}订单管理{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb"><a href="/admin/">仪表盘</a> / <a href="/admin/orders">心理咨询</a> / 订单管理</nav>
+{% endblock %}
+
+{% block content %}
+<!-- 统计卡片 -->
+<div class="stats-grid">
+    <div class="stat-card stat-card-primary"><div class="stat-icon"><i class="fas fa-receipt"></i></div><div class="stat-info"><div class="stat-value">{{ stats.total_orders }}</div><div class="stat-label">总订单</div></div></div>
+    <div class="stat-card stat-card-warning"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-value">{{ stats.unpaid }}</div><div class="stat-label">待付款</div></div></div>
+    <div class="stat-card stat-card-success"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value">¥{{ "%.2f"|format(stats.total_revenue) }}</div><div class="stat-label">累计收入</div></div></div>
+    <div class="stat-card stat-card-danger"><div class="stat-icon"><i class="fas fa-undo"></i></div><div class="stat-info"><div class="stat-value">{{ stats.refunded }}</div><div class="stat-label">已退款</div></div></div>
+</div>
+
+<!-- 筛选栏 -->
+<div class="toolbar">
+    <form class="search-form" method="GET" action="/admin/orders">
+        <div class="search-input-group">
+            <select name="status">
+                <option value="">全部状态</option>
+                <option value="unpaid" {% if status_filter == 'unpaid' %}selected{% endif %}>待付款</option>
+                <option value="paid" {% if status_filter == 'paid' %}selected{% endif %}>已付款</option>
+                <option value="refunded" {% if status_filter == 'refunded' %}selected{% endif %}>已退款</option>
+            </select>
+            <button type="submit" class="btn btn-primary">查询</button>
+            {% if status_filter %}<a href="/admin/orders" class="btn btn-secondary">清除</a>{% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- 订单列表 -->
+<div class="card">
+    {% if orders %}
+    <table class="data-table">
+        <thead><tr><th>订单号</th><th>类型</th><th>金额</th><th>实付</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td><code>{{ o.id[:12] }}...</code></td>
+                <td>{{ o.order_type }}</td>
+                <td>¥{{ "%.2f"|format(o.amount) }}</td>
+                <td>¥{{ "%.2f"|format(o.paid_amount) }}</td>
+                <td>
+                    <span class="badge badge-{% if o.status == 'paid' %}success{% elif o.status == 'unpaid' %}warning{% else %}danger{% endif %}">
+                        {{ o.status }}
+                    </span>
+                </td>
+                <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td><a href="/admin/orders/{{ o.id }}" class="btn btn-sm btn-primary">详情</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}<a href="?page={{ page-1 }}&status={{ status_filter }}" class="page-btn">&laquo;</a>{% endif %}
+        {% for p in range([1, page-2]|max, [total_pages+1, page+3]|min) %}
+        <a href="?page={{ p }}&status={{ status_filter }}" class="page-btn {% if p == page %}active{% endif %}">{{ p }}</a>
+        {% endfor %}
+        {% if page < total_pages %}<a href="?page={{ page+1 }}&status={{ status_filter }}" class="page-btn">&raquo;</a>{% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="empty-state">暂无订单数据</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -4,18 +4,32 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hushai.meditation.api.auth import get_current_user_id
-from hushai.meditation.db.models import DailyProgress, MeditationSession, User
+from hushai.meditation.api.auth import extract_bearer_token, get_current_user_id
+from hushai.meditation.db.models import DailyProgress, MeditationSession
 from hushai.meditation.db.session import get_session
 
 router = APIRouter(prefix="/api/meditation", tags=["meditation"])
+
+
+def _extract_token(authorization: str) -> str:
+    return extract_bearer_token(authorization)
+
+
+async def _require_user(
+    authorization: str = Header(..., alias="Authorization"),
+    session: AsyncSession = Depends(get_session),
+) -> str:
+    token = _extract_token(authorization)
+    try:
+        return await get_current_user_id(token, session)
+    except RuntimeError as e:
+        raise HTTPException(status_code=401, detail=str(e)) from None
 
 
 def _utcnow() -> datetime:
@@ -97,7 +111,7 @@ _active_sessions: dict[str, datetime] = {}
 @router.post("/session/start", response_model=SessionStartResponse)
 async def start_session(
     req: SessionStartRequest,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     session_id = str(uuid.uuid4())
@@ -121,7 +135,7 @@ async def start_session(
 @router.post("/session/end", response_model=SessionEndResponse)
 async def end_session(
     req: SessionEndRequest,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     if req.session_id not in _active_sessions:
@@ -162,7 +176,7 @@ async def end_session(
 @router.post("/mood-checkin", response_model=MoodCheckInResponse)
 async def mood_checkin(
     req: MoodCheckInRequest,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     recorded_at = _utcnow()
@@ -225,7 +239,7 @@ async def _update_daily_progress(
 
 @router.get("/stats", response_model=ProgressStatsResponse)
 async def get_stats(
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     today = _date_only(_utcnow())
@@ -273,10 +287,9 @@ async def get_stats(
             if (
                 dp.date.date() == today.date()
                 or dp.date.date() == (today - timedelta(days=1)).date()
-            ):
-                if dp.meditation_count > 0:
-                    running_streak = dp.streak_day
-                    current_streak = dp.streak_day
+            ) and dp.meditation_count > 0:
+                running_streak = dp.streak_day
+                current_streak = dp.streak_day
         else:
             expected = prev_date - timedelta(days=1)
             if dp.date.date() == expected.date() and dp.meditation_count > 0:
@@ -320,7 +333,7 @@ async def get_stats(
 
 @router.get("/weekly", response_model=WeeklyProgressResponse)
 async def get_weekly(
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(_require_user),
     db: AsyncSession = Depends(get_session),
 ):
     today = _date_only(_utcnow())

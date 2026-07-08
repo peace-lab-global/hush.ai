@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """前端深度质量检查脚本"""
+
 import re
 from html.parser import HTMLParser
+
 
 def main():
     with open('hushai/meditation/static/index.html', encoding='utf-8') as f:
@@ -14,13 +16,17 @@ def main():
     class TagChecker(HTMLParser):
         def __init__(self):
             super().__init__()
-            self.self_closing = {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
+            self.self_closing = {
+                "area", "base", "br", "col", "embed", "hr", "img", "input",
+                "link", "meta", "param", "source", "track", "wbr",
+            }
             self.stack = []
             self.errors = []
             self.ids = set()
             self.dup_ids = []
         def handle_starttag(self, tag, attrs):
-            if tag in self.self_closing: return
+            if tag in self.self_closing:
+                return
             attr_dict = dict(attrs)
             if 'id' in attr_dict:
                 if attr_dict['id'] in self.ids:
@@ -28,7 +34,8 @@ def main():
                 self.ids.add(attr_dict['id'])
             self.stack.append(tag)
         def handle_endtag(self, tag):
-            if tag in self.self_closing: return
+            if tag in self.self_closing:
+                return
             if self.stack and self.stack[-1] == tag:
                 self.stack.pop()
             else:
@@ -97,7 +104,7 @@ def main():
     if complex_s:
         print(f'  ⚠ 复杂选择器: {len(complex_s)} 个')
     else:
-        print(f'  ✓ 选择器复杂度合理')
+        print("  ✓ 选择器复杂度合理")
 
     print()
     print('═' * 60)

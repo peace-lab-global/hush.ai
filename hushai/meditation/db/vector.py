@@ -44,7 +44,10 @@ def _make_embedding_function() -> Any:
     cfg = get_config()
     provider = cfg.embedding_provider
     if provider == "openai":
-        from chromadb.utils.embedding_functions import DefaultEmbeddingFunction, OpenAIEmbeddingFunction
+        from chromadb.utils.embedding_functions import (
+            DefaultEmbeddingFunction,
+            OpenAIEmbeddingFunction,
+        )
 
         api_key = cfg.embedding_api_key or cfg.openai_api_key
         if not api_key:

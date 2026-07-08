@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
@@ -16,6 +17,13 @@ from hushai.settings import (
     get_timeout_seconds,
     reset_for_tests,
 )
+
+
+def _tmp_config_path(monkeypatch: pytest.MonkeyPatch) -> Path:
+    """返回一个不存在的临时配置路径，避免测试读取本机配置文件。"""
+    import tempfile
+
+    return Path(tempfile.mkdtemp()) / "nonexistent_hush_config.json"
 
 
 def test_invalid_json_raises(tmp_path) -> None:
@@ -49,6 +57,10 @@ def test_defaults(monkeypatch) -> None:
     monkeypatch.delenv("LLM_TIMEOUT", raising=False)
     monkeypatch.delenv("LLM_MAX_RETRIES", raising=False)
     monkeypatch.delenv("HUSH_MODE", raising=False)
+    monkeypatch.setattr(
+        "hushai.settings.default_config_path",
+        lambda: _tmp_config_path(monkeypatch),
+    )
     reset_for_tests()
     configure(None)
     assert get_api_key() is None

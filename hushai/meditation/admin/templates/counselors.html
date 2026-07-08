@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}咨询师管理{% endblock %}
+{% block page_title %}咨询师管理{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb"><a href="/admin/">仪表盘</a> / <a href="/admin/counselors">心理咨询</a> / 咨询师管理</nav>
+{% endblock %}
+
+{% block content %}
+<!-- 统计卡片 -->
+<div class="stats-grid">
+    <div class="stat-card stat-card-primary">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-info"><div class="stat-value">{{ stats.total }}</div><div class="stat-label">总咨询师</div></div>
+    </div>
+    <div class="stat-card stat-card-warning">
+        <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+        <div class="stat-info"><div class="stat-value">{{ stats.pending }}</div><div class="stat-label">待审核</div></div>
+    </div>
+    <div class="stat-card stat-card-success">
+        <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+        <div class="stat-info"><div class="stat-value">{{ stats.approved }}</div><div class="stat-label">已认证</div></div>
+    </div>
+    <div class="stat-card stat-card-info">
+        <div class="stat-icon"><i class="fas fa-signal"></i></div>
+        <div class="stat-info"><div class="stat-value">{{ stats.online }}</div><div class="stat-label">在线</div></div>
+    </div>
+</div>
+
+<!-- 筛选栏 -->
+<div class="toolbar">
+    <form class="search-form" method="GET" action="/admin/counselors">
+        <div class="search-input-group">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" value="{{ search }}" placeholder="搜索姓名或手机号...">
+            <select name="status">
+                <option value="">全部状态</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>待审核</option>
+                <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>已认证</option>
+                <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>已拒绝</option>
+                <option value="disabled" {% if status_filter == 'disabled' %}selected{% endif %}>已禁用</option>
+            </select>
+            <button type="submit" class="btn btn-primary">搜索</button>
+            {% if search or status_filter %}<a href="/admin/counselors" class="btn btn-secondary">清除</a>{% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- 咨询师列表 -->
+<div class="card">
+    {% if counselors %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>姓名</th><th>手机号</th><th>状态</th><th>时薪</th>
+                <th>评分</th><th>咨询数</th><th>上线</th><th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in counselors %}
+            <tr>
+                <td><strong>{{ c.real_name }}</strong></td>
+                <td>{{ mask_phone(c.phone) if c.phone else '-' }}</td>
+                <td>
+                    <span class="badge badge-{% if c.status == 'approved' %}success{% elif c.status == 'pending' %}warning{% elif c.status == 'rejected' %}danger{% else %}secondary{% endif %}">
+                        {% if c.status == 'approved' %}已认证{% elif c.status == 'pending' %}待审核{% elif c.status == 'rejected' %}已拒绝{% else %}已禁用{% endif %}
+                    </span>
+                </td>
+                <td>¥{{ "%.0f"|format(c.hourly_rate) }}</td>
+                <td>{{ "%.1f"|format(c.rating) }}</td>
+                <td>{{ c.total_sessions }}</td>
+                <td>
+                    <label class="toggle-switch">
+                        <input type="checkbox" {% if c.is_online %}checked{% endif %}
+                               onchange="toggleOnline('{{ c.id }}', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <a href="/admin/counselors/{{ c.id }}" class="btn btn-sm btn-primary">详情</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 分页 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}<a href="?page={{ page-1 }}&status={{ status_filter }}&search={{ search }}" class="page-btn">&laquo;</a>{% endif %}
+        {% for p in range(1, total_pages + 1) %}
+        <a href="?page={{ p }}&status={{ status_filter }}&search={{ search }}" class="page-btn {% if p == page %}active{% endif %}">{{ p }}</a>
+        {% endfor %}
+        {% if page < total_pages %}<a href="?page={{ page+1 }}&status={{ status_filter }}&search={{ search }}" class="page-btn">&raquo;</a>{% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="empty-state">暂无咨询师数据</p>
+    {% endif %}
+</div>
+
+<script>
+async function toggleOnline(id, isOnline) {
+    try {
+        const resp = await fetch(`/admin/counselors/${id}/toggle-online`, { method: 'POST' });
+        const data = await resp.json();
+        showToast(data.success ? 'success' : 'error', '状态更新',
+                  data.success ? `已${data.is_online ? '上线' : '下线'}` : '操作失败');
+    } catch (e) {
+        showToast('error', '请求失败', e.message);
+    }
+}
+</script>
+{% endblock %}

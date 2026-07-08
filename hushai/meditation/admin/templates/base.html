@@ -16,17 +16,17 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link">跳到主内容</a>
-    
+
     <!-- Toast 通知容器 -->
     <div class="toast-container" id="toastContainer"></div>
-    
+
     <!-- Loading 遮罩 -->
     <div class="loading-overlay" id="loadingOverlay" style="display:none;">
         <div class="loading-spinner loading-spinner-lg"></div>
         <div class="loading-text" id="loadingText">处理中...</div>
         <div class="loading-subtext" id="loadingSubtext"></div>
     </div>
-    
+
     <!-- Modal 容器 -->
     <div class="modal-backdrop" id="modalBackdrop">
         <div class="modal" id="modalDialog">
@@ -40,7 +40,7 @@
             <div class="modal-footer" id="modalFooter"></div>
         </div>
     </div>
-    
+
     <div class="admin-container">
         {% if admin_user %}
         <aside class="sidebar" id="sidebar">
@@ -126,6 +126,31 @@
                     </div>
                 </div>
 
+                <div class="nav-group">
+                    <div class="nav-group-header" data-group="counseling" onclick="toggleGroup(this)">
+                        <span>心理咨询</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="nav-group-items" id="group-counseling">
+                        <a href="/admin/counseling-dashboard" class="nav-item {% if '/admin/counseling-dashboard' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-chart-line"></i>
+                            <span>咨询看板</span>
+                        </a>
+                        <a href="/admin/counselors" class="nav-item {% if '/admin/counselors' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-user-md"></i>
+                            <span>咨询师管理</span>
+                        </a>
+                        <a href="/admin/appointments" class="nav-item {% if '/admin/appointments' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>预约管理</span>
+                        </a>
+                        <a href="/admin/orders" class="nav-item {% if '/admin/orders' in request.url.path %}active{% endif %}">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <span>订单管理</span>
+                        </a>
+                    </div>
+                </div>
+
                 <a href="/admin/settings" class="nav-item {% if '/admin/settings' in request.url.path %}active{% endif %}">
                     <i class="fas fa-cog"></i>
                     <span>系统设置</span>
@@ -147,7 +172,7 @@
             </div>
         </aside>
         {% endif %}
-        
+
         <main id="main-content" class="main-content {% if not admin_user %}full-width{% endif %}" tabindex="-1">
             {% if admin_user %}
             <header class="page-header">
@@ -155,13 +180,13 @@
                 {% block breadcrumb %}{% endblock %}
             </header>
             {% endif %}
-            
+
             <div class="page-content">
                 {% block content %}{% endblock %}
             </div>
         </main>
     </div>
-    
+
     <script>
     (function() {
         // ========== Toast 通知 ==========
@@ -169,15 +194,15 @@
             var container = document.getElementById('toastContainer');
             var toast = document.createElement('div');
             toast.className = 'toast toast-' + type;
-            
+
             var icons = {
                 success: 'fa-check-circle',
                 error: 'fa-times-circle',
                 warning: 'fa-exclamation-triangle',
                 info: 'fa-info-circle'
             };
-            
-            toast.innerHTML = 
+
+            toast.innerHTML =
                 '<div class="toast-icon"><i class="fas ' + icons[type] + '"></i></div>' +
                 '<div class="toast-content">' +
                     '<div class="toast-title">' + escapeHtml(title) + '</div>' +
@@ -186,87 +211,87 @@
                 '<button class="toast-close" onclick="this.parentElement.remove()" type="button">' +
                     '<i class="fas fa-times"></i>' +
                 '</button>';
-            
+
             container.appendChild(toast);
-            
+
             var autoRemove = duration !== 0;
             if (autoRemove === undefined) autoRemove = true;
             if (duration === undefined) duration = 5000;
-            
+
             if (autoRemove && duration > 0) {
                 setTimeout(function() {
                     toast.classList.add('toast-out');
                     setTimeout(function() { toast.remove(); }, 250);
                 }, duration);
             }
-            
+
             return toast;
         };
-        
+
         window.toastSuccess = function(title, message) {
             return showToast('success', title, message);
         };
-        
+
         window.toastError = function(title, message) {
             return showToast('error', title, message, 8000);
         };
-        
+
         window.toastWarning = function(title, message) {
             return showToast('warning', title, message, 6000);
         };
-        
+
         window.toastInfo = function(title, message) {
             return showToast('info', title, message);
         };
-        
+
         function escapeHtml(str) {
             var div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
         }
-        
+
         // ========== Loading 遮罩 ==========
         window.showLoading = function(text, subtext) {
             var overlay = document.getElementById('loadingOverlay');
             var textEl = document.getElementById('loadingText');
             var subtextEl = document.getElementById('loadingSubtext');
-            
+
             if (textEl) textEl.textContent = text || '处理中...';
             if (subtextEl) subtextEl.textContent = subtext || '';
-            
+
             overlay.style.display = 'flex';
             return overlay;
         };
-        
+
         window.hideLoading = function() {
             var overlay = document.getElementById('loadingOverlay');
             if (overlay) overlay.style.display = 'none';
         };
-        
+
         // ========== Modal 对话框 ==========
         window.modalCallback = null;
-        
+
         window.showModal = function(options) {
             var backdrop = document.getElementById('modalBackdrop');
             var dialog = document.getElementById('modalDialog');
             var title = document.getElementById('modalTitle');
             var body = document.getElementById('modalBody');
             var footer = document.getElementById('modalFooter');
-            
+
             // 支持 large modal
             if (options.size === 'lg') {
                 dialog.classList.add('modal-lg');
             } else {
                 dialog.classList.remove('modal-lg');
             }
-            
+
             // 设置标题
             if (options.icon) {
                 title.innerHTML = '<i class="fas ' + options.icon + '"></i> ' + escapeHtml(options.title || '');
             } else {
                 title.textContent = options.title || '';
             }
-            
+
             // 设置内容
             if (typeof options.content === 'string') {
                 body.innerHTML = options.content;
@@ -276,7 +301,7 @@
             } else {
                 body.innerHTML = '';
             }
-            
+
             // 设置按钮
             footer.innerHTML = '';
             if (options.buttons) {
@@ -285,16 +310,16 @@
                     button.className = 'btn ' + (btn.className || 'btn-secondary');
                     button.textContent = btn.text || '';
                     button.type = 'button';
-                    
+
                     if (btn.danger) button.classList.add('btn-danger');
                     if (btn.primary) button.classList.add('btn-primary');
-                    
+
                     button.onclick = function() {
                         if (btn.onClick) btn.onClick();
                         if (btn.closeOnClick !== false) closeModal();
                         if (btn.callback) btn.callback();
                     };
-                    
+
                     footer.appendChild(button);
                 });
             } else {
@@ -306,14 +331,14 @@
                 closeBtn.onclick = closeModal;
                 footer.appendChild(closeBtn);
             }
-            
+
             backdrop.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
+
             // ESC 关闭
             window.modalCallback = options.onClose;
         };
-        
+
         window.closeModal = function() {
             var backdrop = document.getElementById('modalBackdrop');
             backdrop.classList.remove('active');
@@ -323,7 +348,7 @@
                 window.modalCallback = null;
             }
         };
-        
+
         window.confirmDelete = function(title, name, onConfirm) {
             showModal({
                 title: '确认删除',
@@ -339,7 +364,7 @@
                 ]
             });
         };
-        
+
         window.confirmAction = function(title, message, onConfirm, icon) {
             showModal({
                 title: title,
@@ -354,17 +379,17 @@
                 ]
             });
         };
-        
+
         // 点击遮罩关闭
         document.getElementById('modalBackdrop').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
-        
+
         // ESC 键关闭
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeModal();
         });
-        
+
         // ========== 异步请求包装 ==========
         window.asyncRequest = function(url, options) {
             options = options || {};
@@ -374,12 +399,12 @@
             var loadingSubtext = options.loadingSubtext;
             var onSuccess = options.onSuccess;
             var onError = options.onError;
-            
+
             showLoading(loadingText, loadingSubtext);
-            
+
             var csrfToken = document.cookie.match(/admin_csrf_token=([^;]+)/);
             csrfToken = csrfToken ? csrfToken[1] : '';
-            
+
             var fetchOptions = {
                 method: method,
                 headers: {
@@ -387,11 +412,11 @@
                     'X-CSRF-Token': csrfToken
                 }
             };
-            
+
             if (body) {
                 fetchOptions.body = typeof body === 'string' ? body : JSON.stringify(body);
             }
-            
+
             fetch(url, fetchOptions)
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
@@ -409,7 +434,7 @@
                     if (onError) onError(e);
                 });
         };
-        
+
         // ========== 侧边栏折叠 ==========
         var sidebar = document.getElementById('sidebar');
         var mainContent = document.getElementById('main-content');

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}订单详情{% endblock %}
+{% block page_title %}订单详情{% endblock %}
+
+{% block breadcrumb %}
+<nav class="page-breadcrumb"><a href="/admin/">仪表盘</a> / <a href="/admin/orders">订单管理</a> / 详情</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-file-invoice"></i> 订单信息</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-item"><label>订单号</label><span><code>{{ order.id }}</code></span></div>
+            <div class="detail-item"><label>类型</label><span>{{ order.order_type }}{% if order.package_name %} ({{ order.package_name }}){% endif %}</span></div>
+            <div class="detail-item"><label>金额</label><span>¥{{ "%.2f"|format(order.amount) }}</span></div>
+            <div class="detail-item"><label>实付金额</label><span>¥{{ "%.2f"|format(order.paid_amount) }}</span></div>
+            <div class="detail-item">
+                <label>状态</label>
+                <span class="badge badge-{% if order.status == 'paid' %}success{% elif order.status == 'unpaid' %}warning{% else %}danger{% endif %}">
+                    {{ order.status }}
+                </span>
+            </div>
+            {% if order.wx_transaction_id %}
+            <div class="detail-item"><label>微信支付单号</label><span><code>{{ order.wx_transaction_id }}</code></span></div>
+            {% endif %}
+            <div class="detail-item"><label>创建时间</label><span>{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span></div>
+            {% if order.paid_at %}
+            <div class="detail-item"><label>支付时间</label><span>{{ order.paid_at.strftime('%Y-%m-%d %H:%M:%S') }}</span></div>
+            {% endif %}
+            {% if order.refunded_at %}
+            <div class="detail-item"><label>退款时间</label><span>{{ order.refunded_at.strftime('%Y-%m-%d %H:%M:%S') }}</span></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-top:1.5rem">
+    <div class="card">
+        <div class="card-header"><h3><i class="fas fa-user-md"></i> 咨询师</h3></div>
+        <div class="card-body">
+            {% if counselor %}
+            <div class="detail-grid">
+                <div class="detail-item"><label>姓名</label><span>{{ counselor.real_name }}</span></div>
+                <div class="detail-item"><label>时薪</label><span>¥{{ "%.0f"|format(counselor.hourly_rate) }}</span></div>
+            </div>
+            {% else %}<p>咨询师信息不存在</p>{% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><i class="fas fa-user"></i> 用户</h3></div>
+        <div class="card-body">
+            {% if user %}
+            <div class="detail-grid">
+                <div class="detail-item"><label>用户ID</label><span>{{ user.id[:8] }}...</span></div>
+                <div class="detail-item"><label>昵称</label><span>{{ user.nickname or '-' }}</span></div>
+            </div>
+            {% else %}<p>用户信息不存在</p>{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
