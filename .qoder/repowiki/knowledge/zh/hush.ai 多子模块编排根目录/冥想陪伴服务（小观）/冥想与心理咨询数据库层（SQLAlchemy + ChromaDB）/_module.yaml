@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: meditation_app/database_layer
+title: 冥想与心理咨询数据库层（SQLAlchemy + ChromaDB）
+scope:
+    - hushai/meditation/db/
+source_files: []
+depends_on: []
+related_to:
+    - path: meditation_app/admin_ui
+    - path: meditation_app/core_engine

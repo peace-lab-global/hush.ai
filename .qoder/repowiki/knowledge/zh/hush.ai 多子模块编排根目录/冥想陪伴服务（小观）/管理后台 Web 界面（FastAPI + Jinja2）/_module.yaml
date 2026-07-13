@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: meditation_app/admin_ui
+title: 管理后台 Web 界面（FastAPI + Jinja2）
+scope:
+    - hushai/meditation/admin/
+source_files: []
+depends_on: []
+related_to:
+    - path: meditation_app/database_layer

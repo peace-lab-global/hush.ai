@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import AsyncGenerator
-from datetime import date, time
 
 import pytest
 from fastapi import FastAPI
@@ -23,24 +22,14 @@ from hushai.meditation import config as cfg_module
 from hushai.meditation.api.auth import _create_access_token
 from hushai.meditation.db import session as session_module
 from hushai.meditation.db.models import (
-    Appointment,
     AppointmentSettings,
     Base,
-    ConsultationOrder,
-    Conversation,
     Counselor,
     CounselorSchedule,
-    DailyProgress,
-    MeditationSession,
-    Memory,
-    Message,
     Scene,
-    ServiceRecord,
-    Skill,
     Teacher,
     User,
 )
-
 
 # ---------------------------------------------------------------------------
 #  Fixtures
@@ -92,9 +81,7 @@ async def db_session(_factory) -> AsyncGenerator[AsyncSession, None]:
 def app(_cfg, _factory, monkeypatch) -> FastAPI:
     from hushai.meditation.app import create_app
 
-    monkeypatch.setattr(
-        "hushai.meditation.admin.auth.init_default_admin", _noop_coro_false
-    )
+    monkeypatch.setattr("hushai.meditation.admin.auth.init_default_admin", _noop_coro_false)
     application = create_app()
 
     async def _override_session() -> AsyncGenerator[AsyncSession, None]:
@@ -241,9 +228,7 @@ def test_wx_login_bad_code(client: TestClient):
 
 
 def test_refresh_bad_token(client: TestClient):
-    resp = client.post(
-        "/api/auth/refresh", json={"refresh_token": "nonexistent-token"}
-    )
+    resp = client.post("/api/auth/refresh", json={"refresh_token": "nonexistent-token"})
     assert resp.status_code == 401
 
 
@@ -456,9 +441,7 @@ def test_list_conversations(client: TestClient, auth_headers):
 
 
 def test_get_conversation_messages_not_found(client: TestClient, auth_headers):
-    resp = client.get(
-        "/api/chat/conversations/nonexistent/messages", headers=auth_headers
-    )
+    resp = client.get("/api/chat/conversations/nonexistent/messages", headers=auth_headers)
     assert resp.status_code == 404
 
 
@@ -500,9 +483,7 @@ def test_knowledge_sync_remote(client: TestClient, auth_headers):
 
 
 def test_list_counselors(client: TestClient, auth_headers, test_counselor):
-    resp = client.get(
-        "/api/counseling/counselors/list", headers=auth_headers
-    )
+    resp = client.get("/api/counseling/counselors/list", headers=auth_headers)
     assert resp.status_code == 200
     data = resp.json()
     assert "counselors" in data
@@ -517,9 +498,7 @@ def test_get_counselor_detail(client: TestClient, auth_headers, test_counselor):
 
 
 def test_get_counselor_not_found(client: TestClient, auth_headers):
-    resp = client.get(
-        "/api/counseling/counselors/nonexistent", headers=auth_headers
-    )
+    resp = client.get("/api/counseling/counselors/nonexistent", headers=auth_headers)
     assert resp.status_code == 404
 
 
@@ -549,9 +528,7 @@ def test_get_counselor_schedule(
 
 
 def test_list_user_appointments(client: TestClient, auth_headers):
-    resp = client.get(
-        "/api/counseling/appointments/list", headers=auth_headers
-    )
+    resp = client.get("/api/counseling/appointments/list", headers=auth_headers)
     assert resp.status_code == 200
 
 
@@ -589,9 +566,7 @@ def test_list_orders(client: TestClient, auth_headers):
 
 
 def test_list_service_records(client: TestClient, auth_headers):
-    resp = client.get(
-        "/api/counseling/service-records/list", headers=auth_headers
-    )
+    resp = client.get("/api/counseling/service-records/list", headers=auth_headers)
     assert resp.status_code == 200
 
 
@@ -695,24 +670,21 @@ async def test_lifespan_creates_default_teachers(_cfg, _engine, _factory):
     from hushai.meditation.app import lifespan
 
     app = FastAPI()
-    async with lifespan(app):
-        async with _factory() as s:
-            from sqlalchemy import select
+    async with lifespan(app), _factory() as s:
+        from sqlalchemy import select
 
-            result = await s.execute(select(Teacher))
-            teachers = list(result.scalars().all())
-            assert len(teachers) == 5
+        result = await s.execute(select(Teacher))
+        teachers = list(result.scalars().all())
+        assert len(teachers) == 5
 
-            result2 = await s.execute(select(AppointmentSettings))
-            settings = result2.scalar_one_or_none()
-            assert settings is not None
-            assert settings.max_booking_count == 5
+        result2 = await s.execute(select(AppointmentSettings))
+        settings = result2.scalar_one_or_none()
+        assert settings is not None
+        assert settings.max_booking_count == 5
 
 
 @pytest.mark.asyncio
-async def test_lifespan_skips_existing_teachers(
-    _cfg, _engine, _factory, db_session
-):
+async def test_lifespan_skips_existing_teachers(_cfg, _engine, _factory, db_session):
     db_session.add(
         Teacher(
             name="已有导师",
@@ -726,13 +698,12 @@ async def test_lifespan_skips_existing_teachers(
     from hushai.meditation.app import lifespan
 
     app = FastAPI()
-    async with lifespan(app):
-        async with _factory() as s:
-            from sqlalchemy import select
+    async with lifespan(app), _factory() as s:
+        from sqlalchemy import select
 
-            result = await s.execute(select(Teacher))
-            teachers = list(result.scalars().all())
-            assert len(teachers) == 1
+        result = await s.execute(select(Teacher))
+        teachers = list(result.scalars().all())
+        assert len(teachers) == 1
 
 
 @pytest.mark.asyncio
@@ -754,11 +725,10 @@ async def test_lifespan_skips_existing_settings(_cfg, _engine, _factory, db_sess
     from hushai.meditation.app import lifespan
 
     app = FastAPI()
-    async with lifespan(app):
-        async with _factory() as s:
-            from sqlalchemy import select
+    async with lifespan(app), _factory() as s:
+        from sqlalchemy import select
 
-            result = await s.execute(select(AppointmentSettings))
-            settings_list = list(result.scalars().all())
-            assert len(settings_list) == 1
-            assert settings_list[0].max_booking_count == 3  # unchanged
+        result = await s.execute(select(AppointmentSettings))
+        settings_list = list(result.scalars().all())
+        assert len(settings_list) == 1
+        assert settings_list[0].max_booking_count == 3  # unchanged

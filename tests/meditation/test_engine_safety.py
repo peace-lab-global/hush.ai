@@ -15,12 +15,22 @@ from hushai.meditation.core import engine
 
 
 @pytest.fixture(autouse=True)
-def _test_config():
+def _test_config(tmp_path):
     cfg_module.set_config(
-        cfg_module.MeditationConfig(debug=False, jwt_secret="test", openai_api_key="sk-test")
+        cfg_module.MeditationConfig(
+            debug=False,
+            jwt_secret="test",
+            openai_api_key="sk-test",
+            chroma_persist_dir=str(tmp_path / "chroma"),
+        )
     )
+    # 重置 vector client 避免 ChromaDB embedding 函数冲突
+    from hushai.meditation.db import vector
+
+    vector.reset_vector_for_tests()
     yield
     cfg_module.reset_config()
+    vector.reset_vector_for_tests()
 
 
 def _make_mock_session_and_factory():
@@ -86,11 +96,6 @@ async def test_normal_input_calls_llm():
     with (
         patch.object(engine, "get_session_factory", return_value=factory),
         patch.object(engine, "chat_completion", new=mock_llm),
-        patch.object(engine, "retrieve_relevant_memories", new=AsyncMock(return_value=[])),
-        patch.object(engine, "get_knowledge_context_for_prompt", new=AsyncMock(return_value="")),
-        patch.object(engine, "get_memory_context_for_prompt", new=AsyncMock(return_value="")),
-        patch.object(engine, "get_scene_context_for_prompt", new=AsyncMock(return_value="")),
-        patch.object(engine, "get_skills_context_for_prompt", return_value=""),
     ):
         result = await engine.chat(
             user_id="user-1",

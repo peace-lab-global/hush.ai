@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: knowledge_base
+title: 开放认知数据库（Open Cognition）
+scope:
+    - knowledge/open-cognition/
+source_files: []
+depends_on: []
+related_to:
+    - path: meditation_app/core_engine

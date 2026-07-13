@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_mind_coach
+title: 心力教练（Mind Coach）研究知识库
+scope:
+    - knowledge/mind-coach/
+source_files: []
+depends_on: []
+related_to: []
