@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition
+title: 开放认知知识库（Open Cognition Knowledge Base）
+scope:
+    - knowledge/open-cognition/
+source_files: []
+depends_on: []
+related_to: []

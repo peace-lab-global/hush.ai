@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition/religion
+title: 宗教知识域 · Religion Domain
+scope:
+    - knowledge/open-cognition/domains/religion/
+source_files: []
+depends_on: []
+related_to: []

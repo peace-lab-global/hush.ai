@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition/psychology
+title: 心理学知识域（概念与学派）
+scope:
+    - knowledge/open-cognition/domains/psychology/
+source_files: []
+depends_on: []
+related_to: []

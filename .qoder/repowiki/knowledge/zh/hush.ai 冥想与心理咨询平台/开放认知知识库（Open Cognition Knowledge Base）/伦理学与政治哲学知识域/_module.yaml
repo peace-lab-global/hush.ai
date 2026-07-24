@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition/ethics_politics
+title: 伦理学与政治哲学知识域
+scope:
+    - knowledge/open-cognition/domains/ethics-politics/
+source_files: []
+depends_on: []
+related_to: []

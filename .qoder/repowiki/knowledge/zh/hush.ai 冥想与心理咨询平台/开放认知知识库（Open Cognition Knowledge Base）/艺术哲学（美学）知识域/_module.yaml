@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition/aesthetics
+title: 艺术哲学（美学）知识域
+scope:
+    - knowledge/open-cognition/domains/aesthetics/
+source_files: []
+depends_on: []
+related_to: []

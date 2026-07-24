@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: knowledge_open_cognition/shared_infrastructure
+title: 开放认知知识库 · 思想框架与智慧导师
+scope:
+    - knowledge/open-cognition/skills/
+    - knowledge/open-cognition/wisdom-masters/
+    - knowledge/open-cognition/meta/
+source_files: []
+depends_on: []
+related_to: []

@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition/cognitive_systems
+title: 认知系统工程知识域（Cognitive Systems Engineering）
+scope:
+    - knowledge/open-cognition/domains/cognitive-systems/
+source_files: []
+depends_on: []
+related_to: []

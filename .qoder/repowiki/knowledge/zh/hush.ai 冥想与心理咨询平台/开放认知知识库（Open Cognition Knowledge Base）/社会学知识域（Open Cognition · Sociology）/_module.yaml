@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: knowledge_open_cognition/sociology
+title: 社会学知识域（Open Cognition · Sociology）
+scope:
+    - knowledge/open-cognition/domains/sociology/
+source_files: []
+depends_on: []
+related_to: []
