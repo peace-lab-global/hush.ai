@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>认知系统工程 · Cognitive Systems Engineering · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 20% 10%,rgba(6,182,212,.1) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(99,102,241,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#060a12 100%);position:relative}
+.page::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2306b6d4' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;opacity:.5}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(6,182,212,.25);position:relative;z-index:1}
+.domain-label{font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;opacity:.45;color:#22d3ee;font-family:'Inter',sans-serif}
+.domain-title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-top:3px;background:linear-gradient(135deg,#fff 0%,#a5f3fc 50%,#67e8f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.domain-sub{font-size:13px;opacity:.45;margin-top:5px;color:#7da0b0;font-family:'Inter',sans-serif}
+.core-claim-inline{font-size:12px;opacity:.35;color:#6b8f9f;font-family:'Inter',sans-serif;margin-top:6px;max-width:700px;line-height:1.5}
+.domain-meta{text-align:right}
+.domain-meta .num{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Stats */
+.statsbar{display:flex;gap:32px;padding:10px 0 8px;border-bottom:1px solid rgba(6,182,212,.08);position:relative;z-index:1}
+.statsbar .st{font-size:12px;opacity:.5;font-family:'Inter',sans-serif;color:#7da0b0}
+.statsbar .st b{opacity:1;font-weight:700;color:#e8f4f8;font-size:13px}
+
+/* Main */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:12px 0 8px;position:relative;z-index:1;overflow:hidden}
+
+.panel-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px}
+
+/* ─── LEFT COLUMN ─── */
+.left-col{display:flex;flex-direction:column;gap:10px}
+
+/* Schools */
+.schools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.school-card{border:1px solid rgba(6,182,212,.1);padding:11px 13px 9px;border-radius:8px;background:rgba(6,182,212,.025);display:flex;flex-direction:column;position:relative;transition:all .25s}
+.school-card:hover{border-color:rgba(6,182,212,.25);background:rgba(6,182,212,.05);transform:translateY(-1px)}
+.school-card.new::after{content:'v0.5';position:absolute;top:-1px;right:10px;font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#030508;background:linear-gradient(90deg,#22d3ee,#818cf8);padding:2px 8px;border-radius:0 0 4px 4px;font-family:'Inter',sans-serif}
+.school-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.school-en{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;color:#7da0b0;margin-bottom:6px}
+.school-thinkers{font-size:11.5px;line-height:1.5;opacity:.5;color:#a0c0d0}
+.school-thinkers b{opacity:.9;font-weight:600;color:#a5f3fc}
+
+/* Design Principles */
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.principle-card{border:1px solid rgba(6,182,212,.08);padding:10px 10px 8px;border-radius:6px;background:rgba(6,182,212,.02);text-align:center}
+.principle-num{font-size:18px;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(180deg,#22d3ee,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.principle-title{font-size:11px;font-weight:700;color:#a5f3fc;margin-bottom:3px}
+.principle-desc{font-size:9.5px;opacity:.35;color:#7da0b0;line-height:1.4;font-family:'Inter',sans-serif}
+
+/* ─── RIGHT COLUMN ─── */
+.right-col{display:flex;flex-direction:column;gap:10px}
+
+/* Concept Stack */
+.concept-stack{border:1px solid rgba(6,182,212,.1);border-radius:8px;padding:12px 14px;background:rgba(6,182,212,.015);flex:1;display:flex;flex-direction:column;gap:6px}
+.layer{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:6px;position:relative}
+.layer-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;opacity:.35;font-family:'Inter',sans-serif;min-width:48px;text-align:center}
+.layer-items{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.layer-tag{font-size:10.5px;padding:3px 10px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:500;white-space:nowrap}
+
+.layer-perception{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.1)}
+.layer-perception .layer-tag{background:rgba(34,211,238,.1);color:#67e8f9;border:1px solid rgba(34,211,238,.15)}
+.layer-perception .layer-label{color:#22d3ee}
+
+.layer-cognition{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1)}
+.layer-cognition .layer-tag{background:rgba(99,102,241,.1);color:#a5b4fc;border:1px solid rgba(99,102,241,.15)}
+.layer-cognition .layer-label{color:#818cf8}
+
+.layer-action{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.1)}
+.layer-action .layer-tag{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.15)}
+.layer-action .layer-label{color:#10b981}
+
+.layer-system{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.1)}
+.layer-system .layer-tag{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.15)}
+.layer-system .layer-label{color:#f59e0b}
+
+.stack-arrow{display:flex;justify-content:center;opacity:.15}
+.stack-arrow svg{width:16px;height:16px}
+
+/* Skills */
+.skills-panel{border:1px solid rgba(255,255,255,.05);padding:12px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px;margin-top:6px}
+.skill-item{display:flex;align-items:baseline;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.skill-item:last-child{border-bottom:none}
+.skill-name{font-size:11px;font-weight:600;color:#a5f3fc;min-width:110px}
+.skill-desc{font-size:10px;opacity:.3;font-family:'Inter',sans-serif;color:#7da0b0}
+
+/* AI Panel */
+.ai-panel{border:1.5px solid rgba(6,182,212,.15);padding:10px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(6,182,212,.04),rgba(99,102,241,.03));position:relative;overflow:hidden}
+.ai-panel::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(6,182,212,.08),transparent 70%);pointer-events:none}
+.ai-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px;position:relative}
+.ai-text{font-size:12px;line-height:1.65;opacity:.55;color:#a0c0d0;position:relative}
+.ai-text b{opacity:.9;color:#e8f4f8}
+
+/* Cross-Domain */
+.connections-panel{border:1px solid rgba(255,255,255,.05);padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.conn-list{font-size:11px;line-height:1.8;opacity:.4;margin-top:4px;color:#a0c0d0}
+.conn-list b{opacity:.85;color:#e8f4f8}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(6,182,212,.08);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.12;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.16;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="domain-label">Domain 09 · Cognitive Systems Engineering · v0.5 NEW</div>
+      <div class="domain-title">认知系统工程</div>
+      <div class="domain-sub">Cognitive Systems Engineering · 26 思想家 / 27 概念 / 16 Skills · AI-Ready</div>
+      <div class="core-claim-inline">核心主张：认知不是发生在颅腔内的孤立过程，而是人—技术—环境联合系统中的涌现。</div>
+    </div>
+    <div class="domain-meta">
+      <div class="num">1940s — 当代</div>
+    </div>
+  </div>
+
+  <div class="statsbar">
+    <span class="st"><b>26</b> 思想家</span>
+    <span class="st"><b>27</b> 核心概念</span>
+    <span class="st"><b>16</b> 操作框架</span>
+    <span class="st"><b>7</b> 学派</span>
+    <span class="st"><b>106+</b> 关系链接</span>
+    <span class="st"><b>4</b> 设计原则</span>
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+      <div class="panel-title">Seven Schools · 七大学派</div>
+      <div class="schools-grid">
+        <div class="school-card">
+          <div class="school-name">控制论</div>
+          <div class="school-en">Cybernetics · 元框架</div>
+          <div class="school-thinkers"><b>维纳</b> · 反馈与控制 · <b>阿什比</b> · 必要多样性 · <b>西蒙</b> · 有限理性</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">生态心理学</div>
+          <div class="school-en">Ecological Psychology · 嵌入环境</div>
+          <div class="school-thinkers"><b>吉布森</b> · 可供性 · <b>克拉克</b> · 延展认知 · <b>瓦雷拉</b> · 生成认知</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">分布式认知</div>
+          <div class="school-en">Distributed Cognition · 超越个体</div>
+          <div class="school-thinkers"><b>哈钦斯</b> · 分布式认知 · <b>恩格斯托姆</b> · 活动理论 · <b>列昂捷夫</b> · 活动结构</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">认知工程</div>
+          <div class="school-en">Cognitive Engineering · 核心实践</div>
+          <div class="school-thinkers"><b>拉斯穆森</b> · CWA · <b>伍兹</b> · 韧性工程 · <b>诺曼</b> · 设计心理 · <b>莱维森</b> · STAMP</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">自然决策</div>
+          <div class="school-en">Naturalistic Decision · 真实世界</div>
+          <div class="school-thinkers"><b>克莱因</b> · RPD · <b>维克</b> · 意义建构 · <b>斯威勒</b> · 认知负荷 · <b>恩兹利</b> · SA</div>
+        </div>
+        <div class="school-card new">
+          <div class="school-name">安全科学</div>
+          <div class="school-en">Safety Science · v0.5 新增</div>
+          <div class="school-thinkers"><b>霍伦纳格</b> · Safety-II · <b>里森</b> · 瑞士奶酪 · <b>德克尔</b> · 漂移失败 · <b>佩罗</b> · 正常事故</div>
+        </div>
+        <div class="school-card new">
+          <div class="school-name">自动化 / 社会技术</div>
+          <div class="school-en">Automation & Sociotechnical · v0.5 新增</div>
+          <div class="school-thinkers"><b>班布里奇</b> · 自动化悖论 · <b>帕拉休拉曼</b> · 四阶段 · <b>谢里登</b> · 监督控制 · <b>威肯斯</b> · 多重资源</div>
+        </div>
+        <div class="school-card" style="justify-content:center;align-items:center;opacity:.45;border-style:dashed">
+          <div style="font-size:11px;text-align:center;color:#7da0b0;font-family:'Inter',sans-serif">+ 维森特 · 认知工作分析<br>宏观认知 · 团队认知 · 分布式SA</div>
+        </div>
+      </div>
+
+      <div class="panel-title">Design Principles · 设计原则</div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">系统观优先</div>
+          <div class="principle-desc">分析人-技术-环境的联合认知系统，而非孤立个体</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">工程导向</div>
+          <div class="principle-desc">不止于理解认知，更关注如何设计系统优化表现</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">韧性而非防错</div>
+          <div class="principle-desc">承认错误不可避免，关注系统如何在意外中保持功能</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">04</div>
+          <div class="principle-title">跨传统对话</div>
+          <div class="principle-desc">与心理学、现象学、佛教认知理论建立显式关联</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="panel-title">Concept Architecture · 概念架构（27）</div>
+      <div class="concept-stack">
+        <div class="layer layer-system">
+          <div class="layer-label">系统层</div>
+          <div class="layer-items">
+            <span class="layer-tag">韧性工程</span><span class="layer-tag">安全范式</span><span class="layer-tag">漂移失败</span>
+            <span class="layer-tag">正常事故</span><span class="layer-tag">安全文化</span><span class="layer-tag">自动化自主谱</span>
+            <span class="layer-tag">社会技术系统</span><span class="layer-tag">团队认知</span><span class="layer-tag">宏观认知</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-action">
+          <div class="layer-label">行动层</div>
+          <div class="layer-items">
+            <span class="layer-tag">分布式认知</span><span class="layer-tag">活动理论</span><span class="layer-tag">联合认知系统</span>
+            <span class="layer-tag">人-AI协作</span><span class="layer-tag">分布式SA</span><span class="layer-tag">多重资源模型</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-cognition">
+          <div class="layer-label">认知层</div>
+          <div class="layer-items">
+            <span class="layer-tag">有限理性</span><span class="layer-tag">认知负荷</span><span class="layer-tag">心智模型</span>
+            <span class="layer-tag">意义建构</span><span class="layer-tag">态势感知</span><span class="layer-tag">预测加工</span>
+            <span class="layer-tag">生成认知</span><span class="layer-tag">情境化认知</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-perception">
+          <div class="layer-label">感知层</div>
+          <div class="layer-items">
+            <span class="layer-tag">可供性</span><span class="layer-tag">生态界面设计</span><span class="layer-tag">自动化偏见</span>
+            <span class="layer-tag">脱离回路</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-panel">
+        <div class="panel-title">Agent Skills · 可调用框架（16）</div>
+        <div class="skill-grid">
+          <div class="skill-item"><span class="skill-name">认知工作分析</span><span class="skill-desc">Rasmussen SRK 模型</span></div>
+          <div class="skill-item"><span class="skill-name">认知负荷评估</span><span class="skill-desc">Sweller 三类诊断</span></div>
+          <div class="skill-item"><span class="skill-name">态势感知诊断</span><span class="skill-desc">Endsley 三级 SA</span></div>
+          <div class="skill-item"><span class="skill-name">自然决策分析</span><span class="skill-desc">Klein RPD 模型</span></div>
+          <div class="skill-item"><span class="skill-name">韧性评估</span><span class="skill-desc">四项韧性能力</span></div>
+          <div class="skill-item"><span class="skill-name">STPA 事故分析</span><span class="skill-desc">Leveson 控制缺陷</span></div>
+          <div class="skill-item"><span class="skill-name">人-AI 协作设计</span><span class="skill-desc">功能分配与信任校准</span></div>
+          <div class="skill-item"><span class="skill-name">自动化级别评估</span><span class="skill-desc">Parasuraman 四阶段</span></div>
+          <div class="skill-item"><span class="skill-name">安全学习分析</span><span class="skill-desc">Hollnagel Safety-II</span></div>
+          <div class="skill-item"><span class="skill-name">人因可靠性分析</span><span class="skill-desc">THERP/CREAM/SPAR-H</span></div>
+          <div class="skill-item"><span class="skill-name">活动系统分析</span><span class="skill-desc">Engeström 三角形</span></div>
+          <div class="skill-item"><span class="skill-name">可供性分析</span><span class="skill-desc">Gibson/Norman</span></div>
+          <div class="skill-item"><span class="skill-name">认知任务分析</span><span class="skill-desc">Klein 隐性知识提取</span></div>
+          <div class="skill-item"><span class="skill-name">人为错误分析</span><span class="skill-desc">SRK + 瑞士奶酪</span></div>
+          <div class="skill-item"><span class="skill-name">意义建构引导</span><span class="skill-desc">Weick 模糊情境</span></div>
+          <div class="skill-item"><span class="skill-name">认知系统设计</span><span class="skill-desc">Norman/Woods/Simon</span></div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-title">AI Era Response · AI 时代回应</div>
+        <div class="ai-text"><b>人+LLM 构成什么类型的联合认知系统？</b> 自动化偏见如何校准？认知卸载的长期影响？分布式认知框架如何映射到人类-AI 协作？Safety-II 视角下，如何分析 LLM 辅助下的"正常工作"？</div>
+      </div>
+
+      <div class="connections-panel">
+        <div class="panel-title">Cross-Domain · 跨学科连接</div>
+        <div class="conn-list">
+          <b>认知</b> → 心理学(卡尼曼双系统/皮亚杰建构主义) · 宗教(佛教八识)<br>
+          <b>人-技术耦合</b> → 哲学(梅洛-庞蒂身体/海德格尔上手) · 社会学(拉图尔行动者网络)<br>
+          <b>错误与韧性</b> → 社会学(贝克风险社会) · 心理学(创伤) · 宗教(转识成智)<br>
+          <b>安全</b> → 社会学(贝克风险社会) · 心理学(卡尼曼双系统) · 伦理学(责任分配)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · COGNITIVE SYSTEMS ENGINEERING · PEACE LAB</div>
+    <div class="footer-right">
+      <span>26 THINKERS</span><span>27 CONCEPTS</span><span>16 SKILLS</span><span>4 PRINCIPLES</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

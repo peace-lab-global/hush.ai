@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>心理学 · Psychology · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 20% 10%,rgba(16,185,129,.1) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(16,185,129,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#060a12 100%);position:relative}
+.page::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;opacity:.5}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(16,185,129,.25);position:relative;z-index:1}
+.domain-label{font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;opacity:.45;color:#34d399;font-family:'Inter',sans-serif}
+.domain-title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-top:3px;background:linear-gradient(135deg,#fff 0%,#a7f3d0 50%,#6ee7b7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.domain-sub{font-size:13px;opacity:.45;margin-top:5px;color:#7da0b0;font-family:'Inter',sans-serif}
+.core-claim-inline{font-size:12px;opacity:.35;color:#6b8f9f;font-family:'Inter',sans-serif;margin-top:6px;max-width:700px;line-height:1.5}
+.domain-meta{text-align:right}
+.domain-meta .num{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Stats */
+.statsbar{display:flex;gap:32px;padding:10px 0 8px;border-bottom:1px solid rgba(16,185,129,.08);position:relative;z-index:1}
+.statsbar .st{font-size:12px;opacity:.5;font-family:'Inter',sans-serif;color:#7da0b0}
+.statsbar .st b{opacity:1;font-weight:700;color:#e8f4f8;font-size:13px}
+
+/* Main */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:12px 0 8px;position:relative;z-index:1;overflow:hidden}
+
+.panel-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px}
+
+/* ─── LEFT COLUMN ─── */
+.left-col{display:flex;flex-direction:column;gap:10px}
+
+/* Schools */
+.schools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.school-card{border:1px solid rgba(16,185,129,.1);padding:11px 13px 9px;border-radius:8px;background:rgba(16,185,129,.025);display:flex;flex-direction:column;position:relative;transition:all .25s}
+.school-card:hover{border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.05);transform:translateY(-1px)}
+.school-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.school-en{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;color:#7da0b0;margin-bottom:6px}
+.school-thinkers{font-size:11.5px;line-height:1.5;opacity:.5;color:#a0c0d0}
+.school-thinkers b{opacity:.9;font-weight:600;color:#a7f3d0}
+
+/* Timeline */
+.timeline{margin-top:4px;border:1px solid rgba(16,185,129,.1);padding:10px 14px;border-radius:8px;background:rgba(16,185,129,.02)}
+.timeline-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:8px}
+.timeline-track{position:relative;height:30px;display:flex;align-items:center}
+.timeline-track::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(16,185,129,.3),rgba(16,185,129,.1),rgba(16,185,129,.3))}
+.timeline-dot{position:absolute;width:6px;height:6px;background:#10b981;border-radius:50%;top:50%;transform:translateY(-50%);opacity:.7}
+.timeline-label{position:absolute;top:100%;font-size:9px;opacity:.35;font-family:'Inter',sans-serif;color:#7da0b0;white-space:nowrap;transform:translateX(-50%)}
+
+/* Design Principles */
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.principle-card{border:1px solid rgba(16,185,129,.08);padding:10px 10px 8px;border-radius:6px;background:rgba(16,185,129,.02);text-align:center}
+.principle-num{font-size:18px;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(180deg,#34d399,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.principle-title{font-size:11px;font-weight:700;color:#a7f3d0;margin-bottom:3px}
+.principle-desc{font-size:9.5px;opacity:.35;color:#7da0b0;line-height:1.4;font-family:'Inter',sans-serif}
+
+/* ─── RIGHT COLUMN ─── */
+.right-col{display:flex;flex-direction:column;gap:10px}
+
+/* Concept Stack */
+.concept-stack{border:1px solid rgba(16,185,129,.1);border-radius:8px;padding:12px 14px;background:rgba(16,185,129,.015);flex:1;display:flex;flex-direction:column;gap:6px}
+.layer{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:6px;position:relative}
+.layer-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;opacity:.35;font-family:'Inter',sans-serif;min-width:48px;text-align:center}
+.layer-items{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.layer-tag{font-size:10.5px;padding:3px 10px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:500;white-space:nowrap}
+
+.layer-perception{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.1)}
+.layer-perception .layer-tag{background:rgba(34,211,238,.1);color:#67e8f9;border:1px solid rgba(34,211,238,.15)}
+.layer-perception .layer-label{color:#22d3ee}
+
+.layer-cognition{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1)}
+.layer-cognition .layer-tag{background:rgba(99,102,241,.1);color:#a5b4fc;border:1px solid rgba(99,102,241,.15)}
+.layer-cognition .layer-label{color:#818cf8}
+
+.layer-action{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.1)}
+.layer-action .layer-tag{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.15)}
+.layer-action .layer-label{color:#10b981}
+
+.layer-system{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.1)}
+.layer-system .layer-tag{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.15)}
+.layer-system .layer-label{color:#f59e0b}
+
+.stack-arrow{display:flex;justify-content:center;opacity:.15}
+.stack-arrow svg{width:16px;height:16px}
+
+/* Skills */
+.skills-panel{border:1px solid rgba(255,255,255,.05);padding:12px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px;margin-top:6px}
+.skill-item{display:flex;align-items:baseline;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.skill-item:last-child{border-bottom:none}
+.skill-name{font-size:11px;font-weight:600;color:#a7f3d0;min-width:110px}
+.skill-desc{font-size:10px;opacity:.3;font-family:'Inter',sans-serif;color:#7da0b0}
+
+/* AI Panel */
+.ai-panel{border:1.5px solid rgba(16,185,129,.15);padding:10px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(16,185,129,.04),rgba(99,102,241,.03));position:relative;overflow:hidden}
+.ai-panel::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(16,185,129,.08),transparent 70%);pointer-events:none}
+.ai-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px;position:relative}
+.ai-text{font-size:12px;line-height:1.65;opacity:.55;color:#a0c0d0;position:relative}
+.ai-text b{opacity:.9;color:#e8f4f8}
+
+/* Cross-Domain */
+.connections-panel{border:1px solid rgba(255,255,255,.05);padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.conn-list{font-size:11px;line-height:1.8;opacity:.4;margin-top:4px;color:#a0c0d0}
+.conn-list b{opacity:.85;color:#e8f4f8}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(16,185,129,.08);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.12;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.16;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="domain-label">Domain 03 · Psychology</div>
+      <div class="domain-title">心理学</div>
+      <div class="domain-sub">Psychology · 28 思想家 / 8 概念 / 16 Skills · AI-Ready</div>
+      <div class="core-claim-inline">核心主张：心理现象必须在生物-心理-社会整体框架中理解，个体的发展与疗愈深植于关系与意义之中。</div>
+    </div>
+    <div class="domain-meta">
+      <div class="num">19c — 当代</div>
+    </div>
+  </div>
+
+  <div class="statsbar">
+    <span class="st"><b>28</b> 思想家</span>
+    <span class="st"><b>8</b> 核心概念</span>
+    <span class="st"><b>16</b> 操作框架</span>
+    <span class="st"><b>16</b> 理论流派</span>
+    <span class="st"><b>80+</b> 关系链接</span>
+    <span class="st"><b>4</b> 设计原则</span>
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+      <div class="panel-title">Six Traditions · 六大传统</div>
+      <div class="schools-grid">
+        <div class="school-card">
+          <div class="school-name">精神分析</div>
+          <div class="school-en">Psychoanalysis · 深度探索</div>
+          <div class="school-thinkers"><b>弗洛伊德</b> · 潜意识 · <b>荣格</b> · 集体无意识 · <b>阿德勒</b> · 目的论 · <b>克莱因</b> · 客体关系</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">行为主义</div>
+          <div class="school-en">Behaviorism · 可观察行为</div>
+          <div class="school-thinkers"><b>斯金纳</b> · 操作性条件反射 · <b>班杜拉</b> · 社会学习/自我效能</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">认知 / 认知行为</div>
+          <div class="school-en">Cognitive / CBT · 信息加工</div>
+          <div class="school-thinkers"><b>皮亚杰</b> · 认知发展 · <b>贝克</b> · CBT · <b>卡尼曼</b> · 双系统 · <b>达玛西奥</b> · 躯体标记</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">人本主义 / 积极</div>
+          <div class="school-en">Humanistic / Positive · 潜能与成长</div>
+          <div class="school-thinkers"><b>马斯洛</b> · 需求层次 · <b>罗杰斯</b> · 来访者中心 · <b>米哈里</b> · 心流 · <b>塞利格曼</b> · 积极心理学</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">发展 / 依恋</div>
+          <div class="school-en">Developmental · 生命全程</div>
+          <div class="school-thinkers"><b>鲍尔比</b> · 依恋理论 · <b>维果茨基</b> · 最近发展区 · <b>埃里克森</b> · 八阶段 · <b>温尼科特</b> · 过渡客体</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">存在 / 创伤 / 叙事</div>
+          <div class="school-en">Existential / Trauma / Narrative</div>
+          <div class="school-thinkers"><b>弗兰克尔</b> · 意义疗法 · <b>范德科尔克</b> · 身体从未忘记 · <b>怀特</b> · 叙事疗法 · <b>西格尔</b> · 人际神经生物学</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-title">Timeline · 流派演进轴</div>
+        <div class="timeline-track">
+          <div class="timeline-dot" style="left:8%"></div><div class="timeline-label" style="left:8%">1890s 弗洛伊德</div>
+          <div class="timeline-dot" style="left:22%"></div><div class="timeline-label" style="left:22%">1910s 荣格</div>
+          <div class="timeline-dot" style="left:32%"></div><div class="timeline-label" style="left:32%">1930s 斯金纳</div>
+          <div class="timeline-dot" style="left:42%"></div><div class="timeline-label" style="left:42%">1950s 皮亚杰</div>
+          <div class="timeline-dot" style="left:52%"></div><div class="timeline-label" style="left:52%">1960s 马斯洛</div>
+          <div class="timeline-dot" style="left:64%"></div><div class="timeline-label" style="left:64%">1970s 卡尼曼</div>
+          <div class="timeline-dot" style="left:78%"></div><div class="timeline-label" style="left:78%">1990s 心流/积极</div>
+          <div class="timeline-dot" style="left:90%"></div><div class="timeline-label" style="left:90%">2010s 创伤/神经</div>
+        </div>
+      </div>
+
+      <div class="panel-title">Design Principles · 设计原则</div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">整体人观</div>
+          <div class="principle-desc">整合生物-心理-社会三维框架，拒绝还原论</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">发展视角</div>
+          <div class="principle-desc">理解心理现象需置于生命全程与历史情境</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">关系基质</div>
+          <div class="principle-desc">自我在依恋与互动中形成，疗愈发生于关系</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">04</div>
+          <div class="principle-title">意义中心</div>
+          <div class="principle-desc">行为需置于主观意义与叙事框架中理解</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="panel-title">Concept Architecture · 概念架构（8）</div>
+      <div class="concept-stack">
+        <div class="layer layer-system">
+          <div class="layer-label">系统层</div>
+          <div class="layer-items">
+            <span class="layer-tag">创伤</span><span class="layer-tag">依恋</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-action">
+          <div class="layer-label">行动层</div>
+          <div class="layer-items">
+            <span class="layer-tag">心流</span><span class="layer-tag">认知失调</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-cognition">
+          <div class="layer-label">认知层</div>
+          <div class="layer-items">
+            <span class="layer-tag">人格</span><span class="layer-tag">集体无意识</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-perception">
+          <div class="layer-label">基础层</div>
+          <div class="layer-items">
+            <span class="layer-tag">动机</span><span class="layer-tag">意识</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-panel">
+        <div class="panel-title">Agent Skills · 可调用框架（16）</div>
+        <div class="skill-grid">
+          <div class="skill-item"><span class="skill-name">荣格原型识别</span><span class="skill-desc">阴影/阿尼玛/英雄等</span></div>
+          <div class="skill-item"><span class="skill-name">CBT 认知扭曲识别</span><span class="skill-desc">自动思维与重构</span></div>
+          <div class="skill-item"><span class="skill-name">马斯洛需求诊断</span><span class="skill-desc">层次卡点定位</span></div>
+          <div class="skill-item"><span class="skill-name">心流条件评估</span><span class="skill-desc">8 条件体检</span></div>
+          <div class="skill-item"><span class="skill-name">双系统思维分析</span><span class="skill-desc">卡尼曼系统 1/2</span></div>
+          <div class="skill-item"><span class="skill-name">认知发展阶段评估</span><span class="skill-desc">皮亚杰四阶段诊断</span></div>
+          <div class="skill-item"><span class="skill-name">来访者中心对话</span><span class="skill-desc">罗杰斯无条件关注</span></div>
+          <div class="skill-item"><span class="skill-name">意义疗法</span><span class="skill-desc">弗兰克尔意义追寻</span></div>
+          <div class="skill-item"><span class="skill-name">依恋分析</span><span class="skill-desc">鲍尔比依恋类型</span></div>
+          <div class="skill-item"><span class="skill-name">躯体标记分析</span><span class="skill-desc">达玛西奥情绪决策</span></div>
+          <div class="skill-item"><span class="skill-name">个体化引导</span><span class="skill-desc">荣格式自性化进程</span></div>
+          <div class="skill-item"><span class="skill-name">自卑超越分析</span><span class="skill-desc">阿德勒目的论与补偿</span></div>
+          <div class="skill-item"><span class="skill-name">行为强化分析</span><span class="skill-desc">斯金纳操作性条件</span></div>
+          <div class="skill-item"><span class="skill-name">自我效能分析</span><span class="skill-desc">班杜拉社会学习</span></div>
+          <div class="skill-item"><span class="skill-name">潜意识分析</span><span class="skill-desc">弗洛伊德防御机制</span></div>
+          <div class="skill-item"><span class="skill-name">最近发展区分析</span><span class="skill-desc">维果茨基 ZPD 支架</span></div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-title">AI Era Response · AI 时代回应</div>
+        <div class="ai-text"><b>LLM 能否发展出真正的依恋？</b> AI 伴侣的心理效应如何评估？认知行为框架如何应用于 AI 对齐与价值校准？心流理论能否解释人-AI 深度协作的最优体验？</div>
+      </div>
+
+      <div class="connections-panel">
+        <div class="panel-title">Cross-Domain · 跨学科连接</div>
+        <div class="conn-list">
+          <b>自我</b> → 哲学(苏格拉底/萨特) · 宗教(禅宗无我) · 社会学(戈夫曼拟剧)<br>
+          <b>意义</b> → 哲学(海德格尔此在) · 宗教(基督教救赎) · 文学(弗兰克尔)<br>
+          <b>习惯</b> → 社会学(布迪厄惯习/福柯规训) · 宗教(伊斯兰五功)<br>
+          <b>认知</b> → 认知系统(有限理性) · 宗教(佛教八识)<br>
+          <b>创伤</b> → 文学(卡夫卡/陀思妥耶夫斯基) · 宗教(基督受难)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · PSYCHOLOGY · PEACE LAB</div>
+    <div class="footer-right">
+      <span>28 THINKERS</span><span>8 CONCEPTS</span><span>16 SKILLS</span><span>4 PRINCIPLES</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

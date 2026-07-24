@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>宗教 · Religion · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 20% 10%,rgba(245,158,11,.1) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(234,179,8,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#0d0a06 100%);position:relative}
+.page::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f59e0b' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;opacity:.5}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(245,158,11,.25);position:relative;z-index:1}
+.domain-label{font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;opacity:.45;color:#fbbf24;font-family:'Inter',sans-serif}
+.domain-title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-top:3px;background:linear-gradient(135deg,#fff 0%,#fde68a 50%,#fbbf24 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.domain-sub{font-size:13px;opacity:.45;margin-top:5px;color:#7da0b0;font-family:'Inter',sans-serif}
+.core-claim-inline{font-size:12px;opacity:.35;color:#6b8f9f;font-family:'Inter',sans-serif;margin-top:6px;max-width:700px;line-height:1.5}
+.domain-meta{text-align:right}
+.domain-meta .num{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Stats */
+.statsbar{display:flex;gap:32px;padding:10px 0 8px;border-bottom:1px solid rgba(245,158,11,.08);position:relative;z-index:1}
+.statsbar .st{font-size:12px;opacity:.5;font-family:'Inter',sans-serif;color:#7da0b0}
+.statsbar .st b{opacity:1;font-weight:700;color:#e8f4f8;font-size:13px}
+
+/* Main */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:12px 0 8px;position:relative;z-index:1;overflow:hidden}
+
+.panel-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px}
+
+/* ─── LEFT COLUMN ─── */
+.left-col{display:flex;flex-direction:column;gap:10px}
+
+/* Traditions */
+.trad-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.trad-card{border:1px solid rgba(245,158,11,.1);padding:11px 13px 9px;border-radius:8px;background:rgba(245,158,11,.025);display:flex;flex-direction:column;position:relative;transition:all .25s}
+.trad-card:hover{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.05);transform:translateY(-1px)}
+.trad-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.trad-en{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;color:#7da0b0;margin-bottom:6px}
+.trad-items{font-size:11.5px;line-height:1.5;opacity:.5;color:#a0c0d0}
+.trad-items b{opacity:.9;font-weight:600;color:#fde68a}
+
+/* Timeline */
+.timeline{border:1px solid rgba(245,158,11,.1);padding:10px 14px;border-radius:8px;background:rgba(245,158,11,.015)}
+.timeline-track{position:relative;height:32px;display:flex;align-items:center}
+.timeline-track::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(245,158,11,.3),rgba(245,158,11,.1),rgba(245,158,11,.3))}
+.timeline-dot{position:absolute;width:7px;height:7px;background:#f59e0b;border-radius:50%;top:50%;transform:translateY(-50%);opacity:.7;box-shadow:0 0 6px rgba(245,158,11,.3)}
+.timeline-label{position:absolute;top:100%;font-size:9px;opacity:.35;font-family:'Inter',sans-serif;color:#7da0b0;white-space:nowrap;transform:translateX(-50%);margin-top:3px}
+
+/* Design Principles */
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.principle-card{border:1px solid rgba(245,158,11,.08);padding:10px 10px 8px;border-radius:6px;background:rgba(245,158,11,.02);text-align:center}
+.principle-num{font-size:18px;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(180deg,#fde68a,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.principle-title{font-size:11px;font-weight:700;color:#fde68a;margin-bottom:3px}
+.principle-desc{font-size:9.5px;opacity:.35;color:#7da0b0;line-height:1.4;font-family:'Inter',sans-serif}
+
+/* ─── RIGHT COLUMN ─── */
+.right-col{display:flex;flex-direction:column;gap:10px}
+
+/* Concepts */
+.concepts-panel{border:1px solid rgba(245,158,11,.1);border-radius:8px;padding:12px 14px;background:rgba(245,158,11,.015)}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.concept-tag{font-size:10.5px;padding:3px 12px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:500;white-space:nowrap;background:rgba(245,158,11,.1);color:#fde68a;border:1px solid rgba(245,158,11,.15)}
+
+/* Buddhism Highlight */
+.buddhism-highlight{border:1.5px solid rgba(245,158,11,.15);padding:10px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(245,158,11,.04),rgba(234,179,8,.03));position:relative;overflow:hidden}
+.buddhism-highlight::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(245,158,11,.08),transparent 70%);pointer-events:none}
+.bh-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px;position:relative}
+.bh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:relative}
+.bh-item{font-size:10px;padding:4px 8px;border:1px solid rgba(245,158,11,.1);border-radius:6px;background:rgba(245,158,11,.06);color:#fde68a;text-align:center;font-family:'Inter',sans-serif;font-weight:500;opacity:.85}
+
+/* Skills */
+.skills-panel{border:1px solid rgba(255,255,255,.05);padding:12px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px;margin-top:6px}
+.skill-item{display:flex;align-items:baseline;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.skill-item:last-child{border-bottom:none}
+.skill-name{font-size:11px;font-weight:600;color:#fde68a;min-width:120px}
+.skill-desc{font-size:10px;opacity:.3;font-family:'Inter',sans-serif;color:#7da0b0}
+
+/* AI Panel */
+.ai-panel{border:1.5px solid rgba(245,158,11,.15);padding:10px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(245,158,11,.04),rgba(234,179,8,.03));position:relative;overflow:hidden}
+.ai-panel::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(245,158,11,.08),transparent 70%);pointer-events:none}
+.ai-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px;position:relative}
+.ai-text{font-size:12px;line-height:1.65;opacity:.55;color:#a0c0d0;position:relative}
+.ai-text b{opacity:.9;color:#e8f4f8}
+
+/* Cross-Domain */
+.connections-panel{border:1px solid rgba(255,255,255,.05);padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.conn-list{font-size:11px;line-height:1.8;opacity:.4;margin-top:4px;color:#a0c0d0}
+.conn-list b{opacity:.85;color:#e8f4f8}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(245,158,11,.08);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.12;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.16;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="domain-label">Domain 02 · Religion</div>
+      <div class="domain-title">宗教 · Religion</div>
+      <div class="domain-sub">六大宗教传统的核心思想体系 · 16 传统条目 / 4 概念 / 22 Skills · AI-Ready</div>
+      <div class="core-claim-inline">核心主张：宗教是人类以象征、仪式与神话回应终极关切的文化系统，需在学术中立的前提下理解其认知、伦理与社群功能。</div>
+    </div>
+    <div class="domain-meta">
+      <div class="num">公元前6c — 当代</div>
+    </div>
+  </div>
+
+  <div class="statsbar">
+    <span class="st"><b>16</b> 传统条目</span>
+    <span class="st"><b>4</b> 跨传统概念</span>
+    <span class="st"><b>22</b> 操作框架</span>
+    <span class="st"><b>9</b> 宗教传统</span>
+    <span class="st"><b>2500+</b> 年传统史</span>
+    <span class="st"><b>4</b> 设计原则</span>
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+      <div class="panel-title">Religious Traditions · 宗教传统（9）</div>
+      <div class="trad-grid">
+        <div class="trad-card">
+          <div class="trad-name">佛教</div>
+          <div class="trad-en">Buddhism · 觉悟之道</div>
+          <div class="trad-items"><b>四圣谛</b> · 苦集灭道 · <b>大乘空性</b> · 中观/瑜伽行 · <b>禅宗</b> · 顿悟与渐修</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">基督教</div>
+          <div class="trad-en">Christianity · 恩典与救赎</div>
+          <div class="trad-items"><b>恩典与救赎</b> · 保罗-奥古斯丁-路德 · <b>基督教神秘主义</b> · 艾克哈特</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">伊斯兰教</div>
+          <div class="trad-en">Islam · 顺从与和平</div>
+          <div class="trad-items"><b>五功</b> · 信仰支柱 · <b>苏菲主义</b> · 法纳与巴卡</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">犹太教</div>
+          <div class="trad-en">Judaism · 律法与盟约</div>
+          <div class="trad-items"><b>律法与盟约</b> · 契约共同体 · <b>卡巴拉</b> · 生命之树与流溢</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">道教</div>
+          <div class="trad-en">Taoism · 道法自然</div>
+          <div class="trad-items"><b>无为</b> · 顺应自然 · <b>老子</b> · 道法自然 · <b>庄子</b> · 逍遥齐物</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">印度教</div>
+          <div class="trad-en">Hinduism · 业与解脱</div>
+          <div class="trad-items"><b>业与轮回</b> · 因果法则 · <b>吠檀多</b> · 梵我合一</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">儒教</div>
+          <div class="trad-en">Confucianism · 仁礼之教</div>
+          <div class="trad-items"><b>仁礼</b> · 仁义礼智信 · <b>天命</b> · 君子与修身</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">神道教</div>
+          <div class="trad-en">Shinto · 自然与祖先</div>
+          <div class="trad-items"><b>自然神圣</b> · 八百万神 · <b>祖先崇拜</b> ·  purification 禊</div>
+        </div>
+        <div class="trad-card">
+          <div class="trad-name">锡克教</div>
+          <div class="trad-en">Sikhism · 一神与平等</div>
+          <div class="trad-items"><b>一神</b> · 瓦黑古鲁 · <b>平等</b> · 破除种姓 · <b>服务</b> · langar 共同体</div>
+        </div>
+        <div class="trad-card" style="justify-content:center;align-items:center;opacity:.45;border-style:dashed">
+          <div style="font-size:11px;text-align:center;color:#7da0b0;font-family:'Inter',sans-serif">+ 巴哈伊信仰 · 耆那教<br>摩尼教 · 非洲传统宗教</div>
+        </div>
+      </div>
+
+      <div class="panel-title">Timeline · 传统时间轴</div>
+      <div class="timeline">
+        <div class="timeline-track">
+          <div class="timeline-dot" style="left:5%"></div><div class="timeline-label" style="left:5%">前6c 佛教</div>
+          <div class="timeline-dot" style="left:18%"></div><div class="timeline-label" style="left:18%">前6c 道教</div>
+          <div class="timeline-dot" style="left:30%"></div><div class="timeline-label" style="left:30%">前5c 儒教</div>
+          <div class="timeline-dot" style="left:48%"></div><div class="timeline-label" style="left:48%">1c 基督教</div>
+          <div class="timeline-dot" style="left:65%"></div><div class="timeline-label" style="left:65%">7c 伊斯兰</div>
+          <div class="timeline-dot" style="left:78%"></div><div class="timeline-label" style="left:78%">8c 印度教</div>
+          <div class="timeline-dot" style="left:88%"></div><div class="timeline-label" style="left:88%">10c 神道教</div>
+          <div class="timeline-dot" style="left:96%"></div><div class="timeline-label" style="left:96%">15c 锡克教</div>
+        </div>
+      </div>
+
+      <div class="panel-title">Design Principles · 设计原则</div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">学术中立</div>
+          <div class="principle-desc">以历史-哲学-文化视角研究宗教现象，不涉信仰判断与价值立场</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">跨传统比较</div>
+          <div class="principle-desc">在不同宗教传统之间寻找共通结构、主题与变异模式</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">内在理解</div>
+          <div class="principle-desc">从各宗教传统内部的逻辑、符号与体验出发理解其主张</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">04</div>
+          <div class="principle-title">生活关联</div>
+          <div class="principle-desc">关注宗教对伦理实践、艺术表达与日常生活世界的深层影响</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="panel-title">Cross-Traditional Concepts · 跨传统概念（4）</div>
+      <div class="concepts-panel">
+        <div class="concept-cloud">
+          <span class="concept-tag">救赎</span><span class="concept-tag">神圣性</span><span class="concept-tag">仪式</span><span class="concept-tag">冥想</span>
+        </div>
+      </div>
+
+      <div class="buddhism-highlight">
+        <div class="bh-title">Buddhist Cognitive Theory · 佛教认知理论体系（8）</div>
+        <div class="bh-grid">
+          <div class="bh-item">八识体系</div><div class="bh-item">心物一元</div><div class="bh-item">六根六尘六识</div><div class="bh-item">转识成智</div>
+          <div class="bh-item">中观·空</div><div class="bh-item">七处征心</div><div class="bh-item">八还辨见</div><div class="bh-item">金刚经·无相</div>
+        </div>
+      </div>
+
+      <div class="skills-panel">
+        <div class="panel-title">Agent Skills · 可调用框架（22）</div>
+        <div class="skill-grid">
+          <div class="skill-item"><span class="skill-name">四圣谛诊断</span><span class="skill-desc">苦/集/灭/道四步分析</span></div>
+          <div class="skill-item"><span class="skill-name">圣典诠释学</span><span class="skill-desc">文本/历史/语境/应用四层</span></div>
+          <div class="skill-item"><span class="skill-name">神圣—世俗分析</span><span class="skill-desc">涂尔干—伊利亚德框架</span></div>
+          <div class="skill-item"><span class="skill-name">无为而治</span><span class="skill-desc">顺应自然，减少干预</span></div>
+          <div class="skill-item"><span class="skill-name">柔弱胜刚强</span><span class="skill-desc">以柔克刚，柔性策略</span></div>
+          <div class="skill-item"><span class="skill-name">壁观禅修</span><span class="skill-desc">达摩壁观禅修方法</span></div>
+          <div class="skill-item"><span class="skill-name">大圆满引导</span><span class="skill-desc">莲花生大士大圆满法门</span></div>
+          <div class="skill-item"><span class="skill-name">菩提道次第</span><span class="skill-desc">阿底峡三士道修行指导</span></div>
+          <div class="skill-item"><span class="skill-name">恩典神学</span><span class="skill-desc">保罗-奥古斯丁-路德恩典论</span></div>
+          <div class="skill-item"><span class="skill-name">五功实践</span><span class="skill-desc">伊斯兰信仰支柱分析</span></div>
+          <div class="skill-item"><span class="skill-name">苏菲合一论</span><span class="skill-desc">法纳与巴卡神秘阶段</span></div>
+          <div class="skill-item"><span class="skill-name">卡巴拉生命之树</span><span class="skill-desc">流溢与回归路径分析</span></div>
+          <div class="skill-item"><span class="skill-name">业报分析</span><span class="skill-desc">印度教业与轮回框架</span></div>
+          <div class="skill-item"><span class="skill-name">仪式功能分析</span><span class="skill-desc">涂尔干集体意识与整合</span></div>
+          <div class="skill-item"><span class="skill-name">八识体系分析</span><span class="skill-desc">阿赖耶识/末那识/六识</span></div>
+          <div class="skill-item"><span class="skill-name">心物一元诊断</span><span class="skill-desc">万法唯识视角</span></div>
+          <div class="skill-item"><span class="skill-name">六根六尘六识</span><span class="skill-desc">十八界认知模型</span></div>
+          <div class="skill-item"><span class="skill-name">转识成智</span><span class="skill-desc">前五识/意识/末那/阿赖耶转化</span></div>
+          <div class="skill-item"><span class="skill-name">中观·空性论证</span><span class="skill-desc">缘起性空逻辑分析</span></div>
+          <div class="skill-item"><span class="skill-name">七处征心</span><span class="skill-desc">楞严经七处征心破执</span></div>
+          <div class="skill-item"><span class="skill-name">八还辨见</span><span class="skill-desc">楞严经八还辨见性明</span></div>
+          <div class="skill-item"><span class="skill-name">金刚经·无相</span><span class="skill-desc">应无所住而生其心</span></div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-title">AI Era Response · AI 时代回应</div>
+        <div class="ai-text"><b>人工智能能否"觉醒"？</b> 机器意识与佛教"识"的边界在哪里？LLM 生成的"神圣文本诠释"具有何种认识论地位？宗教仪式能否为数字时代提供韧性框架？</div>
+      </div>
+
+      <div class="connections-panel">
+        <div class="panel-title">Cross-Domain · 跨学科连接</div>
+        <div class="conn-list">
+          <b>苦难</b> → 哲学(尼采悲剧精神) · 心理学(贝克CBT)<br>
+          <b>自我/无我</b> → 心理学(荣格自性) · 社会学(戈夫曼拟剧)<br>
+          <b>觉醒</b> → 智慧导师(慧能/道元/一行) · 心理学(心流/高峰体验)<br>
+          <b>仪式</b> → 社会学(涂尔干集体意识) · 心理学(行为强化)<br>
+          <b>冥想</b> → 心理学(正念研究) · 认知系统(注意力分配)<br>
+          <b>神圣性</b> → 伦理学(义务论/德性论) · 美学(崇高体验)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · RELIGION · PEACE LAB</div>
+    <div class="footer-right">
+      <span>16 TRADITIONS</span><span>4 CONCEPTS</span><span>22 SKILLS</span><span>4 PRINCIPLES</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

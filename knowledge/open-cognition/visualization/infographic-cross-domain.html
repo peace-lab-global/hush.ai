@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>跨学科关联图谱 · Cross-Domain Nexus · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,.08) 0%,transparent 50%),radial-gradient(ellipse at 20% 100%,rgba(6,182,212,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#060a14 100%);position:relative}
+.page::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.02'%3E%3Ccircle cx='40' cy='40' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(99,102,241,.2);position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#818cf8;font-family:'Inter',sans-serif;margin-bottom:20px}
+.badge::before{content:'';width:8px;height:8px;background:#6366f1;border-radius:50%;box-shadow:0 0 14px rgba(99,102,241,.6)}
+.title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;background:linear-gradient(135deg,#fff 0%,#c7d2fe 50%,#a5f3fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:13px;opacity:.4;margin-top:6px;color:#7da0b0;font-family:'Inter',sans-serif;max-width:600px;line-height:1.6}
+.header-right{text-align:right}
+.header-stat{font-size:11px;letter-spacing:3px;text-transform:uppercase;opacity:.25;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Flow hint */
+.flow-hint{text-align:center;padding:8px 0 4px;position:relative;z-index:1}
+.flow-hint span{font-size:10px;letter-spacing:6px;text-transform:uppercase;opacity:.15;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+
+/* Main grid */
+.main{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:14px;padding:8px 0 6px;position:relative;z-index:1}
+
+/* Theme cards */
+.card{border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:0;overflow:hidden;background:rgba(255,255,255,.015);display:flex;flex-direction:column;transition:all .3s;position:relative}
+.card:hover{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.03);transform:translateY(-2px);box-shadow:0 20px 40px rgba(0,0,0,.3)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5}
+
+.card-header{padding:14px 16px 10px;position:relative}
+.card-title{font-size:22px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:3px}
+.card-en{font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;color:#7da0b0}
+
+/* Domain spectrum bar */
+.domain-bar{display:flex;height:3px;margin:0 16px 10px;border-radius:2px;overflow:hidden;opacity:.6}
+.domain-segment{height:100%}
+
+/* Thinkers list */
+.card-body{padding:0 16px 12px;flex:1;display:flex;flex-direction:column;gap:5px}
+.thinker-row{display:flex;align-items:baseline;gap:8px;font-size:12px;line-height:1.55}
+.thinker-domain{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;min-width:52px;opacity:.7;font-family:'Inter',sans-serif}
+.thinker-names{color:#a0c0d0;opacity:.65}
+.thinker-names b{opacity:.9;font-weight:600}
+
+/* Card accent colors */
+.self{--accent:#8b5cf6}
+.power{--accent:#ef4444}
+.meaning{--accent:#10b981}
+.modernity{--accent:#3b82f6}
+.suffering{--accent:#f59e0b}
+.freedom{--accent:#ec4899}
+.cognition{--accent:#06b6d4}
+.resilience{--accent:#14b8a6}
+
+/* Legend */
+.legend{display:flex;justify-content:center;align-items:center;gap:20px;padding:6px 0 4px;border-top:1px solid rgba(255,255,255,.05);position:relative;z-index:1}
+.legend-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.25;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#5a7a8a;font-family:'Inter',sans-serif;opacity:.6}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(255,255,255,.05);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.1;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.15;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="badge">Cross-Domain Nexus · 跨学科关联图谱</div>
+      <div class="title">横向主题透镜</div>
+      <div class="subtitle">选一个主题，看十个领域如何给出不同视角。苦难、自我、权力、意义……
+      同一个问题，在哲学、心理学、宗教、社会学、认知系统中的回答彼此对话。</div>
+    </div>
+    <div class="header-right">
+      <div class="header-stat">8 themes · 10 domains · 2500 years</div>
+    </div>
+  </div>
+
+  <div class="flow-hint">
+    <span>← → 同一主题 · 不同透镜 · 彼此对话 ← →</span>
+  </div>
+
+  <div class="main">
+
+    <!-- Card 1: Self -->
+    <div class="card self">
+      <div class="card-header">
+        <div class="card-title">自我</div>
+        <div class="card-en">The Self</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:25%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:25%;background:#10b981"></div>
+        <div class="domain-segment" style="width:25%;background:#f59e0b"></div>
+        <div class="domain-segment" style="width:25%;background:#3b82f6"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>苏格拉底</b> · 认识你自己</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>荣格</b> · 个体化 · <b>罗杰斯</b> · 真实自我</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#f59e0b">宗教</span><span class="thinker-names"><b>禅宗</b> · 无我</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#3b82f6">社会学</span><span class="thinker-names"><b>戈夫曼</b> · 拟剧自我</span></div>
+      </div>
+    </div>
+
+    <!-- Card 2: Power -->
+    <div class="card power">
+      <div class="card-header">
+        <div class="card-title">权力</div>
+        <div class="card-en">Power</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:40%;background:#3b82f6"></div>
+        <div class="domain-segment" style="width:30%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:30%;background:#ef4444"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#3b82f6">社会学</span><span class="thinker-names"><b>福柯</b> · 规训 · <b>马克思</b> · 异化</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>尼采</b> · 权力意志</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#ef4444">伦理</span><span class="thinker-names"><b>罗尔斯</b> · 正义论中的权力分配</span></div>
+      </div>
+    </div>
+
+    <!-- Card 3: Meaning -->
+    <div class="card meaning">
+      <div class="card-header">
+        <div class="card-title">意义</div>
+        <div class="card-en">Meaning</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:35%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:35%;background:#f59e0b"></div>
+        <div class="domain-segment" style="width:30%;background:#10b981"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>海德格尔</b> · 此在与本真</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#f59e0b">宗教</span><span class="thinker-names"><b>基督教</b> · 救赎论</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>米哈里</b> · 心流 · <b>弗兰克尔</b> · 意义疗法</span></div>
+      </div>
+    </div>
+
+    <!-- Card 4: Modernity -->
+    <div class="card modernity">
+      <div class="card-header">
+        <div class="card-title">现代性</div>
+        <div class="card-en">Modernity</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:40%;background:#3b82f6"></div>
+        <div class="domain-segment" style="width:30%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:30%;background:#10b981"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#3b82f6">社会学</span><span class="thinker-names"><b>韦伯</b> · 理性化 · <b>哈贝马斯</b> · 交往理性 · <b>鲍曼</b></span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>康德</b> · 批判 · <b>尼采</b> · 价值重估</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>卡尼曼</b> · 双系统</span></div>
+      </div>
+    </div>
+
+    <!-- Card 5: Suffering -->
+    <div class="card suffering">
+      <div class="card-header">
+        <div class="card-title">苦难</div>
+        <div class="card-en">Suffering</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:25%;background:#f59e0b"></div>
+        <div class="domain-segment" style="width:25%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:25%;background:#10b981"></div>
+        <div class="domain-segment" style="width:25%;background:#3b82f6"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#f59e0b">宗教</span><span class="thinker-names"><b>佛教</b> · 四圣谛 · 苦集灭道</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>尼采</b> · 悲剧精神 · 永恒轮回</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>贝克</b> · CBT · <b>弗兰克尔</b></span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#3b82f6">社会学</span><span class="thinker-names"><b>鲍曼</b> · 流动现代性中的不安</span></div>
+      </div>
+    </div>
+
+    <!-- Card 6: Freedom -->
+    <div class="card freedom">
+      <div class="card-header">
+        <div class="card-title">自由</div>
+        <div class="card-en">Freedom</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:30%;background:#ef4444"></div>
+        <div class="domain-segment" style="width:25%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:25%;background:#3b82f6"></div>
+        <div class="domain-segment" style="width:20%;background:#10b981"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#ef4444">伦理</span><span class="thinker-names"><b>密尔</b> · 论自由 · <b>洛克</b> · 自然权利</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>萨特</b> · 自由选择 · <b>海德格尔</b> · 本真</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#3b82f6">社会学</span><span class="thinker-names"><b>福柯</b> · 规训权力 · <b>马尔库塞</b></span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>罗杰斯</b> · 真实自我</span></div>
+      </div>
+    </div>
+
+    <!-- Card 7: Cognition -->
+    <div class="card cognition">
+      <div class="card-header">
+        <div class="card-title">认知与系统</div>
+        <div class="card-en">Cognition & Systems</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:30%;background:#06b6d4"></div>
+        <div class="domain-segment" style="width:25%;background:#10b981"></div>
+        <div class="domain-segment" style="width:25%;background:#8b5cf6"></div>
+        <div class="domain-segment" style="width:20%;background:#f59e0b"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#06b6d4">认知系统</span><span class="thinker-names"><b>有限理性</b> · <b>分布式认知</b> · <b>预测加工</b></span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>卡尼曼</b> · 双系统 · <b>皮亚杰</b> · 建构主义</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#8b5cf6">哲学</span><span class="thinker-names"><b>维特根斯坦</b> · 语言游戏</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#f59e0b">宗教</span><span class="thinker-names"><b>佛教</b> · 八识体系</span></div>
+      </div>
+    </div>
+
+    <!-- Card 8: Resilience -->
+    <div class="card resilience">
+      <div class="card-header">
+        <div class="card-title">错误与韧性</div>
+        <div class="card-en">Error & Resilience</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-segment" style="width:30%;background:#06b6d4"></div>
+        <div class="domain-segment" style="width:25%;background:#3b82f6"></div>
+        <div class="domain-segment" style="width:25%;background:#10b981"></div>
+        <div class="domain-segment" style="width:20%;background:#f59e0b"></div>
+      </div>
+      <div class="card-body">
+        <div class="thinker-row"><span class="thinker-domain" style="color:#06b6d4">认知系统</span><span class="thinker-names"><b>韧性工程</b> · <b>漂移失败</b> · <b>意义建构</b></span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#3b82f6">社会学</span><span class="thinker-names"><b>贝克</b> · 风险社会 · <b>鲍曼</b></span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#10b981">心理</span><span class="thinker-names"><b>范德科尔克</b> · 身体从未忘记</span></div>
+        <div class="thinker-row"><span class="thinker-domain" style="color:#f59e0b">宗教</span><span class="thinker-names"><b>佛教</b> · 转识成智</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Domain Lens · 领域透镜</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>哲学</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>宗教</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>心理学</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>社会学</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>伦理·政治</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ec4899"></div>美学</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>认知系统</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#14b8a6"></div>智慧导师</div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · CROSS-DOMAIN NEXUS · 10 DOMAINS × 8 THEMES × 2500 YEARS</div>
+    <div class="footer-right">
+      <span>HORIZONTAL READING</span><span>VERTICAL DEPTH</span><span>CROSS-DISCIPLINARY</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

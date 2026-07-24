@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>哲学 · Philosophy · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 20% 10%,rgba(139,92,246,.1) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(99,102,241,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#060a12 100%);position:relative}
+.page::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238b5cf6' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;opacity:.5}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(139,92,246,.25);position:relative;z-index:1}
+.domain-label{font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;opacity:.45;color:#a78bfa;font-family:'Inter',sans-serif}
+.domain-title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-top:3px;background:linear-gradient(135deg,#fff 0%,#c4b5fd 50%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.domain-sub{font-size:13px;opacity:.45;margin-top:5px;color:#7da0b0;font-family:'Inter',sans-serif}
+.core-claim-inline{font-size:12px;opacity:.35;color:#6b8f9f;font-family:'Inter',sans-serif;margin-top:6px;max-width:700px;line-height:1.5}
+.domain-meta{text-align:right}
+.domain-meta .num{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Stats */
+.statsbar{display:flex;gap:32px;padding:10px 0 8px;border-bottom:1px solid rgba(139,92,246,.08);position:relative;z-index:1}
+.statsbar .st{font-size:12px;opacity:.5;font-family:'Inter',sans-serif;color:#7da0b0}
+.statsbar .st b{opacity:1;font-weight:700;color:#e8f4f8;font-size:13px}
+
+/* Main */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:12px 0 8px;position:relative;z-index:1;overflow:hidden}
+
+.panel-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px}
+
+/* ─── LEFT COLUMN ─── */
+.left-col{display:flex;flex-direction:column;gap:10px}
+
+/* Schools */
+.schools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.school-card{border:1px solid rgba(139,92,246,.1);padding:11px 13px 9px;border-radius:8px;background:rgba(139,92,246,.025);display:flex;flex-direction:column;position:relative;transition:all .25s}
+.school-card:hover{border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.05);transform:translateY(-1px)}
+.school-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.school-en{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;color:#7da0b0;margin-bottom:6px}
+.school-thinkers{font-size:11.5px;line-height:1.5;opacity:.5;color:#a0c0d0}
+.school-thinkers b{opacity:.9;font-weight:600;color:#c4b5fd}
+
+/* Timeline */
+.timeline{border:1px solid rgba(139,92,246,.1);padding:10px 14px;border-radius:8px;background:rgba(139,92,246,.015)}
+.timeline-track{position:relative;height:32px;display:flex;align-items:center}
+.timeline-track::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(139,92,246,.3),rgba(139,92,246,.1),rgba(139,92,246,.3))}
+.timeline-dot{position:absolute;width:7px;height:7px;background:#8b5cf6;border-radius:50%;top:50%;transform:translateY(-50%);opacity:.7;box-shadow:0 0 6px rgba(139,92,246,.3)}
+.timeline-label{position:absolute;top:100%;font-size:9px;opacity:.35;font-family:'Inter',sans-serif;color:#7da0b0;white-space:nowrap;transform:translateX(-50%);margin-top:3px}
+
+/* Design Principles */
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.principle-card{border:1px solid rgba(139,92,246,.08);padding:10px 10px 8px;border-radius:6px;background:rgba(139,92,246,.02);text-align:center}
+.principle-num{font-size:18px;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(180deg,#c4b5fd,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.principle-title{font-size:11px;font-weight:700;color:#c4b5fd;margin-bottom:3px}
+.principle-desc{font-size:9.5px;opacity:.35;color:#7da0b0;line-height:1.4;font-family:'Inter',sans-serif}
+
+/* ─── RIGHT COLUMN ─── */
+.right-col{display:flex;flex-direction:column;gap:10px}
+
+/* Concept Stack */
+.concept-stack{border:1px solid rgba(139,92,246,.1);border-radius:8px;padding:12px 14px;background:rgba(139,92,246,.015);flex:1;display:flex;flex-direction:column;gap:6px}
+.layer{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:6px;position:relative}
+.layer-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;opacity:.35;font-family:'Inter',sans-serif;min-width:56px;text-align:center}
+.layer-items{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.layer-tag{font-size:10.5px;padding:3px 10px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:500;white-space:nowrap}
+
+.layer-ontology{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.1)}
+.layer-ontology .layer-tag{background:rgba(139,92,246,.1);color:#c4b5fd;border:1px solid rgba(139,92,246,.15)}
+.layer-ontology .layer-label{color:#a78bfa}
+
+.layer-epistemology{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1)}
+.layer-epistemology .layer-tag{background:rgba(99,102,241,.1);color:#a5b4fc;border:1px solid rgba(99,102,241,.15)}
+.layer-epistemology .layer-label{color:#818cf8}
+
+.layer-methodology{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.1)}
+.layer-methodology .layer-tag{background:rgba(34,211,238,.1);color:#67e8f9;border:1px solid rgba(34,211,238,.15)}
+.layer-methodology .layer-label{color:#22d3ee}
+
+.stack-arrow{display:flex;justify-content:center;opacity:.15}
+.stack-arrow svg{width:16px;height:16px}
+
+/* Skills */
+.skills-panel{border:1px solid rgba(255,255,255,.05);padding:12px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px;margin-top:6px}
+.skill-item{display:flex;align-items:baseline;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.skill-item:last-child{border-bottom:none}
+.skill-name{font-size:11px;font-weight:600;color:#c4b5fd;min-width:110px}
+.skill-desc{font-size:10px;opacity:.3;font-family:'Inter',sans-serif;color:#7da0b0}
+
+/* AI Panel */
+.ai-panel{border:1.5px solid rgba(139,92,246,.15);padding:10px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(139,92,246,.04),rgba(99,102,241,.03));position:relative;overflow:hidden}
+.ai-panel::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(139,92,246,.08),transparent 70%);pointer-events:none}
+.ai-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px;position:relative}
+.ai-text{font-size:12px;line-height:1.65;opacity:.55;color:#a0c0d0;position:relative}
+.ai-text b{opacity:.9;color:#e8f4f8}
+
+/* Cross-Domain */
+.connections-panel{border:1px solid rgba(255,255,255,.05);padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.conn-list{font-size:11px;line-height:1.8;opacity:.4;margin-top:4px;color:#a0c0d0}
+.conn-list b{opacity:.85;color:#e8f4f8}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(139,92,246,.08);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.12;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.16;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="domain-label">Domain 01 · Philosophy</div>
+      <div class="domain-title">哲学 · Philosophy</div>
+      <div class="domain-sub">对真、善、美与可知性的根本追问 · 28 思想家 / 8 概念 / 19 Skills · AI-Ready</div>
+      <div class="core-claim-inline">核心主张：哲学不是提供答案的学科，而是通过概念分析、辩证追问与存在探询，持续澄清人类理解世界与自身的条件。</div>
+    </div>
+    <div class="domain-meta">
+      <div class="num">公元前6c — 当代</div>
+    </div>
+  </div>
+
+  <div class="statsbar">
+    <span class="st"><b>28</b> 思想家</span>
+    <span class="st"><b>8</b> 核心概念</span>
+    <span class="st"><b>19</b> 操作框架</span>
+    <span class="st"><b>13</b> 学派传统</span>
+    <span class="st"><b>2500+</b> 年思想史</span>
+    <span class="st"><b>4</b> 设计原则</span>
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+      <div class="panel-title">Schools & Traditions · 学派谱系（13）</div>
+      <div class="schools-grid">
+        <div class="school-card">
+          <div class="school-name">古希腊</div>
+          <div class="school-en">Ancient Greek · 西方哲学之源</div>
+          <div class="school-thinkers"><b>苏格拉底</b> · 诘问与德性 · <b>柏拉图</b> · 理念论 · <b>亚里士多德</b> · 实体与德性伦理</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">德国唯心论</div>
+          <div class="school-en">German Idealism · 观念论高峰</div>
+          <div class="school-thinkers"><b>康德</b> · 批判哲学与先验观念论 · <b>黑格尔</b> · 辩证法与绝对精神</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">存在主义 / 现象学</div>
+          <div class="school-en">Existentialism & Phenomenology</div>
+          <div class="school-thinkers"><b>克尔凯郭尔</b> · 个体存在 · <b>尼采</b> · 价值重估 · <b>海德格尔</b> · 此在与存在 · <b>萨特</b> · 自由选择与责任 · <b>梅洛-庞蒂</b> · 身体现象学</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">分析哲学</div>
+          <div class="school-en">Analytic Philosophy · 语言与逻辑</div>
+          <div class="school-thinkers"><b>罗素</b> · 逻辑分析与摹状词 · <b>维特根斯坦</b> · 语言游戏与私人语言</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">理性论 / 经验主义</div>
+          <div class="school-en">Rationalism & Empiricism</div>
+          <div class="school-thinkers"><b>笛卡尔</b> · 我思故我在 · <b>斯宾诺莎</b> · 实体一元论 · <b>莱布尼茨</b> · 单子论 · <b>休谟</b> · 怀疑论与因果</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">东方哲学</div>
+          <div class="school-en">Eastern Philosophy · 道与仁</div>
+          <div class="school-thinkers"><b>老子</b> · 道与无为 · <b>孔子</b> · 仁与礼 · <b>庄子</b> · 齐物与逍遥</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">实用主义 / 后结构</div>
+          <div class="school-en">Pragmatism & Post-structuralism</div>
+          <div class="school-thinkers"><b>杜威</b> · 经验自然主义 · <b>德里达</b> · 解构策略 · <b>伽达默尔</b> · 哲学诠释学</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">政治哲学 / 其他</div>
+          <div class="school-en">Political & Others</div>
+          <div class="school-thinkers"><b>卢梭</b> · 社会契约 · <b>阿伦特</b> · 公共领域 · <b>阿奎那</b> · 经院哲学 · <b>叔本华</b> · 意志与表象</div>
+        </div>
+        <div class="school-card" style="justify-content:center;align-items:center;opacity:.45;border-style:dashed">
+          <div style="font-size:11px;text-align:center;color:#7da0b0;font-family:'Inter',sans-serif">+ 启蒙运动 · 中世纪经院<br>现象学运动 · 结构主义 · 悲观主义</div>
+        </div>
+      </div>
+
+      <div class="panel-title">Timeline · 思想演进轴</div>
+      <div class="timeline">
+        <div class="timeline-track">
+          <div class="timeline-dot" style="left:3%"></div><div class="timeline-label" style="left:3%">前6c 老子</div>
+          <div class="timeline-dot" style="left:18%"></div><div class="timeline-label" style="left:18%">前5c 苏格拉底</div>
+          <div class="timeline-dot" style="left:30%"></div><div class="timeline-label" style="left:30%">前4c 柏拉图</div>
+          <div class="timeline-dot" style="left:55%"></div><div class="timeline-label" style="left:55%">18c 康德</div>
+          <div class="timeline-dot" style="left:70%"></div><div class="timeline-label" style="left:70%">19c 黑格尔</div>
+          <div class="timeline-dot" style="left:82%"></div><div class="timeline-label" style="left:82%">19c 尼采</div>
+          <div class="timeline-dot" style="left:94%"></div><div class="timeline-label" style="left:94%">20c 海德格尔</div>
+        </div>
+      </div>
+
+      <div class="panel-title">Design Principles · 设计原则</div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">追问本源</div>
+          <div class="principle-desc">不停留于现象表层，持续追问存在的根基、知识的条件与价值的根据</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">概念分析</div>
+          <div class="principle-desc">通过语言澄清、逻辑论证与思想实验，精确把握概念边界与使用条件</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">存在优先</div>
+          <div class="principle-desc">从人的生存境遇、身体经验与历史处境出发，而非抽象体系出发理解世界</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">04</div>
+          <div class="principle-title">跨传统对话</div>
+          <div class="principle-desc">推动东西方哲学传统的互鉴、对话与融合，打破地域中心主义</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="panel-title">Concept Architecture · 概念架构（8）</div>
+      <div class="concept-stack">
+        <div class="layer layer-ontology">
+          <div class="layer-label">本体论</div>
+          <div class="layer-items">
+            <span class="layer-tag">存在</span><span class="layer-tag">虚无</span><span class="layer-tag">时间</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-epistemology">
+          <div class="layer-label">认识论</div>
+          <div class="layer-items">
+            <span class="layer-tag">认识论</span><span class="layer-tag">自由意志</span><span class="layer-tag">美学</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-methodology">
+          <div class="layer-label">方法论</div>
+          <div class="layer-items">
+            <span class="layer-tag">辩证法</span><span class="layer-tag">语言</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-panel">
+        <div class="panel-title">Agent Skills · 可调用框架（19）</div>
+        <div class="skill-grid">
+          <div class="skill-item"><span class="skill-name">苏格拉底式提问</span><span class="skill-desc">通过追问揭示隐含假设</span></div>
+          <div class="skill-item"><span class="skill-name">辩证分析</span><span class="skill-desc">正题—反题—合题推演</span></div>
+          <div class="skill-item"><span class="skill-name">现象学还原</span><span class="skill-desc">悬置成见，回到经验本身</span></div>
+          <div class="skill-item"><span class="skill-name">语言游戏分析</span><span class="skill-desc">在使用中看意义生成</span></div>
+          <div class="skill-item"><span class="skill-name">此在分析</span><span class="skill-desc">海德格尔此在生存论分析</span></div>
+          <div class="skill-item"><span class="skill-name">绝对命令检验</span><span class="skill-desc">康德道德律令普遍化检验</span></div>
+          <div class="skill-item"><span class="skill-name">洞穴寓言分析</span><span class="skill-desc">柏拉图理念世界映射分析</span></div>
+          <div class="skill-item"><span class="skill-name">方法论怀疑</span><span class="skill-desc">笛卡尔系统性怀疑方法</span></div>
+          <div class="skill-item"><span class="skill-name">齐物论分析</span><span class="skill-desc">超越对立，万物平等视角</span></div>
+          <div class="skill-item"><span class="skill-name">仁礼分析</span><span class="skill-desc">孔子仁义礼智信框架</span></div>
+          <div class="skill-item"><span class="skill-name">理念论映射</span><span class="skill-desc">柏拉图型相与分有分析</span></div>
+          <div class="skill-item"><span class="skill-name">单子论推演</span><span class="skill-desc">莱布尼茨预定和谐应用</span></div>
+          <div class="skill-item"><span class="skill-name">解构阅读</span><span class="skill-desc">德里达延异与踪迹策略</span></div>
+          <div class="skill-item"><span class="skill-name">诠释学循环</span><span class="skill-desc">伽达默尔理解循环分析</span></div>
+          <div class="skill-item"><span class="skill-name">谱系学批判</span><span class="skill-desc">尼采价值起源与权力分析</span></div>
+          <div class="skill-item"><span class="skill-name">无为推演</span><span class="skill-desc">老子道法自然策略分析</span></div>
+          <div class="skill-item"><span class="skill-name">意志分析</span><span class="skill-desc">叔本华意志与表象诊断</span></div>
+          <div class="skill-item"><span class="skill-name">契约论证</span><span class="skill-desc">卢梭社会契约与公意分析</span></div>
+          <div class="skill-item"><span class="skill-name">公共领域诊断</span><span class="skill-desc">阿伦特行动与公共性分析</span></div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-title">AI Era Response · AI 时代回应</div>
+        <div class="ai-text"><b>大语言模型的本体论地位是什么？</b> AI 是否具有意向性？哲学论证如何评估 LLM 的"理解"？现象学视角下的人机交互意味着什么？存在主义能否为 AI 时代的自由与责任提供框架？</div>
+      </div>
+
+      <div class="connections-panel">
+        <div class="panel-title">Cross-Domain · 跨学科连接</div>
+        <div class="conn-list">
+          <b>自我</b> → 心理学(荣格个体化 / 罗杰斯真实自我) · 宗教(禅宗无我) · 社会学(戈夫曼拟剧自我)<br>
+          <b>权力</b> → 社会学(福柯规训 / 马克思异化) · 心理学(班杜拉自我效能)<br>
+          <b>语言</b> → 心理学(贝克自动思维) · 社会学(哈贝马斯沟通行动) · 认知系统(心智模型)<br>
+          <b>现代性</b> → 社会学(韦伯理性化) · 伦理学(马尔库塞单向度)<br>
+          <b>身体</b> → 心理学(具身认知) · 认知系统(生态心理学可供性)<br>
+          <b>苦难</b> → 宗教(佛教四圣谛) · 心理学(创伤与意义建构)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · PHILOSOPHY · PEACE LAB</div>
+    <div class="footer-right">
+      <span>28 THINKERS</span><span>8 CONCEPTS</span><span>19 SKILLS</span><span>4 PRINCIPLES</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Cognition · 认知系统工程知识图谱</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0d1117; color:#c9d1d9; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; overflow:hidden; }
+#container { width:100vw; height:100vh; position:relative; }
+svg { width:100%; height:100%; }
+#title { position:absolute; top:20px; left:50%; transform:translateX(-50%); font-size:24px; font-weight:600; color:#e6edf3; text-shadow:0 0 20px rgba(136,198,255,0.3); letter-spacing:2px; z-index:10; pointer-events:none; }
+#title small { display:block; font-size:13px; font-weight:400; color:#8b949e; margin-top:4px; }
+#legend { position:absolute; top:20px; right:20px; background:rgba(22,27,34,0.9); border:1px solid #30363d; border-radius:8px; padding:16px; font-size:12px; z-index:10; backdrop-filter:blur(8px); }
+#legend h3 { color:#e6edf3; margin-bottom:10px; font-size:13px; }
+.legend-item { display:flex; align-items:center; margin-bottom:6px; cursor:pointer; opacity:0.9; }
+.legend-item:hover { opacity:1; }
+.legend-dot { width:12px; height:12px; border-radius:50%; margin-right:8px; flex-shrink:0; }
+.legend-diamond { width:10px; height:10px; margin-right:9px; flex-shrink:0; transform:rotate(45deg); }
+.legend-rect { width:14px; height:8px; border-radius:3px; margin-right:7px; flex-shrink:0; }
+#filters { position:absolute; top:20px; left:20px; background:rgba(22,27,34,0.9); border:1px solid #30363d; border-radius:8px; padding:16px; font-size:12px; z-index:10; backdrop-filter:blur(8px); max-height:90vh; overflow-y:auto; }
+#filters h3 { color:#e6edf3; margin-bottom:10px; font-size:13px; }
+.filter-item { display:flex; align-items:center; margin-bottom:5px; cursor:pointer; }
+.filter-item input { margin-right:8px; accent-color:#58a6ff; }
+#tooltip { position:absolute; background:rgba(22,27,34,0.95); border:1px solid #30363d; border-radius:6px; padding:10px 14px; font-size:12px; pointer-events:none; opacity:0; transition:opacity 0.15s; z-index:100; max-width:280px; backdrop-filter:blur(8px); }
+#tooltip .tt-title { color:#e6edf3; font-weight:600; font-size:14px; margin-bottom:4px; }
+#tooltip .tt-type { color:#58a6ff; font-size:11px; margin-bottom:2px; }
+#tooltip .tt-school { color:#8b949e; font-size:11px; }
+#stats { position:absolute; bottom:20px; right:20px; background:rgba(22,27,34,0.9); border:1px solid #30363d; border-radius:8px; padding:12px 16px; font-size:11px; color:#8b949e; z-index:10; }
+#stats span { color:#58a6ff; font-weight:600; }
+</style>
+</head>
+<body>
+<div id="container">
+<div id="title">Open Cognition · 认知系统工程知识图谱<small>Cognitive Systems Engineering Knowledge Graph</small></div>
+<div id="legend"></div>
+<div id="filters"></div>
+<div id="tooltip"><div class="tt-title"></div><div class="tt-type"></div><div class="tt-school"></div></div>
+<div id="stats">节点: <span id="nodeCount">0</span> · 关系: <span id="edgeCount">0</span> · 学派: <span id="schoolCount">0</span></div>
+<svg></svg>
+</div>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+const DATA = {"nodes":[{"id":"bainbridge","title":"莱桑·班布里奇 Lisanne Bainbridge","type":"thinker","school":"automation-sociotechnical"},{"id":"parasuraman","title":"拉贾·帕拉苏拉曼 Raja Parasuraman","type":"thinker","school":"automation-sociotechnical"},{"id":"sheridan","title":"托马斯·谢里登 Thomas Sheridan","type":"thinker","school":"automation-sociotechnical"},{"id":"vicente","title":"金·维森特 Kim Vicente","type":"thinker","school":"automation-sociotechnical"},{"id":"wickens","title":"克里斯托弗·威肯斯 Christopher Wickens","type":"thinker","school":"automation-sociotechnical"},{"id":"leveson","title":"南希·莱文森 Nancy Leveson","type":"thinker","school":"cognitive-engineering"},{"id":"norman","title":"诺曼 Donald Norman","type":"thinker","school":"cognitive-engineering"},{"id":"rasmussen","title":"拉斯穆森 Jens Rasmussen","type":"thinker","school":"cognitive-engineering"},{"id":"woods","title":"伍兹 David Woods","type":"thinker","school":"cognitive-engineering"},{"id":"ashby","title":"阿什比 W.R. Ashby","type":"thinker","school":"cybernetics"},{"id":"simon","title":"西蒙 Herbert Simon","type":"thinker","school":"cybernetics"},{"id":"wiener","title":"维纳 Norbert Wiener","type":"thinker","school":"cybernetics"},{"id":"engestrom","title":"恩格斯托姆 Yrjö Engeström","type":"thinker","school":"distributed"},{"id":"hutchins","title":"哈钦斯 Edwin Hutchins","type":"thinker","school":"distributed"},{"id":"leontiev","title":"列昂捷夫 A.N. Leontiev","type":"thinker","school":"distributed"},{"id":"clark","title":"克拉克 Andy Clark","type":"thinker","school":"ecological"},{"id":"gibson","title":"吉布森 J.J. Gibson","type":"thinker","school":"ecological"},{"id":"varela","title":"瓦雷拉 Francisco Varela","type":"thinker","school":"ecological"},{"id":"endsley","title":"米卡·恩兹利 Mica Endsley","type":"thinker","school":"naturalistic-decision"},{"id":"klein","title":"克莱因 Gary Klein","type":"thinker","school":"naturalistic-decision"},{"id":"sweller","title":"斯威勒 John Sweller","type":"thinker","school":"naturalistic-decision"},{"id":"weick","title":"维克 Karl Weick","type":"thinker","school":"naturalistic-decision"},{"id":"dekker","title":"西德尼·德克尔 Sidney Dekker","type":"thinker","school":"safety-science"},{"id":"hollnagel","title":"埃里克·霍纳格尔 Erik Hollnagel","type":"thinker","school":"safety-science"},{"id":"perrow","title":"查尔斯·佩罗 Charles Perrow","type":"thinker","school":"safety-science"},{"id":"reason","title":"詹姆斯·里森 James Reason","type":"thinker","school":"safety-science"},{"id":"activity-theory","title":"活动理论 · Activity Theory","type":"concept","school":"distributed"},{"id":"affordance","title":"可供性 · Affordance","type":"concept","school":"ecological"},{"id":"automation-autonomy-spectrum","title":"自动化-自主性光谱 · Automation-Autonomy Spectrum","type":"concept","school":"automation-sociotechnical"},{"id":"automation-bias","title":"自动化偏见 · Automation Bias","type":"concept","school":"automation-sociotechnical"},{"id":"bounded-rationality","title":"有限理性 · Bounded Rationality","type":"concept","school":"cybernetics"},{"id":"cognitive-load","title":"认知负荷 · Cognitive Load","type":"concept","school":"naturalistic-decision"},{"id":"distributed-cognition","title":"分布式认知 · Distributed Cognition","type":"concept","school":"distributed"},{"id":"distributed-sa","title":"分布式态势感知 · Distributed Situation Awareness","type":"concept","school":"cognitive-engineering"},{"id":"drift-into-failure","title":"漂移失败 · Drift into Failure","type":"concept","school":"safety-science"},{"id":"ecological-interface-design","title":"生态界面设计 · Ecological Interface Design (EID)","type":"concept","school":"automation-sociotechnical"},{"id":"enaction","title":"生成认知 · Enaction","type":"concept","school":"ecological"},{"id":"human-reliability-analysis","title":"人因可靠性分析 · Human Reliability Analysis (HRA)","type":"concept","school":"safety-science"},{"id":"joint-cognitive-system","title":"联合认知系统 · Joint Cognitive System","type":"concept","school":"cognitive-engineering"},{"id":"macrocognition","title":"宏观认知 · Macrocognition","type":"concept","school":"naturalistic-decision"},{"id":"mental-model","title":"心智模型 · Mental Models","type":"concept","school":"cognitive-engineering"},{"id":"multiple-resource-model","title":"多资源模型 · Multiple Resource Model","type":"concept","school":"automation-sociotechnical"},{"id":"normal-accidents","title":"正常事故 · Normal Accidents Theory","type":"concept","school":"safety-science"},{"id":"out-of-the-loop","title":"脱离回路 · Out-of-the-Loop (OOTL)","type":"concept","school":"automation-sociotechnical"},{"id":"predictive-processing","title":"预测加工 · Predictive Processing","type":"concept","school":"ecological"},{"id":"resilience-engineering","title":"韧性工程 · Resilience Engineering","type":"concept","school":"cognitive-engineering"},{"id":"safety-culture","title":"安全文化与公正文化 · Safety Culture & Just Culture","type":"concept","school":"safety-science"},{"id":"safety-paradigm","title":"safety-paradigm","type":"concept","school":"cognitive-systems"},{"id":"sensemaking","title":"sensemaking","type":"concept","school":"cognitive-systems"},{"id":"situated-cognition","title":"situated-cognition","type":"concept","school":"cognitive-systems"},{"id":"situation-awareness","title":"situation-awareness","type":"concept","school":"cognitive-systems"},{"id":"sociotechnical-system","title":"sociotechnical-system","type":"concept","school":"cognitive-systems"},{"id":"team-cognition","title":"team-cognition","type":"concept","school":"cognitive-systems"},{"id":"activity-system-analysis","title":"activity-system-analysis","type":"skill","school":"skills"},{"id":"affordance-analysis","title":"affordance-analysis","type":"skill","school":"skills"},{"id":"automation-level-assessment","title":"automation-level-assessment","type":"skill","school":"skills"},{"id":"cognitive-load-assessment","title":"cognitive-load-assessment","type":"skill","school":"skills"},{"id":"cognitive-system-design","title":"cognitive-system-design","type":"skill","school":"skills"},{"id":"cognitive-task-analysis","title":"cognitive-task-analysis","type":"skill","school":"skills"},{"id":"cognitive-work-analysis","title":"cognitive-work-analysis","type":"skill","school":"skills"},{"id":"human-ai-teaming","title":"human-ai-teaming","type":"skill","school":"skills"},{"id":"human-error-analysis","title":"human-error-analysis","type":"skill","school":"skills"},{"id":"human-reliability-analysis","title":"human-reliability-analysis","type":"skill","school":"skills"},{"id":"naturalistic-decision-analysis","title":"naturalistic-decision-analysis","type":"skill","school":"skills"},{"id":"resilience-assessment","title":"resilience-assessment","type":"skill","school":"skills"},{"id":"safety-learning-analysis","title":"safety-learning-analysis","type":"skill","school":"skills"},{"id":"sensemaking-guidance","title":"sensemaking-guidance","type":"skill","school":"skills"},{"id":"situation-awareness-diagnosis","title":"situation-awareness-diagnosis","type":"skill","school":"skills"},{"id":"stpa-accident-analysis","title":"stpa-accident-analysis","type":"skill","school":"skills"}],"edges":[{"source":"leveson","target":"drift-into-failure","label":"参见"},{"source":"norman","target":"gibson","label":"吉布森"},{"source":"norman","target":"simon","label":"西蒙"},{"source":"norman","target":"sweller","label":"斯威勒"},{"source":"rasmussen","target":"gibson","label":"吉布森"},{"source":"rasmussen","target":"wiener","label":"维纳"},{"source":"woods","target":"resilience-engineering","label":"韧性工程 Resilience Engineering"},{"source":"woods","target":"joint-cognitive-system","label":"联合认知系统 Joint Cognitive System"},{"source":"woods","target":"rasmussen","label":"拉斯穆森"},{"source":"woods","target":"hutchins","label":"哈钦斯"},{"source":"ashby","target":"wiener","label":"维纳"},{"source":"simon","target":"bounded-rationality","label":"有限理性 Bounded Rationality"},{"source":"simon","target":"wiener","label":"维纳"},{"source":"wiener","target":"joint-cognitive-system","label":"反馈 Feedback"},{"source":"engestrom","target":"activity-theory","label":"活动理论 Activity Theory"},{"source":"engestrom","target":"leontiev","label":"列昂捷夫"},{"source":"engestrom","target":"hutchins","label":"哈钦斯"},{"source":"hutchins","target":"distributed-cognition","label":"分布式认知 Distributed Cognition"},{"source":"hutchins","target":"clark","label":"克拉克"},{"source":"leontiev","target":"engestrom","label":"恩格斯托姆"},{"source":"clark","target":"predictive-processing","label":"延展心智 Extended Mind"},{"source":"clark","target":"gibson","label":"吉布森"},{"source":"clark","target":"hutchins","label":"哈钦斯"},{"source":"gibson","target":"affordance","label":"可供性 Affordance"},{"source":"gibson","target":"norman","label":"诺曼"},{"source":"varela","target":"enaction","label":"生成认知 Enaction"},{"source":"varela","target":"gibson","label":"吉布森"},{"source":"varela","target":"wiener","label":"维纳"},{"source":"endsley","target":"out-of-the-loop","label":"参见"},{"source":"endsley","target":"cognitive-load","label":"参见"},{"source":"endsley","target":"situation-awareness","label":"参见"},{"source":"klein","target":"simon","label":"西蒙"},{"source":"klein","target":"rasmussen","label":"拉斯穆森"},{"source":"sweller","target":"cognitive-load","label":"认知负荷 Cognitive Load"},{"source":"sweller","target":"simon","label":"西蒙"},{"source":"sweller","target":"norman","label":"诺曼"},{"source":"weick","target":"sensemaking","label":"意义建构 Sensemaking"},{"source":"weick","target":"varela","label":"瓦雷拉"},{"source":"perrow","target":"normal-accidents","label":"参见"},{"source":"activity-theory","target":"leontiev","label":"列昂捷夫 A.N. Leontiev"},{"source":"activity-theory","target":"engestrom","label":"恩格斯托姆 Yrjö Engeström"},{"source":"activity-theory","target":"distributed-cognition","label":"分布式认知"},{"source":"activity-theory","target":"joint-cognitive-system","label":"认知工作分析"},{"source":"activity-theory","target":"sensemaking","label":"意义建构"},{"source":"affordance","target":"gibson","label":"吉布森 J.J. Gibson"},{"source":"affordance","target":"norman","label":"诺曼 Donald Norman"},{"source":"affordance","target":"enaction","label":"生成认知"},{"source":"affordance","target":"cognitive-load","label":"认知负荷"},{"source":"bounded-rationality","target":"simon","label":"西蒙 Herbert Simon"},{"source":"bounded-rationality","target":"mental-model","label":"心智模型"},{"source":"bounded-rationality","target":"cognitive-load","label":"认知负荷"},{"source":"bounded-rationality","target":"wiener","label":"维纳 Wiener"},{"source":"cognitive-load","target":"sweller","label":"斯威勒 John Sweller"},{"source":"cognitive-load","target":"bounded-rationality","label":"有限理性"},{"source":"cognitive-load","target":"mental-model","label":"心智模型"},{"source":"cognitive-load","target":"situation-awareness","label":"态势感知"},{"source":"cognitive-load","target":"simon","label":"西蒙 Simon"},{"source":"distributed-cognition","target":"hutchins","label":"哈钦斯 Edwin Hutchins"},{"source":"distributed-cognition","target":"activity-theory","label":"活动理论"},{"source":"distributed-cognition","target":"predictive-processing","label":"延展心智"},{"source":"distributed-cognition","target":"joint-cognitive-system","label":"联合认知系统"},{"source":"distributed-cognition","target":"clark","label":"Clark"},{"source":"distributed-sa","target":"situation-awareness","label":"态势感知"},{"source":"distributed-sa","target":"distributed-cognition","label":"分布式认知"},{"source":"distributed-sa","target":"team-cognition","label":"团队认知"},{"source":"distributed-sa","target":"joint-cognitive-system","label":"联合认知系统"},{"source":"distributed-sa","target":"endsley","label":"Endsley"},{"source":"distributed-sa","target":"hutchins","label":"Hutchins"},{"source":"enaction","target":"varela","label":"瓦雷拉 Francisco Varela"},{"source":"enaction","target":"predictive-processing","label":"预测加工"},{"source":"enaction","target":"affordance","label":"可供性"},{"source":"enaction","target":"wiener","label":"维纳 Wiener"},{"source":"human-reliability-analysis","target":"normal-accidents","label":"正常事故论"},{"source":"human-reliability-analysis","target":"rasmussen","label":"拉斯穆森 Rasmussen"},{"source":"human-reliability-analysis","target":"resilience-engineering","label":"韧性工程"},{"source":"human-reliability-analysis","target":"joint-cognitive-system","label":"联合认知系统"},{"source":"human-reliability-analysis","target":"hollnagel","label":"Hollnagel"},{"source":"human-reliability-analysis","target":"reason","label":"Reason"},{"source":"human-reliability-analysis","target":"ashby","label":"阿什比 Ashby"},{"source":"joint-cognitive-system","target":"woods","label":"伍兹 David Woods"},{"source":"joint-cognitive-system","target":"distributed-cognition","label":"分布式认知"},{"source":"joint-cognitive-system","target":"situation-awareness","label":"态势感知"},{"source":"joint-cognitive-system","target":"resilience-engineering","label":"韧性工程"},{"source":"joint-cognitive-system","target":"mental-model","label":"心智模型"},{"source":"joint-cognitive-system","target":"sheridan","label":"Sheridan"},{"source":"joint-cognitive-system","target":"hutchins","label":"哈钦斯 Hutchins"},{"source":"joint-cognitive-system","target":"clark","label":"克拉克 Clark"},{"source":"macrocognition","target":"klein","label":"克莱因 Klein"},{"source":"macrocognition","target":"sensemaking","label":"识别启动决策"},{"source":"macrocognition","target":"situation-awareness","label":"态势感知"},{"source":"macrocognition","target":"mental-model","label":"心智模型"},{"source":"macrocognition","target":"weick","label":"维克 Weick"},{"source":"macrocognition","target":"woods","label":"伍兹 Woods"},{"source":"mental-model","target":"norman","label":"诺曼 Donald Norman"},{"source":"mental-model","target":"situation-awareness","label":"态势感知"},{"source":"mental-model","target":"bounded-rationality","label":"有限理性"},{"source":"mental-model","target":"sensemaking","label":"意义建构"},{"source":"normal-accidents","target":"perrow","label":"Charles Perrow"},{"source":"out-of-the-loop","target":"endsley","label":"Endsley"},{"source":"predictive-processing","target":"clark","label":"克拉克 Andy Clark"},{"source":"predictive-processing","target":"enaction","label":"生成认知"},{"source":"resilience-engineering","target":"woods","label":"伍兹 David Woods"},{"source":"resilience-engineering","target":"joint-cognitive-system","label":"联合认知系统"},{"source":"resilience-engineering","target":"situation-awareness","label":"人为错误分析"},{"source":"resilience-engineering","target":"sensemaking","label":"意义建构"},{"source":"resilience-engineering","target":"ashby","label":"阿什比 Ashby"}]};
+
+const SCHOOLS = {
+  "cybernetics": {color:"#f97583", label:"控制论 Cybernetics"},
+  "ecological": {color:"#56d364", label:"生态心理学 Ecological"},
+  "distributed": {color:"#79c0ff", label:"分布式认知 Distributed"},
+  "cognitive-engineering": {color:"#d2a8ff", label:"认知工程 Cognitive Eng."},
+  "naturalistic-decision": {color:"#ffa657", label:"自然决策 Naturalistic"},
+  "safety-science": {color:"#ff7b72", label:"安全科学 Safety Science"},
+  "automation-sociotechnical": {color:"#7ee787", label:"自动化与社会技术"},
+  "cognitive-systems": {color:"#e3b341", label:"跨学派概念 Concepts"},
+  "skills": {color:"#a5d6ff", label:"Skills 框架"}
+};
+
+const width = window.innerWidth, height = window.innerHeight;
+const svg = d3.select("svg").attr("viewBox",[0,0,width,height]);
+const g = svg.append("g");
+
+// Arrow markers
+svg.append("defs").selectAll("marker").data(["arrow"]).join("marker")
+  .attr("id","arrow").attr("viewBox","0 -3 6 6").attr("refX",18).attr("refY",0)
+  .attr("markerWidth",4).attr("markerHeight",4).attr("orient","auto")
+  .append("path").attr("d","M0,-3L6,0L0,3").attr("fill","#ffffff30");
+
+// Process data
+const nodes = DATA.nodes.map(d => ({...d, schoolColor: SCHOOLS[d.school]?.color || "#888"}));
+const edges = DATA.edges.map(d => ({...d}));
+
+const nodeMap = new Map(nodes.map(d => [d.id, d]));
+
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(edges).id(d=>d.id).distance(90))
+  .force("charge", d3.forceManyBody().strength(-220))
+  .force("center", d3.forceCenter(width/2, height/2))
+  .force("collision", d3.forceCollide().radius(d => d.type==="thinker"?18:d.type==="concept"?14:20))
+  .force("x", d3.forceX(width/2).strength(0.03))
+  .force("y", d3.forceY(height/2).strength(0.03));
+
+// Edges
+const link = g.append("g").selectAll("line").data(edges).join("line")
+  .attr("stroke","#ffffff15").attr("stroke-width",1)
+  .attr("marker-end","url(#arrow)");
+
+// Nodes
+const node = g.append("g").selectAll("g").data(nodes).join("g")
+  .attr("class","node").call(d3.drag().on("start",dragStart).on("drag",dragging).on("end",dragEnd));
+
+// Draw shapes
+node.each(function(d) {
+  const el = d3.select(this);
+  const c = d.schoolColor;
+  if(d.type==="thinker") {
+    el.append("circle").attr("r",11).attr("fill",c).attr("fill-opacity",0.8)
+      .attr("stroke",c).attr("stroke-width",1.5).attr("stroke-opacity",0.4);
+    el.append("circle").attr("r",11).attr("fill","none").attr("stroke",c)
+      .attr("stroke-width",0.5).attr("stroke-opacity",0.2)
+      .style("filter","drop-shadow(0 0 6px "+c+"40)");
+  } else if(d.type==="concept") {
+    el.append("rect").attr("x",-8).attr("y",-8).attr("width",16).attr("height",16)
+      .attr("transform","rotate(45)").attr("fill",c).attr("fill-opacity",0.75)
+      .attr("stroke",c).attr("stroke-width",1.5).attr("stroke-opacity",0.4)
+      .style("filter","drop-shadow(0 0 5px "+c+"30)");
+  } else {
+    el.append("rect").attr("x",-16).attr("y",-7).attr("width",32).attr("height",14)
+      .attr("rx",4).attr("fill",c).attr("fill-opacity",0.7)
+      .attr("stroke",c).attr("stroke-width",1.5).attr("stroke-opacity",0.4)
+      .style("filter","drop-shadow(0 0 5px "+c+"30)");
+  }
+});
+
+// Labels (show for thinkers and on zoom)
+const label = g.append("g").selectAll("text").data(nodes).join("text")
+  .text(d => {
+    const t = d.title;
+    const m = t.match(/^[\u4e00-\u9fff·\s]+/);
+    return m ? m[0].trim() : t.split(" ")[0];
+  })
+  .attr("font-size", d => d.type==="thinker"?"10px":"9px")
+  .attr("fill","#c9d1d9").attr("text-anchor","middle")
+  .attr("dy", d => d.type==="thinker"?24:d.type==="concept"?22:22)
+  .attr("opacity", d => d.type==="thinker"?0.8:0.5)
+  .style("pointer-events","none");
+
+// Zoom
+const zoom = d3.zoom().scaleExtent([0.3,5]).on("zoom", e => {
+  g.attr("transform", e.transform);
+  const k = e.transform.k;
+  label.attr("opacity", d => {
+    if(d.type==="thinker") return k>0.7?0.8:0;
+    return k>1.2?0.7:0;
+  });
+});
+svg.call(zoom);
+
+// Tooltip
+const tooltip = d3.select("#tooltip");
+node.on("mouseover", (e,d) => {
+  const tt = SCHOOLS[d.school]?.label || d.school;
+  tooltip.select(".tt-title").text(d.title);
+  tooltip.select(".tt-type").text(d.type==="thinker"?"👤 思想家":d.type==="concept"?"💡 概念":"🔧 Skill");
+  tooltip.select(".tt-school").text(tt);
+  tooltip.style("opacity",1).style("left",(e.pageX+12)+"px").style("top",(e.pageY-10)+"px");
+}).on("mousemove", e => {
+  tooltip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-10)+"px");
+}).on("mouseout", () => tooltip.style("opacity",0));
+
+// Click highlight
+let selectedNode = null;
+node.on("click", (e,d) => {
+  e.stopPropagation();
+  if(selectedNode===d) { resetHighlight(); selectedNode=null; return; }
+  selectedNode = d;
+  const neighbors = new Set();
+  edges.forEach(e => {
+    if(e.source.id===d.id) neighbors.add(e.target.id);
+    if(e.target.id===d.id) neighbors.add(e.source.id);
+  });
+  neighbors.add(d.id);
+  node.style("opacity", n => neighbors.has(n.id)?1:0.1);
+  link.style("opacity", e => (e.source.id===d.id||e.target.id===d.id)?0.8:0.03);
+  label.style("opacity", n => neighbors.has(n.id)?1:0.05);
+});
+svg.on("click", () => { resetHighlight(); selectedNode=null; });
+function resetHighlight() {
+  node.style("opacity",1); link.style("opacity",1);
+  label.style("opacity", d => d.type==="thinker"?0.8:0.5);
+}
+
+// Simulation tick
+simulation.on("tick", () => {
+  link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  node.attr("transform", d => "translate("+d.x+","+d.y+")");
+  label.attr("x", d=>d.x).attr("y", d=>d.y);
+});
+
+function dragStart(e,d) { if(!e.active) simulation.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; }
+function dragging(e,d) { d.fx=e.x; d.fy=e.y; }
+function dragEnd(e,d) { if(!e.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; }
+
+// Legend
+const legend = d3.select("#legend");
+legend.append("h3").text("图例 Legend");
+Object.entries(SCHOOLS).forEach(([k,v]) => {
+  const item = legend.append("div").attr("class","legend-item");
+  if(k==="skills") item.append("div").attr("class","legend-rect").style("background",v.color);
+  else if(k==="cognitive-systems") item.append("div").attr("class","legend-diamond").style("background",v.color);
+  else item.append("div").attr("class","legend-dot").style("background",v.color);
+  item.append("span").text(v.label).style("color","#c9d1d9");
+});
+
+// Filters
+const filters = d3.select("#filters");
+filters.append("h3").text("筛选 Filters");
+const activeSchools = new Set(Object.keys(SCHOOLS));
+Object.entries(SCHOOLS).forEach(([k,v]) => {
+  const item = filters.append("label").attr("class","filter-item");
+  const cb = item.append("input").attr("type","checkbox").attr("checked",true);
+  item.append("span").text(v.label).style("color","#c9d1d9");
+  cb.on("change", function() {
+    if(this.checked) activeSchools.add(k); else activeSchools.delete(k);
+    node.style("display", d => activeSchools.has(d.school)?null:"none");
+    link.style("display", e => activeSchools.has(e.source.school)&&activeSchools.has(e.target.school)?null:"none");
+    label.style("display", d => activeSchools.has(d.school)?null:"none");
+  });
+});
+
+// Stats
+const schoolSet = new Set(nodes.map(n=>n.school));
+d3.select("#nodeCount").text(nodes.length);
+d3.select("#edgeCount").text(edges.length);
+d3.select("#schoolCount").text(schoolSet.size);
+</script>
+</body>
+</html>

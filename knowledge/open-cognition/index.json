@@ -1,0 +1,1696 @@
+{
+  "version": "v0.3",
+  "generated": "2026-05-19",
+  "stats": {
+    "entries": 189,
+    "skills": 61,
+    "total": 250,
+    "domains": [
+      "aesthetics",
+      "arts",
+      "ethics-politics",
+      "literature",
+      "philosophy",
+      "psychology",
+      "religion",
+      "sociology"
+    ]
+  },
+  "entries": [
+    {
+      "path": "domains/aesthetics/concepts/creativity.md",
+      "id": "creativity",
+      "title": "创造力 · Creativity",
+      "type": "concept",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/concepts/imagination.md",
+      "id": "imagination",
+      "title": "想象力 · Imagination",
+      "type": "concept",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/concepts/narrative.md",
+      "id": "narrative",
+      "title": "叙事 · Narrative",
+      "type": "concept",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/arts-thought/cage.md",
+      "id": "cage",
+      "title": "凯奇 · John Cage",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/arts-thought/eisenstein.md",
+      "id": "eisenstein",
+      "title": "爱森斯坦 · Sergei Eisenstein",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/arts-thought/leonardo.md",
+      "id": "leonardo",
+      "title": "达·芬奇 · Leonardo da Vinci",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/critical-aesthetics/benjamin.md",
+      "id": "benjamin-walter",
+      "title": "瓦尔特·本雅明 · Walter Benjamin",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-theory/bakhtin.md",
+      "id": "bakhtin",
+      "title": "巴赫金 · Mikhail Bakhtin",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-theory/barthes.md",
+      "id": "barthes",
+      "title": "巴特 · Roland Barthes",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-theory/frye.md",
+      "id": "frye",
+      "title": "弗莱 · Northrop Frye",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-theory/saussure.md",
+      "id": "saussure",
+      "title": "索绪尔 · Ferdinand de Saussure",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-thought/borges.md",
+      "id": "borges",
+      "title": "博尔赫斯 · Jorge Luis Borges",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-thought/dostoevsky.md",
+      "id": "dostoevsky",
+      "title": "陀思妥耶夫斯基 · Fyodor Dostoevsky",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-thought/kafka.md",
+      "id": "kafka",
+      "title": "卡夫卡 · Franz Kafka",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-thought/lu-xun.md",
+      "id": "lu-xun",
+      "title": "鲁迅 · Lu Xun",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-thought/tagore.md",
+      "id": "tagore",
+      "title": "泰戈尔 · Rabindranath Tagore",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/literary-thought/tolstoy.md",
+      "id": "tolstoy",
+      "title": "托尔斯泰 · Leo Tolstoy",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/poetic-thought/dante.md",
+      "id": "dante-alighieri",
+      "title": "但丁·阿利吉耶里 · Dante Alighieri",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/poetic-thought/li-bai.md",
+      "id": "li-bai",
+      "title": "李白 · Li Bai",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/aesthetics/schools/poetic-thought/rumi.md",
+      "id": "rumi",
+      "title": "鲁米 · Jalal ad-Din Rumi",
+      "type": "thinker",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "domains/arts/schools/visual-arts/leonardo-da-vinci.md",
+      "id": "leonardo-da-vinci",
+      "title": "莱昂纳多·达芬奇 · Leonardo da Vinci",
+      "type": "thinker",
+      "domain": "arts"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/categorical-imperative.md",
+      "id": "categorical-imperative",
+      "title": "定言命令 · Categorical Imperative",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/environmental-ethics.md",
+      "id": "environmental-ethics",
+      "title": "环境伦理 · Environmental Ethics",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/human-rights.md",
+      "id": "human-rights",
+      "title": "人权 · Human Rights",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/natural-rights.md",
+      "id": "natural-rights",
+      "title": "自然权利 · Natural Rights",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/pleasure.md",
+      "id": "pleasure",
+      "title": "功利 · Pleasure",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/sense-of-justice.md",
+      "id": "sense-of-justice",
+      "title": "正义感 · Sense of Justice",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/social-contract.md",
+      "id": "social-contract",
+      "title": "社会契约 · Social Contract",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/veil-of-ignorance.md",
+      "id": "veil-of-ignorance",
+      "title": "无知之幕 · Veil of Ignorance",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/concepts/virtue.md",
+      "id": "virtue",
+      "title": "德性 · Virtue",
+      "type": "concept",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/capability-approach/nussbaum.md",
+      "id": "nussbaum",
+      "title": "玛莎·努斯鲍姆 · Martha Nussbaum",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/capability-approach/sen.md",
+      "id": "sen",
+      "title": "阿马蒂亚·森 · Amartya Sen",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/care-ethics/noddings.md",
+      "id": "noddings",
+      "title": "诺丁斯 · Nel Noddings",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/communitarianism/taylor.md",
+      "id": "taylor-charles",
+      "title": "查尔斯·泰勒 · Charles Taylor",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/consequentialism/bentham.md",
+      "id": "bentham",
+      "title": "边沁 · Jeremy Bentham",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/consequentialism/mill.md",
+      "id": "mill",
+      "title": "密尔 · John Stuart Mill",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/critical-theory/marcuse.md",
+      "id": "marcuse",
+      "title": "马尔库塞 · Herbert Marcuse",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/deontology/kant.md",
+      "id": "kant-deontology",
+      "title": "康德 · 道义论伦理学 · Immanuel Kant: Deontological Ethics",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/nonviolent-resistance/gandhi.md",
+      "id": "gandhi-mahatma",
+      "title": "圣雄甘地 · Mahatma Gandhi",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/social-contract/hobbes.md",
+      "id": "hobbes",
+      "title": "霍布斯 · Thomas Hobbes",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/social-contract/locke.md",
+      "id": "locke",
+      "title": "洛克 · John Locke",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/social-contract/rawls.md",
+      "id": "rawls",
+      "title": "罗尔斯 · John Rawls",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/virtue-ethics/aristotle.md",
+      "id": "aristotle",
+      "title": "亚里士多德 · Aristotle",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/ethics-politics/schools/virtue-ethics/macintyre.md",
+      "id": "macintyre",
+      "title": "麦金太尔 · Alasdair MacIntyre",
+      "type": "thinker",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "domains/literature/schools/dramatists/shakespeare.md",
+      "id": "shakespeare",
+      "title": "威廉·莎士比亚 · William Shakespeare",
+      "type": "thinker",
+      "domain": "literature"
+    },
+    {
+      "path": "domains/literature/schools/essayists/lu-xun.md",
+      "id": "lu-xun",
+      "title": "鲁迅 · Lu Xun",
+      "type": "thinker",
+      "domain": "literature"
+    },
+    {
+      "path": "domains/literature/schools/novelists/dostoevsky.md",
+      "id": "dostoevsky",
+      "title": "费奥多尔·陀思妥耶夫斯基 · Fyodor Dostoevsky",
+      "type": "thinker",
+      "domain": "literature"
+    },
+    {
+      "path": "domains/literature/schools/novelists/kafka.md",
+      "id": "kafka",
+      "title": "弗兰茨·卡夫卡 · Franz Kafka",
+      "type": "thinker",
+      "domain": "literature"
+    },
+    {
+      "path": "domains/literature/schools/poets/goethe.md",
+      "id": "goethe",
+      "title": "约翰·沃尔夫冈·冯·歌德 · Johann Wolfgang von Goethe",
+      "type": "thinker",
+      "domain": "literature"
+    },
+    {
+      "path": "domains/philosophy/concepts/aesthetics.md",
+      "id": "aesthetics",
+      "title": "美学 · Aesthetics",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/being.md",
+      "id": "being",
+      "title": "存在 · Being",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/dialectics.md",
+      "id": "dialectics",
+      "title": "辩证法 · Dialectics",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/epistemology.md",
+      "id": "epistemology",
+      "title": "认识论 · Epistemology",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/free-will.md",
+      "id": "free-will",
+      "title": "自由意志 · Free Will",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/language.md",
+      "id": "language",
+      "title": "语言 · Language",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/nothingness.md",
+      "id": "nothingness",
+      "title": "虚无 · Nothingness",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/concepts/time.md",
+      "id": "time",
+      "title": "时间 · Time",
+      "type": "concept",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/analytic/russell.md",
+      "id": "russell",
+      "title": "伯特兰·罗素 · Bertrand Russell",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/analytic/wittgenstein.md",
+      "id": "wittgenstein",
+      "title": "维特根斯坦 · Ludwig Wittgenstein",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/ancient-greek/aristotle.md",
+      "id": "aristotle",
+      "title": "亚里士多德 · Aristotle",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/ancient-greek/plato.md",
+      "id": "plato",
+      "title": "柏拉图 · Plato",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/ancient-greek/socrates.md",
+      "id": "socrates",
+      "title": "苏格拉底 · Socrates",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/eastern/confucius.md",
+      "id": "confucius",
+      "title": "孔子 · Confucius",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/eastern/laozi.md",
+      "id": "laozi",
+      "title": "老子 · Laozi",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/eastern/zhuangzi.md",
+      "id": "zhuangzi",
+      "title": "庄子 · Zhuangzi",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/empiricism/hume.md",
+      "id": "hume",
+      "title": "休谟 · David Hume",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/enlightenment/rousseau.md",
+      "id": "rousseau",
+      "title": "让-雅克·卢梭 · Jean-Jacques Rousseau",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/existentialism/beauvoir.md",
+      "id": "beauvoir",
+      "title": "西蒙娜·德·波伏瓦 · Simone de Beauvoir",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/existentialism/heidegger.md",
+      "id": "heidegger",
+      "title": "海德格尔 · Martin Heidegger",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/existentialism/kierkegaard.md",
+      "id": "kierkegaard",
+      "title": "索伦·克尔凯郭尔 · Søren Kierkegaard",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/existentialism/nietzsche.md",
+      "id": "nietzsche",
+      "title": "尼采 · Friedrich Nietzsche",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/existentialism/sartre.md",
+      "id": "sartre",
+      "title": "萨特 · Jean-Paul Sartre",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/german-idealism/hegel.md",
+      "id": "hegel",
+      "title": "黑格尔 · G.W.F. Hegel",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/german-idealism/kant.md",
+      "id": "kant",
+      "title": "康德 · Immanuel Kant",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/hermeneutics/gadamer.md",
+      "id": "gadamer",
+      "title": "汉斯-格奥尔格·伽达默尔 · Hans-Georg Gadamer",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/medieval-scholastic/aquinas.md",
+      "id": "aquinas",
+      "title": "托马斯·阿奎那 · Thomas Aquinas",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/pessimism/schopenhauer.md",
+      "id": "schopenhauer",
+      "title": "亚瑟·叔本华 · Arthur Schopenhauer",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/phenomenology/husserl.md",
+      "id": "husserl",
+      "title": "埃德蒙·胡塞尔 · Edmund Husserl",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/phenomenology/merleau-ponty.md",
+      "id": "merleau-ponty",
+      "title": "梅洛-庞蒂 · Maurice Merleau-Ponty",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/political-philosophy/arendt.md",
+      "id": "arendt",
+      "title": "汉娜·阿伦特 · Hannah Arendt",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/post-structuralism/derrida.md",
+      "id": "derrida",
+      "title": "雅克·德里达 · Jacques Derrida",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/pragmatism/dewey.md",
+      "id": "dewey",
+      "title": "约翰·杜威 · John Dewey",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/rationalism/descartes.md",
+      "id": "descartes",
+      "title": "勒内·笛卡尔 · René Descartes",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/rationalism/leibniz.md",
+      "id": "leibniz",
+      "title": "戈特弗里德·莱布尼茨 · Gottfried Wilhelm Leibniz",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/philosophy/schools/rationalism/spinoza.md",
+      "id": "spinoza",
+      "title": "巴鲁赫·斯宾诺莎 · Baruch Spinoza",
+      "type": "thinker",
+      "domain": "philosophy"
+    },
+    {
+      "path": "domains/psychology/concepts/attachment.md",
+      "id": "attachment",
+      "title": "依恋 · Attachment",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/concepts/cognitive-dissonance.md",
+      "id": "psychology.concept.cognitive-dissonance",
+      "title": "认知失调 Cognitive Dissonance",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/concepts/collective-unconscious.md",
+      "id": "psychology.concept.collective-unconscious",
+      "title": "集体无意识 Collective Unconscious",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/concepts/flow.md",
+      "id": "psychology.concept.flow",
+      "title": "心流 Flow",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/concepts/motivation.md",
+      "id": "motivation",
+      "title": "动机 · Motivation",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/concepts/personality.md",
+      "id": "personality",
+      "title": "人格 · Personality",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/concepts/trauma.md",
+      "id": "trauma",
+      "title": "创伤 · Trauma",
+      "type": "concept",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/analytical-psychology/jung.md",
+      "id": "jung",
+      "title": "卡尔·荣格 · Carl Jung",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/behavioral-economics/kahneman.md",
+      "id": "kahneman",
+      "title": "丹尼尔·卡尼曼 · Daniel Kahneman",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/behaviorism/skinner.md",
+      "id": "skinner",
+      "title": "B.F.斯金纳 · B.F. Skinner",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/cognitive/beck.md",
+      "id": "psychology.cognitive.beck",
+      "title": "贝克 Aaron T. Beck",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/cognitive/damasio.md",
+      "id": "damasio",
+      "title": "达玛西奥 · António Damásio",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/cognitive/kahneman.md",
+      "id": "psychology.cognitive.kahneman",
+      "title": "卡尼曼 Daniel Kahneman",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/cognitive/kohlberg.md",
+      "id": "kohlberg",
+      "title": "科尔伯格 · Lawrence Kohlberg",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/cognitive/piaget.md",
+      "id": "psychology.cognitive.piaget",
+      "title": "皮亚杰 Jean Piaget",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/developmental/bowlby.md",
+      "id": "bowlby-john",
+      "title": "约翰·鲍尔比 · John Bowlby",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/developmental/erikson.md",
+      "id": "erikson-erik",
+      "title": "埃里克·埃里克森 · Erik Erikson",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/developmental/piaget.md",
+      "id": "piaget",
+      "title": "让·皮亚杰 · Jean Piaget",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/developmental/vygotsky.md",
+      "id": "vygotsky-lev",
+      "title": "列夫·维果茨基 · Lev Vygotsky",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/existential-psychology/frankl.md",
+      "id": "frankl-viktor",
+      "title": "维克多·弗兰克尔 · Viktor Frankl",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/functionalism/william-james.md",
+      "id": "james-william",
+      "title": "威廉·詹姆斯 · William James",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/humanistic/maslow.md",
+      "id": "psychology.humanistic.maslow",
+      "title": "马斯洛 Abraham Maslow",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/humanistic/rogers.md",
+      "id": "rogers",
+      "title": "卡尔·罗杰斯 · Carl Rogers",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/individual-psychology/adler.md",
+      "id": "adler",
+      "title": "阿尔弗雷德·阿德勒 · Alfred Adler",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/interpersonal-neurobiology/siegel.md",
+      "id": "siegel-daniel",
+      "title": "丹尼尔·西格尔 · Daniel J. Siegel",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/narrative-therapy/white.md",
+      "id": "white",
+      "title": "迈克尔·怀特 · Michael White",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/object-relations/klein.md",
+      "id": "klein-melanie",
+      "title": "梅兰妮·克莱因 · Melanie Klein",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/object-relations/winnicott.md",
+      "id": "winnicott-donald",
+      "title": "唐纳德·温尼科特 · Donald Winnicott",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/positive/csikszentmihalyi.md",
+      "id": "psychology.positive.csikszentmihalyi",
+      "title": "米哈里 Mihaly Csikszentmihalyi",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/positive/seligman.md",
+      "id": "seligman-martin",
+      "title": "马丁·塞利格曼 · Martin Seligman",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/psychoanalysis/adler.md",
+      "id": "psychology.psychoanalysis.adler",
+      "title": "阿德勒 Alfred Adler",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/psychoanalysis/freud.md",
+      "id": "freud",
+      "title": "西格蒙德·弗洛伊德 · Sigmund Freud",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/psychoanalysis/jung.md",
+      "id": "psychology.psychoanalysis.jung",
+      "title": "荣格 Carl Gustav Jung",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/social-learning/bandura.md",
+      "id": "bandura-albert",
+      "title": "阿尔伯特·班杜拉 · Albert Bandura",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/psychology/schools/trauma-psychology/van-der-kolk.md",
+      "id": "van-der-kolk",
+      "title": "贝塞尔·范德科尔克 · Bessel van der Kolk",
+      "type": "thinker",
+      "domain": "psychology"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/baihuan-bianjian.md",
+      "id": "baihuan-bianjian",
+      "title": "八还辨见 · Eight Returnings to Discern Seeing",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/baihuan-bianjian.md",
+      "id": "baihuan-bianjian",
+      "title": "八还辨见 · Eight Returns to Distinguish Seeing",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/consciousness-transformation.md",
+      "id": "consciousness-transformation",
+      "title": "转识成智 · Transformation of Consciousness",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/diamond-sutra-non-attachment.md",
+      "id": "diamond-sutra-non-attachment",
+      "title": "金刚经·无相 · Diamond Sūtra: Non-Attachment",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/eight-consciousness.md",
+      "id": "eight-consciousness",
+      "title": "八识体系 · Eight Consciousnesses",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/madhyamaka.md",
+      "id": "madhyamaka",
+      "title": "中观·空 · Madhyamaka: Emptiness",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/mind-world.md",
+      "id": "mind-world-one",
+      "title": "心物一元 · Mind-World Identity",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/qichu-zhengxin.md",
+      "id": "qichu-zhengxin",
+      "title": "七处征心 · Seven Places of Mind-Seeking",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/six-constituents.md",
+      "id": "six-constituents",
+      "title": "六根六尘六识 · Six Sense Constituents",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/diamond-sutra-non-attachment.md",
+      "id": "diamond-sutra-non-attachment",
+      "title": "金刚经·无相 · Diamond Sutra: Non-Attachment to Form",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/eight-consciousness.md",
+      "id": "eight-consciousness",
+      "title": "八识体系 · Eight-Consciousness System",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/qichu-zhengxin.md",
+      "id": "qichu-zhengxin",
+      "title": "七处征心 · Seven Investigations of the Heart-Mind",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/concepts/meditation.md",
+      "id": "meditation",
+      "title": "冥想与默观 · Meditation and Contemplation",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/concepts/ritual.md",
+      "id": "ritual",
+      "title": "仪式 · Ritual",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/concepts/sacred.md",
+      "id": "sacred",
+      "title": "神圣性 · The Sacred（跨传统）",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/concepts/salvation.md",
+      "id": "salvation",
+      "title": "救赎 · Salvation（跨传统）",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/buddhism/four-noble-truths.md",
+      "id": "four-noble-truths",
+      "title": "四圣谛与八正道 · The Four Noble Truths and Noble Eightfold Path",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/buddhism/sunyata.md",
+      "id": "sunyata",
+      "title": "大乘空性 · Śūnyatā",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/buddhism/zen.md",
+      "id": "zen",
+      "title": "禅宗 · Zen / Chan",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/christianity/grace-redemption.md",
+      "id": "grace-redemption",
+      "title": "恩典与救赎 · Grace and Redemption",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/christianity/mysticism.md",
+      "id": "christian-mysticism",
+      "title": "基督教神秘主义 · Christian Mysticism",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/confucianism/religion-dimension.md",
+      "id": "confucianism-religion-dimension",
+      "title": "儒教的宗教维度 · The Religious Dimension of Confucianism",
+      "type": "tradition",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/hinduism/karma-samsara.md",
+      "id": "karma-samsara",
+      "title": "业与轮回 · Karma & Saṃsāra",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/islam/five-pillars.md",
+      "id": "five-pillars",
+      "title": "五功 · Five Pillars of Islam",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/islam/sufism.md",
+      "id": "sufism",
+      "title": "苏菲主义 · Sufism / Taṣawwuf",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/judaism/covenant.md",
+      "id": "covenant",
+      "title": "律法与盟约 · Torah and Covenant",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/judaism/kabbalah.md",
+      "id": "judaism-kabbalah",
+      "title": "犹太教卡巴拉神秘主义 · Jewish Kabbalah Mysticism",
+      "type": "tradition",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/shinto/core-teachings.md",
+      "id": "shinto-core-teachings",
+      "title": "神道教核心教义 · Core Teachings of Shinto",
+      "type": "tradition",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/sikhism/core-teachings.md",
+      "id": "sikhism-core-teachings",
+      "title": "锡克教核心教义 · Core Teachings of Sikhism",
+      "type": "tradition",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/taoism/masters/laozi.md",
+      "id": "laozi",
+      "title": "老子 · Laozi",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/taoism/masters/zhuangzi.md",
+      "id": "zhuangzi",
+      "title": "庄子 · Zhuangzi",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/traditions/taoism/wuwei.md",
+      "id": "wuwei",
+      "title": "无为 · Wu-wei",
+      "type": "concept",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/sociology/concepts/class.md",
+      "id": "class",
+      "title": "阶级 · Class",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/concepts/cultural-capital.md",
+      "id": "cultural-capital",
+      "title": "文化资本 · Cultural Capital",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/concepts/digital-society.md",
+      "id": "digital-society",
+      "title": "数字社会 · Digital Society",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/concepts/discipline.md",
+      "id": "discipline",
+      "title": "规训 · Discipline",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/concepts/gender.md",
+      "id": "gender",
+      "title": "性别 · Gender",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/concepts/race.md",
+      "id": "race",
+      "title": "种族 · Race",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/concepts/social-fact.md",
+      "id": "social-fact",
+      "title": "社会事实 · Social Fact",
+      "type": "concept",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/actor-network/latour.md",
+      "id": "latour-bruno",
+      "title": "布鲁诺·拉图尔 · Bruno Latour",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/classical/durkheim.md",
+      "id": "durkheim",
+      "title": "涂尔干 · Émile Durkheim",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/classical/marx.md",
+      "id": "marx",
+      "title": "马克思 · Karl Marx",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/classical/mills.md",
+      "id": "mills-c-wright",
+      "title": "C·赖特·米尔斯 · C. Wright Mills",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/classical/simmel.md",
+      "id": "simmel-georg",
+      "title": "格奥尔格·齐美尔 · Georg Simmel",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/classical/weber.md",
+      "id": "weber",
+      "title": "韦伯 · Max Weber",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/critical/habermas.md",
+      "id": "habermas",
+      "title": "哈贝马斯 · Jürgen Habermas",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/figurational/elias.md",
+      "id": "elias-norbert",
+      "title": "诺贝特·埃利亚斯 · Norbert Elias",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/functionalism/parsons.md",
+      "id": "parsons",
+      "title": "帕森斯 · Talcott Parsons",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/gender-studies/butler.md",
+      "id": "butler",
+      "title": "朱迪斯·巴特勒 · Judith Butler",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/interactionism/goffman.md",
+      "id": "goffman",
+      "title": "戈夫曼 · Erving Goffman",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/modernity/bauman.md",
+      "id": "bauman",
+      "title": "鲍曼 · Zygmunt Bauman",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/modernity/beck.md",
+      "id": "beck",
+      "title": "贝克 · Ulrich Beck",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/network-society/castells.md",
+      "id": "castells",
+      "title": "曼纽尔·卡斯特 · Manuel Castells",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/race-studies/du-bois.md",
+      "id": "du-bois-web",
+      "title": "W.E.B. 杜波依斯 · W.E.B. Du Bois",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/structuralism/bourdieu.md",
+      "id": "bourdieu",
+      "title": "布迪厄 · Pierre Bourdieu",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/structuralism/foucault.md",
+      "id": "foucault",
+      "title": "福柯 · Michel Foucault",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "domains/sociology/schools/structuration/giddens.md",
+      "id": "giddens-anthony",
+      "title": "安东尼·吉登斯 · Anthony Giddens",
+      "type": "thinker",
+      "domain": "sociology"
+    },
+    {
+      "path": "wisdom-masters/masters/china/bodhidharma.md",
+      "id": "bodhidharma",
+      "title": "菩提达摩 · Bodhidharma",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/china/hui-neng.md",
+      "id": "hui-neng",
+      "title": "慧能 · 第六祖 · The Sixth Patriarch",
+      "type": "wisdom-master"
+    },
+    {
+      "path": "wisdom-masters/masters/china/linji-yixuan.md",
+      "id": "linji-yixuan",
+      "title": "临济义玄 · Linji Yixuan",
+      "type": "wisdom-master"
+    },
+    {
+      "path": "wisdom-masters/masters/china/mazu-daoyi.md",
+      "id": "mazu-daoyi",
+      "title": "马祖道一 · Mazu Daoyi",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/japan/dogen.md",
+      "id": "dogen",
+      "title": "道元 · Dōgen",
+      "type": "wisdom-master"
+    },
+    {
+      "path": "wisdom-masters/masters/thailand/ajahn-chah.md",
+      "id": "ajahn-chah",
+      "title": "阿姜查 · Ajahn Chah",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/thailand/buddhadasa.md",
+      "id": "buddhadasa",
+      "title": "佛使比丘 · Buddhadasa",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/tibet/atisha.md",
+      "id": "atisha",
+      "title": "阿底峡 · Atiśa",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/tibet/milarepa.md",
+      "id": "milarepa",
+      "title": "米拉日巴 · Milarepa",
+      "type": "wisdom-master"
+    },
+    {
+      "path": "wisdom-masters/masters/tibet/padmasambhava.md",
+      "id": "padmasambhava",
+      "title": "莲花生大士 · Padmasambhava",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/tibet/tsongkhapa.md",
+      "id": "tsongkhapa",
+      "title": "宗喀巴 · Tsongkhapa",
+      "type": "thinker",
+      "domain": "religion"
+    },
+    {
+      "path": "wisdom-masters/masters/west/thich-nhat-hanh.md",
+      "id": "thich-nhat-hanh",
+      "title": "一行禅师 · Thich Nhat Hanh",
+      "type": "wisdom-master"
+    }
+  ],
+  "skills": [
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/baihuan-bianjian-naming/SKILL.md",
+      "name": "baihuan-bianjian-naming",
+      "description": "八还辨见法用于帮助当事人区分\"所见\"（变化）与\"能见\"（常住）——把一切\"所见\"归还其来源，最后认出能见之性本身。Triggers on 当事人被情绪/念头淹没、需要从\"在变化中\"切换到\"观者位置\"的场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/consciousness-transformation-diagnosis/SKILL.md",
+      "name": "consciousness-transformation-diagnosis",
+      "description": "转识成智诊断法，用于定位来访者的认知模式在八识结构中的层次，并判断转化的可能方向——是前五识（感知）、第六识（思维）、第七识（我执）还是第八识（种子）需要转化。Triggers on 需要进行深度认知工作、需要进行次第性修行规划、或需要判断来访者在哪个修道阶段场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/diamond-sutra-no-dwelling/SKILL.md",
+      "name": "diamond-sutra-no-dwelling",
+      "description": "金刚经\"无住\"心法用于破除\"心有所执\"——不是否定现象，是不应住相；应无所住而生其心。Triggers on 当事人执著于\"必须得到什么\"、焦虑于\"失去什么\"、或陷入\"如梦幻泡影\"的虚无主义场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/eight-consciousness-diagnosis/SKILL.md",
+      "name": "eight-consciousness-diagnosis",
+      "description": "瑜伽师地论八识体系用于诊断认知结构——从前五识（感知层）到第六意识（思维层）、第七末那识（我执层）、第八阿赖耶识（种子层），定位认知卡点所在层次。Triggers on 当事人认知模式不清晰、反复在同一点卡住、需要系统性认知诊断的场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/madhyamaka-four-fallacies/SKILL.md",
+      "name": "madhyamaka-four-fallacies",
+      "description": "中观\"四句破\"法，用于破除当事人的边见——常见（实有）、断见（虚无）、一异（同一/分离）、来去（来/去）。Triggers on 当事人陷入\"必须怎样\"或\"一切都无意义\"、非黑即白思维、需要打破极端二元对立场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/mind-world-analysis/SKILL.md",
+      "name": "mind-world-analysis",
+      "description": "唯识\"心物一元\"分析法，用于诊断来访者\"心\"与\"境\"的关系——是心随境转，还是境随心现？通过四分结构（相分/见分/自证分/证自证分）定位认知错位。Triggers on 当事人把外部事件当成\"客观压力\"、觉得\"环境决定我的情绪\"、或陷入\"都是别人的问题\"场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/qichu-zhengxin-deconstruction/SKILL.md",
+      "name": "qichu-zhengxin-deconstruction",
+      "description": "七处征心法用于破除当事人\"心有所住\"的实体化认知——心不在内、不在外、不在中间、不在任何一处。Triggers on 当事人执著于\"我的心在某事/某人/某处\"、将情绪或念头对象化为实体的场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "domains/religion/buddhism/concepts/cognitive-theory/skills/six-constituents-diagnosis/SKILL.md",
+      "name": "six-constituents-diagnosis",
+      "description": "六根六尘六识诊断法，用于精准定位认知卡点在根（感官）、尘（对象）、还是识（认知功能）层。Triggers on 当事人感知扭曲、认知错位、需要区分\"感知问题\"、\"思维问题\"、\"意识问题\"的场景。",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/aesthetics-frameworks/aesthetic-judgment-analysis/SKILL.md",
+      "name": "aesthetic-judgment-analysis",
+      "description": "基于康德审美判断四契机的审美判断分析框架",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "skills/aesthetics-frameworks/art-criticism-framework/SKILL.md",
+      "name": "art-criticism-framework",
+      "description": "基于杜威经验美学的四层艺术批评框架",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "skills/aesthetics-frameworks/tragic-spirit-assessment/SKILL.md",
+      "name": "tragic-spirit-assessment",
+      "description": "基于尼采日神与酒神精神的创造力与生活处境评估框架",
+      "domain": "aesthetics"
+    },
+    {
+      "path": "skills/ethics-politics-frameworks/aristotle-virtue-test/SKILL.md",
+      "name": "aristotle-virtue-test",
+      "description": "亚里士多德德性检验用于判断某行为或人格特质是否构成德性。通过中庸之道、功能论证与实践智慧三个维度评估行为是否适度、是否促进人的优秀功能、是否在具体情境中展现正确判断。Triggers on 需要判断某行为是否道德、评估某种品质是否为德性、或进行品格伦理分析的场景。",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "skills/ethics-politics-frameworks/justice-principle-test/SKILL.md",
+      "name": "justice-principle-test",
+      "description": "罗尔斯正义原则检验用于评估社会基本结构的公正性。依次检验平等自由原则与差别原则，判断某社会安排是否满足正义二原则。Triggers on 评估社会政策、分配方案、公共制度设计的公正性，或分析为何某些不平等是或不是正义的。",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "skills/ethics-politics-frameworks/liberalism-analysis/SKILL.md",
+      "name": "liberalism-analysis",
+      "description": "自由主义论证分析用于检验某项限制自由的措施是否具有正当性。通过伤害原则与伤害原则的两个限制条件，判断国家干预个人自由的正当边界。Triggers on 讨论言论自由、行为自由、隐私权等与法律限制边界相关的问题。",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "skills/ethics-politics-frameworks/pleasure-calculus/SKILL.md",
+      "name": "pleasure-calculus",
+      "description": "苦乐计算法（hedonic calculus）用于量化选项的道德价值。通过七个维度评估不同行动的快乐/痛苦产出，判断何者符合功利原则。Triggers on 需要在多个选项间做道德权衡、评估政策/行为的成本效益、或分析功利主义论证的场景。",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "skills/ethics-politics-frameworks/veil-of-ignorance-analysis/SKILL.md",
+      "name": "veil-of-ignorance-analysis",
+      "description": "无知之幕分析用于检验政治原则或社会安排的公正性。在假设参与者不知道自身社会地位、天赋、价值观的条件下，推断哪些原则会被理性个体选择。Triggers on 需要论证某项政策是否公正、检验社会安排的合法性、或进行制度设计的问题。",
+      "domain": "ethics-politics"
+    },
+    {
+      "path": "skills/literature-frameworks/absurd-analysis/SKILL.md",
+      "name": "absurd-analysis",
+      "description": "Triggers on requests to 荒诞、无意义、存在困境，如人生意义探索、社会批判、心理分析等。Apply this skill to analyze the absurdity of existence using Kafka's insights, understanding the gap between human expectations and reality.",
+      "domain": "literature"
+    },
+    {
+      "path": "skills/literature-frameworks/faustian-spirit-analysis/SKILL.md",
+      "name": "faustian-spirit-analysis",
+      "description": "Triggers on requests to 浮士德精神、追求、渴望，如人生意义探索、个人成长、目标设定等。Apply this skill to analyze the Faustian spirit using Goethe's insights, understanding the human drive for knowledge, experience, and transcendence.",
+      "domain": "literature"
+    },
+    {
+      "path": "skills/philosophy-frameworks/allegory-of-cave-analysis/SKILL.md",
+      "name": "allegory-of-cave-analysis",
+      "description": "Triggers on requests to 洞穴寓言、理型论、真理与幻象，如哲学思考、教育理念、社会批判等。Apply this skill to analyze situations using Plato's Allegory of the Cave, understanding the journey from ignorance to enlightenment.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/categorical-imperative-test/SKILL.md",
+      "name": "categorical-imperative-test",
+      "description": "Triggers on requests to 道德判断、伦理原则、绝对命令，如道德困境分析、行为准则制定、伦理决策等。Apply this skill to evaluate the morality of actions using Kant's categorical imperative: universalizability, humanity as end, and kingdom of ends.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/causation-analysis/SKILL.md",
+      "name": "causation-analysis",
+      "description": "Triggers on requests to 因果问题、归纳问题、经验主义，如科学哲学、认识论探究、批判性思维等。Apply this skill to analyze causation using Hume's empiricist approach, questioning the basis of causal knowledge.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/dasein-analysis/SKILL.md",
+      "name": "dasein-analysis",
+      "description": "Triggers on requests to 此在分析、存在之问、技术批判，如存在焦虑、技术反思、本真性探索等。Apply this skill to analyze human existence using Heidegger's concept of Dasein, understanding being-in-the-world and authenticity.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/existentialism-analysis/SKILL.md",
+      "name": "existentialism-analysis",
+      "description": "Triggers on requests to 存在先于本质、自由、责任，如人生意义探索、道德决策、自我认同等。Apply this skill to analyze situations using Sartre's existentialist philosophy, emphasizing radical freedom and responsibility.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/golden-mean-analysis/SKILL.md",
+      "name": "golden-mean-analysis",
+      "description": "Triggers on requests to 中庸之道、德性伦理、实践智慧，如道德决策、品格培养、生活方式选择等。Apply this skill to analyze situations using Aristotle's concept of the golden mean, finding the balance between extremes.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/qiwu-analysis/SKILL.md",
+      "name": "qiwu-analysis",
+      "description": "Triggers on requests to 齐物论、相对主义、超越对立，如哲学争论、价值判断、认知偏差等。Apply this skill to help users transcend binary thinking and see the equality of opposites.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/ren-li-analysis/SKILL.md",
+      "name": "ren-li-analysis",
+      "description": "Triggers on requests to 仁、礼、中庸，如道德修养、人际关系、社会秩序等。Apply this skill to analyze moral and social issues using Confucius' concepts of ren (benevolence) and li (ritual propriety).",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/reverse-thinking/SKILL.md",
+      "name": "reverse-thinking",
+      "description": "Triggers on requests to 逆向思维、反向思考、对立转化，如问题解决、策略制定、创新思维等。Apply this skill to help users see problems from opposite perspectives and discover unconventional solutions.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/philosophy-frameworks/uselessness-paradox/SKILL.md",
+      "name": "uselessness-paradox",
+      "description": "Triggers on requests to 无用之用、价值重估、非功利视角，如创新思维、人生意义、资源分配等。Apply this skill to help users discover hidden value in seemingly useless things.",
+      "domain": "philosophy"
+    },
+    {
+      "path": "skills/psychology-frameworks/cbt-cognitive-distortion/SKILL.md",
+      "name": "cbt-cognitive-distortion",
+      "description": "识别情境下的\"自动思维\"，对照 10 类常见认知扭曲，使用证据法/替代法生成更平衡的思维，并设计行为实验验证。",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/psychology-frameworks/dual-system-analysis/SKILL.md",
+      "name": "dual-system-analysis",
+      "description": "Triggers on requests to 双系统思维、快慢思考、认知偏差，如决策分析、思维质量提升、认知训练等。Apply this skill to help users understand and balance their fast and slow thinking systems for better decision-making.",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/psychology-frameworks/flow-conditions-assessment/SKILL.md",
+      "name": "flow-conditions-assessment",
+      "description": "评估一项活动/任务是否具备进入心流的 8 个条件，找出短板，设计可执行的环境与流程改造，让\"沉浸投入\"可被复制。",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/psychology-frameworks/individuation-guidance/SKILL.md",
+      "name": "individuation-guidance",
+      "description": "Triggers on requests to 个体化、人格整合、自我实现，如心理成长、自我探索、人格发展等。Apply this skill to guide users through the individuation process, integrating conscious and unconscious aspects of personality.",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/psychology-frameworks/jungian-archetype-identification/SKILL.md",
+      "name": "jungian-archetype-identification",
+      "description": "在叙事、梦、人物或个人困境中识别荣格原型（阴影/阿尼玛/阿尼姆斯/人格面具/自性/英雄/智慧老人等），用以理解深层心理动力。",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/psychology-frameworks/maslow-needs-diagnosis/SKILL.md",
+      "name": "maslow-needs-diagnosis",
+      "description": "对个人/团队/产品所处困境进行需求层次诊断，定位\"卡在哪一层\"，给出对应的修复或满足策略，避免错位干预。",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/psychology-frameworks/unconscious-analysis/SKILL.md",
+      "name": "unconscious-analysis",
+      "description": "Triggers on requests to 潜意识分析、梦境解析、防御机制，如心理分析、自我探索、人格理解等。Apply this skill to analyze unconscious motivations, dreams, and defense mechanisms based on Freud's psychoanalytic theory.",
+      "domain": "psychology"
+    },
+    {
+      "path": "skills/religion-frameworks/biguan-meditation/SKILL.md",
+      "name": "biguan-meditation",
+      "description": "Triggers on requests to 壁观、禅修、心如墙壁，如禅修指导、心灵成长、压力管理等。Apply this skill to guide users in the practice of wall-gazing meditation, cultivating a mind like a wall that does not arise deluded thoughts.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/bodhisattva-path-guidance/SKILL.md",
+      "name": "bodhisattva-path-guidance",
+      "description": "Triggers on requests to 菩提道灯、三士道、菩萨道修行，如修行指导、心灵成长、宗教实践等。Apply this skill to guide users through the bodhisattva path as taught by Atiśa, from initial motivation to final enlightenment.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/dependent-origination-analysis/SKILL.md",
+      "name": "dependent-origination-analysis",
+      "description": "Triggers on requests to 缘起法、因缘和合、无我，如哲学思考、心理分析、因果关系分析等。Apply this skill to analyze phenomena through the lens of dependent origination, understanding how everything arises from conditions.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/dzogchen-guidance/SKILL.md",
+      "name": "dzogchen-guidance",
+      "description": "Triggers on requests to 大圆满、心性认识、直接解脱，如禅修指导、心灵成长、宗教实践等。Apply this skill to guide users in the practice of Dzogchen, recognizing the innate purity and perfection of mind.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/lamrim-stages/SKILL.md",
+      "name": "lamrim-stages",
+      "description": "Triggers on requests to 修行次第、菩提道次第、成佛道路，如修行指导、心灵成长、宗教实践等。Apply this skill to guide users through the gradual path to enlightenment, from initial motivation to final realization.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/ordinary-mind-guidance/SKILL.md",
+      "name": "ordinary-mind-guidance",
+      "description": "Triggers on requests to 平常心是道、日常修行、自然生活，如生活禅、压力管理、心灵成长等。Apply this skill to guide users in cultivating ordinary mind, finding the way in everyday life.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/softness-overcomes-hardness/SKILL.md",
+      "name": "softness-overcomes-hardness",
+      "description": "Triggers on requests to 以柔克刚、柔性策略、持久韧性，如冲突解决、竞争策略、个人成长等。Apply this skill to help users adopt soft, flexible approaches that overcome rigid, forceful opposition.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/wuwei-guidance/SKILL.md",
+      "name": "wuwei-guidance",
+      "description": "Triggers on requests to 无为而治、顺应自然、减少干预，如管理决策、生活指导、政策制定等。Apply this skill to guide users toward non-coercive, natural approaches that align with underlying patterns rather than forcing outcomes.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/religion-frameworks/xiaoyao-guidance/SKILL.md",
+      "name": "xiaoyao-guidance",
+      "description": "Triggers on requests to 逍遥游、精神自由、超越束缚，如心灵成长、压力管理、人生境界等。Apply this skill to help users achieve spiritual freedom and transcend worldly constraints.",
+      "domain": "religion"
+    },
+    {
+      "path": "skills/sociology-frameworks/class-analysis/SKILL.md",
+      "name": "class-analysis",
+      "description": "Triggers on requests to 阶级分析、社会分层、阶级斗争，如社会不平等分析、政治经济学分析、历史唯物主义应用等。Apply this skill to analyze social structures through the lens of class relations, power dynamics, and historical materialism.",
+      "domain": "sociology"
+    },
+    {
+      "path": "skills/sociology-frameworks/communicative-action-analysis/SKILL.md",
+      "name": "communicative-action-analysis",
+      "description": "Triggers on requests to 交往理性、公共领域、沟通行动，如公共讨论、民主协商、冲突解决等。Apply this skill to analyze communicative action and rational discourse, promoting mutual understanding and consensus.",
+      "domain": "sociology"
+    },
+    {
+      "path": "skills/sociology-frameworks/discipline-analysis/SKILL.md",
+      "name": "discipline-analysis",
+      "description": "Triggers on requests to 规训、权力/知识、生命政治，如社会控制分析、机构批判、身份政治等。Apply this skill to analyze disciplinary power and its effects on individuals and society, based on Foucault's theories.",
+      "domain": "sociology"
+    },
+    {
+      "path": "skills/sociology-frameworks/liquid-modernity-analysis/SKILL.md",
+      "name": "liquid-modernity-analysis",
+      "description": "Triggers on requests to 液态现代性、消费社会、全球化，如社会变迁分析、文化研究、个人身份认同等。Apply this skill to analyze the characteristics of liquid modernity, including fluidity, uncertainty, and individualization.",
+      "domain": "sociology"
+    },
+    {
+      "path": "skills/sociology-frameworks/social-fact-analysis/SKILL.md",
+      "name": "social-fact-analysis",
+      "description": "Triggers on requests to 社会事实、集体意识、社会整合，如社会问题分析、文化研究、社会政策评估等。Apply this skill to analyze social phenomena as social facts, understanding how they constrain and shape individual behavior.",
+      "domain": "sociology"
+    },
+    {
+      "path": "skills/sociology-frameworks/social-forms-analysis/SKILL.md",
+      "name": "social-forms-analysis",
+      "description": "Triggers on requests to 社会形式、陌生人、社会互动，如社会关系分析、文化研究、城市社会学等。Apply this skill to analyze social interactions using Simmel's concept of social forms, understanding the patterns of social life.",
+      "domain": "sociology"
+    },
+    {
+      "path": "wisdom-masters/skills/dogen-presence/SKILL.md",
+      "name": "dogen-presence",
+      "description": "道元\"当下圆满\"法，用于帮助当事人看到\"此时此地的存在本身已经是完整的\"。Triggers on 当事人无法接受当下的自己、觉得\"现在的我不配\"、需要\"成为更好的自己\"才能幸福的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/dogen-shikantaza/SKILL.md",
+      "name": "dogen-shikantaza",
+      "description": "道元\"只管打坐\"法，用于帮助当事人从\"追求\"切换到\"存在\"，从\"做什么\"切换到\"只是在这里\"。Triggers on 当事人陷入无尽的目标追求、需要停下来、当事人把\"活着\"当作\"要达到某个状态\"的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/hui-neng-no-dwelling/SKILL.md",
+      "name": "hui-neng-no-dwelling",
+      "description": "慧能\"无住\"心法，用于辨别执念的\"心住何处\"，引导回到不执不弃的当下。Triggers on 当事人陷入执念、反复纠结、无法放下某事某相的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/hui-neng-ordinary-mind/SKILL.md",
+      "name": "hui-neng-ordinary-mind",
+      "description": "慧能\"平常心是道\"心法，用于引导当事人放下\"特殊化\"心态，回归当下日常。Triggers on 当事人觉得自己\"不够好\"、\"不够格\"、需要\"达到某种状态\"才能做某事，或陷入表演型人格、在意他人眼光的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/hui-neng-sudden-awakening/SKILL.md",
+      "name": "hui-neng-sudden-awakening",
+      "description": "慧能\"顿悟\"心法，用于辨别来访者是否落入渐修迷执，或是否有当下开悟的端倪。Triggers on 来访者执着于\"修行进度\"、觉得自己\"还没准备好\"、或需要打破\"我必须先XXX才能开悟\"的信念束缚的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/linji-no-thing/SKILL.md",
+      "name": "linji-no-thing",
+      "description": "临济\"无事是贵人\"法，用于在当事人内心充满杂念焦虑、不断在\"求\"什么的时候，当头棒喝\"莫觅\"。Triggers on 当事人陷入无尽的焦虑、担忧、追求，或者反复寻求外部确认（求佛、求法、求师）的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/linji-pointer-blow/SKILL.md",
+      "name": "linji-pointer-blow",
+      "description": "临济\"棒喝当下\"法，用于在当事人过度思考、头脑分析过度、需要从思维切换到直接体验的时刻。Triggers on 当事人反复在\"想\"中打转、无法行动、需要打破思维循环的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/milarepa-alchemy/SKILL.md",
+      "name": "milarepa-alchemy",
+      "description": "米拉日巴\"苦行炼金\"法，用于将痛苦转化为修行道用。Triggers on 当事人正在经历重大挫折、损失、疾病或苦难，需要将苦难转化为成长燃料而非被其压垮的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/milarepa-naked-awareness/SKILL.md",
+      "name": "milarepa-naked-awareness",
+      "description": "米拉日巴\"裸见觉性\"法，用于在情绪或念头升起的刹那，直接认出觉性，不经次第。Triggers on 当事人陷入情绪漩涡、需要\"看见\"而非\"分析\"情绪、无法区分\"念头\"与\"觉性\"的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/thich-nhat-hanh-compassion/SKILL.md",
+      "name": "thich-nhat-hanh-compassion",
+      "description": "一行禅师\"慈悲拥抱\"法，用于在当事人陷入愤怒、怨恨、需要与困难情绪和解的场景。Triggers on 当事人对某人生气、无法原谅、被怨恨压垮、或者需要与\"困难的人\"和解的场景。"
+    },
+    {
+      "path": "wisdom-masters/skills/thich-nhat-hanh-mindful-breathing/SKILL.md",
+      "name": "thich-nhat-hanh-mindful-breathing",
+      "description": "一行禅师\"正念呼吸\"法，用于帮助当事人回到当下、安顿身心。Triggers on 当事人焦虑、担心未来、或被过去困住、无法安静与自己相处的场景。"
+    }
+  ]
+}

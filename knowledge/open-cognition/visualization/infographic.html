@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Open Cognition · 全景信息图 · v0.5</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{background:#0a0a0f;width:1920px;min-height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8e6e3;line-height:1;overflow:hidden}
+
+.page{
+  width:1920px;height:1080px;padding:40px 64px 32px;
+  display:grid;
+  grid-template-rows:auto auto auto 1fr auto;
+  grid-template-columns:1fr;
+  gap:0;
+  background:linear-gradient(135deg,#0a0a0f 0%,#12121a 50%,#0d0d14 100%);
+  position:relative;
+}
+.page::before{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at 20% 10%,rgba(99,102,241,.06) 0%,transparent 50%),
+             radial-gradient(ellipse at 80% 90%,rgba(236,72,153,.04) 0%,transparent 50%);
+  pointer-events:none;
+}
+
+/* ─── ROW 1: Header ─── */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+.brand-label{font-size:12px;letter-spacing:6px;text-transform:uppercase;font-weight:600;opacity:.35;color:#a0a0b0;font-family:'Inter',sans-serif}
+.brand-title{font-size:52px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-top:4px;background:linear-gradient(135deg,#fff 0%,#c0c0d0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.brand-sub{font-size:14px;opacity:.4;margin-top:6px;color:#a0a0b0;font-family:'Inter',sans-serif}
+.meta{text-align:right}
+.meta-ver{font-size:12px;letter-spacing:4px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;color:#a0a0b0}
+.meta-tag{font-size:14px;opacity:.35;margin-top:6px;font-family:'Inter',sans-serif}
+
+/* ─── ROW 2: Stats ─── */
+.stats{display:flex;justify-content:space-between;padding:18px 0 14px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:1}
+.stat{text-align:center;flex:1;position:relative}
+.stat:not(:last-child)::after{content:'';position:absolute;right:0;top:15%;bottom:15%;width:1px;background:rgba(255,255,255,.06)}
+.stat-num{font-size:48px;font-weight:900;font-family:'Playfair Display',serif;line-height:1;background:linear-gradient(180deg,#fff 0%,#8888a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.3;margin-top:6px;font-family:'Inter',sans-serif;font-weight:500;color:#a0a0b0}
+
+/* ─── ROW 3: Principle ─── */
+.principle{text-align:center;padding:12px 0 10px;border-bottom:1px solid rgba(255,255,255,.05);position:relative;z-index:1}
+.principle span{font-size:14px;opacity:.3;letter-spacing:2px;font-weight:400;color:#a0a0b0;font-family:'Inter',sans-serif}
+
+/* ─── ROW 4: Domain Cards (5×2 grid) ─── */
+.domains{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(2,1fr);
+  gap:10px;
+  padding:14px 0 10px;
+  position:relative;z-index:1;
+}
+.card{
+  border:1px solid rgba(255,255,255,.08);
+  padding:16px 18px 12px;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  background:rgba(255,255,255,.02);
+  border-radius:6px;
+  transition:all .3s ease;
+}
+.card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.card-title{font-size:20px;font-weight:700;line-height:1.15;color:#fff}
+.card-en{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.2;margin-top:3px;font-family:'Inter',sans-serif;color:#a0a0b0}
+.card-num{font-size:11px;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:2px;opacity:.15;color:#a0a0b0}
+.card-line{width:20px;height:2px;background:var(--accent);opacity:.5;margin:8px 0 6px;border-radius:1px}
+.card-meta{display:flex;gap:12px;margin-bottom:6px}
+.card-meta span{font-size:12px;opacity:.4;font-family:'Inter',sans-serif;font-weight:500;color:#a0a0b0}
+.card-meta b{opacity:.8;font-weight:600;color:#e0e0e8}
+.card-people{font-size:13px;line-height:1.6;opacity:.45;flex:1;color:#c0c0d0}
+.card-people b{opacity:.85;font-weight:600;color:#e8e8f0}
+.card-tags{font-size:11px;opacity:.2;margin-top:6px;line-height:1.4;color:#a0a0b0}
+
+/* Domain accent colors */
+.philosophy{--accent:#8b5cf6}
+.religion{--accent:#f59e0b}
+.psychology{--accent:#10b981}
+.sociology{--accent:#3b82f6}
+.ethics{--accent:#ef4444}
+.aesthetics{--accent:#ec4899}
+.cse{--accent:#06b6d4}
+.literature{--accent:#f97316}
+.arts{--accent:#84cc16}
+.wisdom{--accent:#14b8a6}
+
+/* ─── ROW 5: Footer ─── */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;border-top:1px solid rgba(255,255,255,.06);position:relative;z-index:1}
+.footer-left{font-size:11px;opacity:.15;letter-spacing:1px;font-family:'Inter',sans-serif;color:#a0a0b0}
+.footer-right{display:flex;gap:18px}
+.footer-right span{font-size:10px;opacity:.2;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:500;color:#a0a0b0}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 1. Header -->
+  <div class="header">
+    <div>
+      <div class="brand-label">PEACE LAB · 开放认知实验室</div>
+      <div class="brand-title">Open Cognition</div>
+      <div class="brand-sub">面向人类深度阅读与 AI Agent 调用的跨学科认知资源库 · v0.5</div>
+    </div>
+    <div class="meta">
+      <div class="meta-ver">2026-05-24</div>
+      <div class="meta-tag">CC BY-SA 4.0 · 开源知识基础设施</div>
+    </div>
+  </div>
+
+  <!-- 2. Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num">10</div><div class="stat-lbl">领域</div></div>
+    <div class="stat"><div class="stat-num">148</div><div class="stat-lbl">思想家</div></div>
+    <div class="stat"><div class="stat-num">93</div><div class="stat-lbl">概念</div></div>
+    <div class="stat"><div class="stat-num">112</div><div class="stat-lbl">技能</div></div>
+    <div class="stat"><div class="stat-num">106+</div><div class="stat-lbl">跨学科关系</div></div>
+    <div class="stat"><div class="stat-num">360+</div><div class="stat-lbl">知识文件</div></div>
+  </div>
+
+  <!-- 3. Principle -->
+  <div class="principle">
+    <span>认知 = 个体内部过程 ← → 人-技术-环境联合系统中的涌现 ← → 意识本体论</span>
+  </div>
+
+  <!-- 4. Domain Cards -->
+  <div class="domains">
+
+    <div class="card philosophy">
+      <div class="card-head">
+        <div><div class="card-title">哲学</div><div class="card-en">PHILOSOPHY</div></div>
+        <div class="card-num">01</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>28</b> 思想家</span><span><b>8</b> 概念</span><span><b>19</b> Skills</span></div>
+      <div class="card-people"><b>苏格拉底</b> · <b>柏拉图</b> · <b>亚里士多德</b> · <b>康德</b> · <b>黑格尔</b> · <b>海德格尔</b> · <b>维特根斯坦</b> · <b>尼采</b> · <b>萨特</b> · <b>梅洛-庞蒂</b></div>
+      <div class="card-tags">辩证法 · 认识论 · 存在 · 自由意志 · 语言 · 时间 · 虚无</div>
+    </div>
+
+    <div class="card religion">
+      <div class="card-head">
+        <div><div class="card-title">宗教</div><div class="card-en">RELIGION</div></div>
+        <div class="card-num">02</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>16</b> 传统条目</span><span><b>4</b> 概念</span><span><b>14</b> Skills</span></div>
+      <div class="card-people"><b>佛教</b> · <b>基督教</b> · <b>伊斯兰</b> · <b>犹太教</b> · <b>道教</b> · <b>印度教</b> · <b>儒教</b> · <b>神道教</b></div>
+      <div class="card-tags">八识 · 心物一元 · 转识成智 · 禅宗 · 苏菲 · 卡巴拉 · 业与轮回</div>
+    </div>
+
+    <div class="card psychology">
+      <div class="card-head">
+        <div><div class="card-title">心理学</div><div class="card-en">PSYCHOLOGY</div></div>
+        <div class="card-num">03</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>28</b> 思想家</span><span><b>8</b> 概念</span><span><b>16</b> Skills</span></div>
+      <div class="card-people"><b>弗洛伊德</b> · <b>荣格</b> · <b>皮亚杰</b> · <b>卡尼曼</b> · <b>马斯洛</b> · <b>贝克</b> · <b>维果茨基</b> · <b>米哈里</b> · <b>达玛西奥</b></div>
+      <div class="card-tags">双系统 · 心流 · 创伤 · 依恋 · 认知失调 · 集体无意识</div>
+    </div>
+
+    <div class="card sociology">
+      <div class="card-head">
+        <div><div class="card-title">社会学</div><div class="card-en">SOCIOLOGY</div></div>
+        <div class="card-num">04</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>18</b> 思想家</span><span><b>7</b> 概念</span><span><b>15</b> Skills</span></div>
+      <div class="card-people"><b>马克思</b> · <b>韦伯</b> · <b>涂尔干</b> · <b>福柯</b> · <b>布迪厄</b> · <b>哈贝马斯</b> · <b>拉图尔</b> · <b>鲍曼</b></div>
+      <div class="card-tags">社会事实 · 文化资本 · 规训 · 数字社会 · 风险社会 · 性别</div>
+    </div>
+
+    <div class="card ethics">
+      <div class="card-head">
+        <div><div class="card-title">伦理·政治</div><div class="card-en">ETHICS & POLITICS</div></div>
+        <div class="card-num">05</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>15</b> 思想家</span><span><b>11</b> 概念</span><span><b>10</b> Skills</span></div>
+      <div class="card-people"><b>罗尔斯</b> · <b>康德</b> · <b>边沁</b> · <b>密尔</b> · <b>霍布斯</b> · <b>洛克</b> · <b>甘地</b> · <b>森</b></div>
+      <div class="card-tags">功利 · 定言命令 · 德性 · 正义 · 无知之幕 · 社会契约</div>
+    </div>
+
+    <div class="card aesthetics">
+      <div class="card-head">
+        <div><div class="card-title">美学</div><div class="card-en">AESTHETICS</div></div>
+        <div class="card-num">06</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>23</b> 思想家</span><span><b>7</b> 概念</span><span><b>3</b> Skills</span></div>
+      <div class="card-people"><b>康德</b> · <b>黑格尔</b> · <b>尼采</b> · <b>杜威</b> · <b>本雅明</b> · <b>阿多诺</b> · <b>朱光潜</b> · <b>巴特</b></div>
+      <div class="card-tags">美 · 崇高 · 审美经验 · 悲剧 · 叙事 · 想象力 · 创造力</div>
+    </div>
+
+    <div class="card literature">
+      <div class="card-head">
+        <div><div class="card-title">文学</div><div class="card-en">LITERATURE</div></div>
+        <div class="card-num">07</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>5</b> 思想家</span><span><b>5</b> Skills</span></div>
+      <div class="card-people"><b>莎士比亚</b> · <b>歌德</b> · <b>陀思妥耶夫斯基</b> · <b>卡夫卡</b> · <b>鲁迅</b></div>
+      <div class="card-tags">人性洞察 · 浮士德精神 · 苦难救赎 · 荒诞 · 国民性批判</div>
+    </div>
+
+    <div class="card arts">
+      <div class="card-head">
+        <div><div class="card-title">艺术</div><div class="card-en">ARTS</div></div>
+        <div class="card-num">08</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>3</b> 思想家</span><span><b>3</b> Skills</span></div>
+      <div class="card-people"><b>达·芬奇</b> · <b>贝多芬</b> · <b>梵高</b></div>
+      <div class="card-tags">艺术与科学统一 · 苦难与艺术 · 色彩与情感</div>
+    </div>
+
+    <div class="card cse">
+      <div class="card-head">
+        <div><div class="card-title">认知系统工程</div><div class="card-en">COGNITIVE SYSTEMS</div></div>
+        <div class="card-num">09</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>28</b> 思想家</span><span><b>27</b> 概念</span><span><b>16</b> Skills</span></div>
+      <div class="card-people"><b>维纳</b> · <b>吉布森</b> · <b>克拉克</b> · <b>拉斯穆森</b> · <b>诺曼</b> · <b>克莱因</b> · <b>霍伦纳格</b></div>
+      <div class="card-tags">有限理性 · 可供性 · 认知负荷 · 态势感知 · 韧性工程 · 联合认知</div>
+    </div>
+
+    <div class="card wisdom">
+      <div class="card-head">
+        <div><div class="card-title">智慧导师</div><div class="card-en">WISDOM MASTERS</div></div>
+        <div class="card-num">10</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-meta"><span><b>12</b> 导师</span><span><b>11</b> Skills</span></div>
+      <div class="card-people"><b>慧能</b> · <b>临济义玄</b> · <b>米拉日巴</b> · <b>道元</b> · <b>一行禅师</b> · <b>马祖道一</b></div>
+      <div class="card-tags">无住 · 当下 · 裸见觉性 · 只管打坐 · 正念呼吸 · 慈悲</div>
+    </div>
+
+  </div>
+
+  <!-- 5. Footer -->
+  <div class="footer">
+    <div class="footer-left">PEACE LAB · OPEN COGNITION · GITHUB.COM/PEACE-LAB-GLOBAL/OPEN-COGNITION</div>
+    <div class="footer-right">
+      <span>HUMAN READING</span>
+      <span>AI AGENT SKILLS</span>
+      <span>CROSS-DISCIPLINARY</span>
+      <span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

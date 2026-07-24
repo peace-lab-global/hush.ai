@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" style="background:#0d1117;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
+  <defs>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#d2a8ff;stop-opacity:0.05"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="2"/></filter>
+    <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+      <polygon points="0 0, 6 2, 0 4" fill="#ffffff30"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" fill="#e6edf3" font-size="22" font-weight="600">Open Cognition · 认知系统工程知识图谱</text>
+  <text x="700" y="60" text-anchor="middle" fill="#8b949e" font-size="12">Cognitive Systems Engineering · 7 Schools · 26 Thinkers · 27 Concepts · 16 Skills</text>
+
+  <!-- Center: Core Axis -->
+  <rect x="500" y="85" width="400" height="50" rx="8" fill="url(#glow)" stroke="#30363d" stroke-width="1"/>
+  <text x="700" y="115" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="500">认知 = 人—技术—环境 联合系统中的涌现</text>
+
+  <!-- Schools arranged in 3 rows -->
+
+  <!-- Row 1: Foundations -->
+  <!-- Cybernetics -->
+  <rect x="30" y="160" width="200" height="120" rx="8" fill="#161b22" stroke="#f97583" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="130" y="182" text-anchor="middle" fill="#f97583" font-size="13" font-weight="600">控制论 Cybernetics</text>
+  <text x="130" y="200" text-anchor="middle" fill="#c9d1d9" font-size="11">Wiener · Ashby · Simon</text>
+  <text x="130" y="216" text-anchor="middle" fill="#8b949e" font-size="9">反馈 · 必要多样性 · 有限理性</text>
+  <text x="130" y="236" text-anchor="middle" fill="#f9758340" font-size="9">───────────</text>
+  <text x="130" y="252" text-anchor="middle" fill="#8b949e" font-size="9">控制论是所有认知系统设计的元框架</text>
+  <text x="130" y="268" text-anchor="middle" fill="#58a6ff" font-size="9">3 思想家 · 2 概念</text>
+
+  <!-- Ecological -->
+  <rect x="250" y="160" width="200" height="120" rx="8" fill="#161b22" stroke="#56d364" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="350" y="182" text-anchor="middle" fill="#56d364" font-size="13" font-weight="600">生态心理学 Ecological</text>
+  <text x="350" y="200" text-anchor="middle" fill="#c9d1d9" font-size="11">Gibson · Clark · Varela</text>
+  <text x="350" y="216" text-anchor="middle" fill="#8b949e" font-size="9">可供性 · 延展认知 · 生成认知</text>
+  <text x="350" y="236" text-anchor="middle" fill="#56d36440" font-size="9">───────────</text>
+  <text x="350" y="252" text-anchor="middle" fill="#8b949e" font-size="9">认知嵌入环境，环境直接提供行动可能</text>
+  <text x="350" y="268" text-anchor="middle" fill="#58a6ff" font-size="9">3 思想家 · 4 概念</text>
+
+  <!-- Distributed -->
+  <rect x="470" y="160" width="200" height="120" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="570" y="182" text-anchor="middle" fill="#79c0ff" font-size="13" font-weight="600">分布式认知 Distributed</text>
+  <text x="570" y="200" text-anchor="middle" fill="#c9d1d9" font-size="11">Hutchins · Engeström · Leontiev</text>
+  <text x="570" y="216" text-anchor="middle" fill="#8b949e" font-size="9">分布式认知 · 活动理论</text>
+  <text x="570" y="236" text-anchor="middle" fill="#79c0ff40" font-size="9">───────────</text>
+  <text x="570" y="252" text-anchor="middle" fill="#8b949e" font-size="9">认知分布在人、工具、环境之间</text>
+  <text x="570" y="268" text-anchor="middle" fill="#58a6ff" font-size="9">3 思想家 · 3 概念</text>
+
+  <!-- Cognitive Engineering -->
+  <rect x="690" y="160" width="220" height="120" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="800" y="182" text-anchor="middle" fill="#d2a8ff" font-size="13" font-weight="600">认知工程 Cognitive Eng.</text>
+  <text x="800" y="200" text-anchor="middle" fill="#c9d1d9" font-size="11">Rasmussen · Woods · Norman · Leveson</text>
+  <text x="800" y="216" text-anchor="middle" fill="#8b949e" font-size="9">CWA · 韧性工程 · 设计心理学 · STAMP</text>
+  <text x="800" y="236" text-anchor="middle" fill="#d2a8ff40" font-size="9">───────────</text>
+  <text x="800" y="252" text-anchor="middle" fill="#8b949e" font-size="9">CSE 的方法论基石——分析与设计</text>
+  <text x="800" y="268" text-anchor="middle" fill="#58a6ff" font-size="9">4 思想家 · 5 概念 · 4 Skills</text>
+
+  <!-- Row 2: Applied -->
+  <!-- Naturalistic Decision -->
+  <rect x="30" y="300" width="220" height="120" rx="8" fill="#161b22" stroke="#ffa657" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="140" y="322" text-anchor="middle" fill="#ffa657" font-size="13" font-weight="600">自然决策 Naturalistic</text>
+  <text x="140" y="340" text-anchor="middle" fill="#c9d1d9" font-size="11">Klein · Weick · Sweller · Endsley</text>
+  <text x="140" y="356" text-anchor="middle" fill="#8b949e" font-size="9">RPD · 意义建构 · 认知负荷 · 态势感知</text>
+  <text x="140" y="376" text-anchor="middle" fill="#ffa65740" font-size="9">───────────</text>
+  <text x="140" y="392" text-anchor="middle" fill="#8b949e" font-size="9">真实世界中专家如何决策与认知优化</text>
+  <text x="140" y="408" text-anchor="middle" fill="#58a6ff" font-size="9">4 思想家 · 5 概念 · 3 Skills</text>
+
+  <!-- Safety Science -->
+  <rect x="270" y="300" width="220" height="120" rx="8" fill="#161b22" stroke="#ff7b72" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="380" y="322" text-anchor="middle" fill="#ff7b72" font-size="13" font-weight="600">安全科学 Safety Science</text>
+  <text x="380" y="340" text-anchor="middle" fill="#c9d1d9" font-size="11">Hollnagel · Reason · Dekker · Perrow</text>
+  <text x="380" y="356" text-anchor="middle" fill="#8b949e" font-size="9">Safety-II · 瑞士奶酪 · 漂移失败 · 正常事故</text>
+  <text x="380" y="376" text-anchor="middle" fill="#ff7b7240" font-size="9">───────────</text>
+  <text x="380" y="392" text-anchor="middle" fill="#8b949e" font-size="9">复杂系统为何失败，如何建设韧性</text>
+  <text x="380" y="408" text-anchor="middle" fill="#58a6ff" font-size="9">4 思想家 · 5 概念 · 2 Skills</text>
+
+  <!-- Automation & Sociotechnical -->
+  <rect x="510" y="300" width="260" height="120" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="640" y="322" text-anchor="middle" fill="#7ee787" font-size="13" font-weight="600">自动化与社会技术 Automation</text>
+  <text x="640" y="340" text-anchor="middle" fill="#c9d1d9" font-size="11">Bainbridge · Sheridan · Parasuraman · Wickens · Vicente</text>
+  <text x="640" y="356" text-anchor="middle" fill="#8b949e" font-size="9">自动化讽刺 · 监督控制 · 多资源模型 · 生态界面设计</text>
+  <text x="640" y="376" text-anchor="middle" fill="#7ee78740" font-size="9">───────────</text>
+  <text x="640" y="392" text-anchor="middle" fill="#8b949e" font-size="9">人-AI 协作认知系统的设计与优化</text>
+  <text x="640" y="408" text-anchor="middle" fill="#58a6ff" font-size="9">5 思想家 · 6 概念 · 3 Skills</text>
+
+  <!-- Row 3: Cross-cutting -->
+  <!-- Concepts -->
+  <rect x="30" y="445" width="440" height="130" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="250" y="470" text-anchor="middle" fill="#e3b341" font-size="14" font-weight="600">跨学派概念 Cross-School Concepts · 27</text>
+  
+  <text x="30" y="492" fill="#c9d1d9" font-size="10">基础层:</text>
+  <text x="90" y="492" fill="#8b949e" font-size="10">有限理性 · 可供性 · 认知负荷 · 心智模型 · 活动理论 · 情境化认知</text>
+  
+  <text x="30" y="510" fill="#c9d1d9" font-size="10">系统层:</text>
+  <text x="90" y="510" fill="#8b949e" font-size="10">分布式认知 · 联合认知系统 · 社会技术系统 · 生成认知 · 预测加工</text>
+  
+  <text x="30" y="528" fill="#c9d1d9" font-size="10">认知层:</text>
+  <text x="90" y="528" fill="#8b949e" font-size="10">态势感知 · 意义建构 · 宏观认知 · 团队认知 · 分布式SA · 意义建构</text>
+  
+  <text x="30" y="546" fill="#c9d1d9" font-size="10">安全层:</text>
+  <text x="90" y="546" fill="#8b949e" font-size="10">Safety-II范式 · 漂移失败 · 正常事故 · 安全文化 · 韧性工程 · HRA</text>
+  
+  <text x="30" y="564" fill="#c9d1d9" font-size="10">AI层:</text>
+  <text x="75" y="564" fill="#8b949e" font-size="10">自动化偏见 · 脱离回路 · 自动化光谱 · 多资源模型 · 生态界面设计</text>
+
+  <!-- Skills -->
+  <rect x="490" y="445" width="320" height="130" rx="8" fill="#161b22" stroke="#a5d6ff" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="650" y="470" text-anchor="middle" fill="#a5d6ff" font-size="14" font-weight="600">Skills 实践框架 · 16</text>
+  
+  <text x="500" y="492" fill="#c9d1d9" font-size="10">分析方法:</text>
+  <text x="570" y="492" fill="#8b949e" font-size="10">认知工作分析 · 认知任务分析 · 活动系统分析 · 可供性分析</text>
+  
+  <text x="500" y="510" fill="#c9d1d9" font-size="10">诊断评估:</text>
+  <text x="570" y="510" fill="#8b949e" font-size="10">认知负荷评估 · 态势感知诊断 · 韧性评估 · 自动化级别评估</text>
+  
+  <text x="500" y="528" fill="#c9d1d9" font-size="10">安全分析:</text>
+  <text x="570" y="528" fill="#8b949e" font-size="10">人为错误分析 · STPA事故分析 · HRA · Safety-II学习分析</text>
+  
+  <text x="500" y="546" fill="#c9d1d9" font-size="10">设计框架:</text>
+  <text x="570" y="546" fill="#8b949e" font-size="10">认知系统设计 · 人-AI团队设计 · 意义建构引导 · 自然决策分析</text>
+
+  <!-- Connection arrows between rows -->
+  <!-- Row 1 → Row 2 connections -->
+  <line x1="140" y1="280" x2="140" y2="300" stroke="#ffffff20" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="350" y1="280" x2="380" y2="300" stroke="#ffffff20" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="570" y1="280" x2="640" y2="300" stroke="#ffffff20" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="800" y1="280" x2="640" y2="300" stroke="#ffffff20" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- Cross-school influence arrows -->
+  <path d="M230,220 Q250,215 250,220" stroke="#ffffff15" fill="none" stroke-width="1"/>
+  <path d="M450,220 Q460,215 470,220" stroke="#ffffff15" fill="none" stroke-width="1"/>
+  <path d="M690,220 Q695,215 690,220" stroke="#ffffff15" fill="none" stroke-width="1"/>
+
+  <!-- Row 2 → Row 3 connections -->
+  <line x1="250" y1="420" x2="250" y2="445" stroke="#ffffff15" stroke-width="1"/>
+  <line x1="640" y1="420" x2="650" y2="445" stroke="#ffffff15" stroke-width="1"/>
+
+  <!-- Cross-links: Safety ↔ Automation -->
+  <path d="M490,360 L510,360" stroke="#ffffff20" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  
+  <!-- Cross-links: Cognitive Eng ↔ Naturalistic -->
+  <path d="M690,360 L250,360" stroke="#ffffff10" stroke-width="0.5" stroke-dasharray="2,4"/>
+
+  <!-- AI Era callout -->
+  <rect x="830" y="445" width="240" height="130" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1" stroke-opacity="0.6"/>
+  <text x="950" y="470" text-anchor="middle" fill="#f0883e" font-size="13" font-weight="600">🔮 AI 时代的核心问题</text>
+  <text x="950" y="492" text-anchor="middle" fill="#c9d1d9" font-size="10">人+LLM = 什么类型的联合认知系统？</text>
+  <text x="950" y="510" text-anchor="middle" fill="#c9d1d9" font-size="10">自动化偏见如何影响 AI 信任校准？</text>
+  <text x="950" y="528" text-anchor="middle" fill="#c9d1d9" font-size="10">认知卸载的长期影响是什么？</text>
+  <text x="950" y="546" text-anchor="middle" fill="#c9d1d9" font-size="10">如何设计人-AI 协作的认知系统？</text>
+  <text x="950" y="564" text-anchor="middle" fill="#8b949e" font-size="9">→ human-ai-teaming Skill 提供框架</text>
+
+  <!-- Thought lineage at bottom -->
+  <rect x="30" y="600" width="1340" height="80" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="700" y="625" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="500">思想谱系 Thought Lineage</text>
+  
+  <text x="100" y="650" fill="#f97583" font-size="10">Wiener(1948)</text>
+  <text x="200" y="650" fill="#ffffff40" font-size="10">→</text>
+  <text x="230" y="650" fill="#d2a8ff" font-size="10">Rasmussen(1983)</text>
+  <text x="370" y="650" fill="#ffffff40" font-size="10">→</text>
+  <text x="400" y="650" fill="#d2a8ff" font-size="10">Woods(2000s)</text>
+  <text x="510" y="650" fill="#ffffff40" font-size="10">→</text>
+  <text x="540" y="650" fill="#ff7b72" font-size="10">Hollnagel(2014)</text>
+  <text x="670" y="650" fill="#ffffff40" font-size="10">→</text>
+  <text x="700" y="650" fill="#7ee787" font-size="10">Bainbridge→Sheridan→Parasuraman</text>
+  <text x="930" y="650" fill="#ffffff40" font-size="10">→</text>
+  <text x="960" y="650" fill="#7ee787" font-size="10">Wickens→Vicente</text>
+  
+  <text x="100" y="668" fill="#56d364" font-size="10">Gibson(1966)</text>
+  <text x="200" y="668" fill="#ffffff40" font-size="10">→</text>
+  <text x="230" y="668" fill="#56d364" font-size="10">Varela(1991)</text>
+  <text x="340" y="668" fill="#ffffff40" font-size="10">→</text>
+  <text x="370" y="668" fill="#56d364" font-size="10">Clark(2008)</text>
+  <text x="470" y="668" fill="#ffffff40" font-size="10">→</text>
+  <text x="500" y="668" fill="#79c0ff" font-size="10">Hutchins(1995)</text>
+  <text x="620" y="668" fill="#ffffff40" font-size="10">→</text>
+  <text x="650" y="668" fill="#ffa657" font-size="10">Klein(1998)</text>
+  <text x="750" y="668" fill="#ffffff40" font-size="10">→</text>
+  <text x="780" y="668" fill="#ffa657" font-size="10">Endsley(1995)</text>
+  <text x="890" y="668" fill="#ffffff40" font-size="10">→</text>
+  <text x="920" y="668" fill="#ff7b72" font-size="10">Reason→Dekker→Perrow</text>
+
+  <!-- Stats bar -->
+  <rect x="30" y="700" width="1340" height="40" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="200" y="725" text-anchor="middle" fill="#8b949e" font-size="11">7 学派</text>
+  <text x="400" y="725" text-anchor="middle" fill="#58a6ff" font-size="11" font-weight="600">26 思想家</text>
+  <text x="600" y="725" text-anchor="middle" fill="#e3b341" font-size="11" font-weight="600">27 概念</text>
+  <text x="800" y="725" text-anchor="middle" fill="#a5d6ff" font-size="11" font-weight="600">16 Skills</text>
+  <text x="1000" y="725" text-anchor="middle" fill="#8b949e" font-size="11">106 跨学科关系</text>
+  <text x="1200" y="725" text-anchor="middle" fill="#8b949e" font-size="11">56 .md 文件</text>
+
+  <!-- Version -->
+  <text x="700" y="770" text-anchor="middle" fill="#484f58" font-size="10">v0.5 · 2026-05-23 · CC BY-SA 4.0 · github.com/peace-lab-global/open-cognition</text>
+</svg>

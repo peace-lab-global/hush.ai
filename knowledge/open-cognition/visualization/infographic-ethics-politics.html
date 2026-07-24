@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>伦理学与政治哲学 · Ethics & Politics · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 20% 10%,rgba(239,68,68,.1) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(239,68,68,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#060a12 100%);position:relative}
+.page::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ef4444' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;opacity:.5}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(239,68,68,.25);position:relative;z-index:1}
+.domain-label{font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;opacity:.45;color:#f87171;font-family:'Inter',sans-serif}
+.domain-title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-top:3px;background:linear-gradient(135deg,#fff 0%,#fecaca 50%,#fca5a5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.domain-sub{font-size:13px;opacity:.45;margin-top:5px;color:#7da0b0;font-family:'Inter',sans-serif}
+.core-claim-inline{font-size:12px;opacity:.35;color:#6b8f9f;font-family:'Inter',sans-serif;margin-top:6px;max-width:700px;line-height:1.5}
+.domain-meta{text-align:right}
+.domain-meta .num{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Stats */
+.statsbar{display:flex;gap:32px;padding:10px 0 8px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;z-index:1}
+.statsbar .st{font-size:12px;opacity:.5;font-family:'Inter',sans-serif;color:#7da0b0}
+.statsbar .st b{opacity:1;font-weight:700;color:#e8f4f8;font-size:13px}
+
+/* Main */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:12px 0 8px;position:relative;z-index:1;overflow:hidden}
+
+.panel-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px}
+
+/* ─── LEFT COLUMN ─── */
+.left-col{display:flex;flex-direction:column;gap:10px}
+
+/* Schools */
+.schools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.school-card{border:1px solid rgba(239,68,68,.1);padding:11px 13px 9px;border-radius:8px;background:rgba(239,68,68,.025);display:flex;flex-direction:column;position:relative;transition:all .25s}
+.school-card:hover{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.05);transform:translateY(-1px)}
+.school-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.school-en{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;color:#7da0b0;margin-bottom:6px}
+.school-thinkers{font-size:11.5px;line-height:1.5;opacity:.5;color:#a0c0d0}
+.school-thinkers b{opacity:.9;font-weight:600;color:#fecaca}
+
+/* Spectrum */
+.spectrum{margin-top:4px;border:1px solid rgba(239,68,68,.1);padding:10px 14px;border-radius:8px;background:rgba(239,68,68,.02)}
+.spectrum-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.3;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:10px}
+.spectrum-track{position:relative;height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.spectrum-track::before{content:'';position:absolute;left:16px;right:16px;top:50%;height:2px;background:linear-gradient(90deg,rgba(239,68,68,.5),rgba(239,68,68,.2),rgba(239,68,68,.5));border-radius:1px}
+.spectrum-dot{position:relative;z-index:1;text-align:center}
+.spectrum-dot .dot{width:8px;height:8px;background:#ef4444;border-radius:50%;margin:0 auto 3px;opacity:.7}
+.spectrum-dot .lab{font-size:9px;opacity:.4;font-family:'Inter',sans-serif;color:#7da0b0;white-space:nowrap}
+
+/* Design Principles */
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.principle-card{border:1px solid rgba(239,68,68,.08);padding:10px 10px 8px;border-radius:6px;background:rgba(239,68,68,.02);text-align:center}
+.principle-num{font-size:18px;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(180deg,#f87171,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.principle-title{font-size:11px;font-weight:700;color:#fecaca;margin-bottom:3px}
+.principle-desc{font-size:9.5px;opacity:.35;color:#7da0b0;line-height:1.4;font-family:'Inter',sans-serif}
+
+/* ─── RIGHT COLUMN ─── */
+.right-col{display:flex;flex-direction:column;gap:10px}
+
+/* Concept Stack */
+.concept-stack{border:1px solid rgba(239,68,68,.1);border-radius:8px;padding:12px 14px;background:rgba(239,68,68,.015);flex:1;display:flex;flex-direction:column;gap:6px}
+.layer{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:6px;position:relative}
+.layer-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;opacity:.35;font-family:'Inter',sans-serif;min-width:48px;text-align:center}
+.layer-items{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.layer-tag{font-size:10.5px;padding:3px 10px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:500;white-space:nowrap}
+
+.layer-perception{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.1)}
+.layer-perception .layer-tag{background:rgba(34,211,238,.1);color:#67e8f9;border:1px solid rgba(34,211,238,.15)}
+.layer-perception .layer-label{color:#22d3ee}
+
+.layer-cognition{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1)}
+.layer-cognition .layer-tag{background:rgba(99,102,241,.1);color:#a5b4fc;border:1px solid rgba(99,102,241,.15)}
+.layer-cognition .layer-label{color:#818cf8}
+
+.layer-action{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.1)}
+.layer-action .layer-tag{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.15)}
+.layer-action .layer-label{color:#10b981}
+
+.layer-system{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.1)}
+.layer-system .layer-tag{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.15)}
+.layer-system .layer-label{color:#f59e0b}
+
+.stack-arrow{display:flex;justify-content:center;opacity:.15}
+.stack-arrow svg{width:16px;height:16px}
+
+/* Skills */
+.skills-panel{border:1px solid rgba(255,255,255,.05);padding:12px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px;margin-top:6px}
+.skill-item{display:flex;align-items:baseline;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.skill-item:last-child{border-bottom:none}
+.skill-name{font-size:11px;font-weight:600;color:#fecaca;min-width:110px}
+.skill-desc{font-size:10px;opacity:.3;font-family:'Inter',sans-serif;color:#7da0b0}
+
+/* AI Panel */
+.ai-panel{border:1.5px solid rgba(239,68,68,.15);padding:10px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(239,68,68,.04),rgba(99,102,241,.03));position:relative;overflow:hidden}
+.ai-panel::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(239,68,68,.08),transparent 70%);pointer-events:none}
+.ai-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:.35;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:6px;position:relative}
+.ai-text{font-size:12px;line-height:1.65;opacity:.55;color:#a0c0d0;position:relative}
+.ai-text b{opacity:.9;color:#e8f4f8}
+
+/* Cross-Domain */
+.connections-panel{border:1px solid rgba(255,255,255,.05);padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.015)}
+.conn-list{font-size:11px;line-height:1.8;opacity:.4;margin-top:4px;color:#a0c0d0}
+.conn-list b{opacity:.85;color:#e8f4f8}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(239,68,68,.08);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.12;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.16;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="domain-label">Domain 05 · Ethics & Political Philosophy</div>
+      <div class="domain-title">伦理学 · 政治哲学</div>
+      <div class="domain-sub">Ethics & Political Philosophy · 15 思想家 / 11 概念 / 10 Skills · AI-Ready</div>
+      <div class="core-claim-inline">核心主张：伦理判断需经可普遍化检验与境遇敏感性的双重校准，正义社会建立在对话程序与共同善的平衡之上。</div>
+    </div>
+    <div class="domain-meta">
+      <div class="num">前4c — 当代</div>
+    </div>
+  </div>
+
+  <div class="statsbar">
+    <span class="st"><b>15</b> 思想家</span>
+    <span class="st"><b>11</b> 核心概念</span>
+    <span class="st"><b>10</b> 操作框架</span>
+    <span class="st"><b>10</b> 学派传统</span>
+    <span class="st"><b>50+</b> 关系链接</span>
+    <span class="st"><b>4</b> 设计原则</span>
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+      <div class="panel-title">Six Traditions · 六大传统</div>
+      <div class="schools-grid">
+        <div class="school-card">
+          <div class="school-name">结果主义</div>
+          <div class="school-en">Consequentialism · 最大幸福</div>
+          <div class="school-thinkers"><b>边沁</b> · 功利计算 · <b>密尔</b> · 更高功利/伤害原则</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">道义论</div>
+          <div class="school-en">Deontology · 普遍法则</div>
+          <div class="school-thinkers"><b>康德</b> · 定言命令/人的尊严/道德自律</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">德性伦理学</div>
+          <div class="school-en">Virtue Ethics · 品格与幸福</div>
+          <div class="school-thinkers"><b>亚里士多德</b> · 德性/中庸/幸福实现 · <b>麦金太尔</b> · 叙事德性</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">社会契约论</div>
+          <div class="school-en">Social Contract · 正义秩序</div>
+          <div class="school-thinkers"><b>霍布斯</b> · 自然状态/利维坦 · <b>洛克</b> · 自然权利 · <b>罗尔斯</b> · 无知之幕</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">批判 / 关怀</div>
+          <div class="school-en">Critical / Care Ethics · 权力与关系</div>
+          <div class="school-thinkers"><b>马尔库塞</b> · 单向度的人 · <b>诺丁斯</b> · 关怀关系伦理</div>
+        </div>
+        <div class="school-card">
+          <div class="school-name">当代理论</div>
+          <div class="school-en">Contemporary · 多元正义</div>
+          <div class="school-thinkers"><b>森</b> · 能力方法 · <b>努斯鲍姆</b> · 能力清单 · <b>泰勒</b> · 承认政治 · <b>甘地</b> · 非暴力 · <b>诺齐克</b> · 最小国家</div>
+        </div>
+      </div>
+
+      <div class="spectrum">
+        <div class="spectrum-title">Political Spectrum · 政治光谱演进轴</div>
+        <div class="spectrum-track">
+          <div class="spectrum-dot"><div class="dot"></div><div class="lab">社群主义<br>泰勒</div></div>
+          <div class="spectrum-dot"><div class="dot"></div><div class="lab">自由主义<br>罗尔斯</div></div>
+          <div class="spectrum-dot"><div class="dot"></div><div class="lab">自由至上<br>诺齐克</div></div>
+          <div class="spectrum-dot"><div class="dot"></div><div class="lab">功利主义<br>密尔</div></div>
+          <div class="spectrum-dot"><div class="dot"></div><div class="lab">马克思主义<br>马克思</div></div>
+        </div>
+      </div>
+
+      <div class="panel-title">Design Principles · 设计原则</div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">可普遍化检验</div>
+          <div class="principle-desc">道德原则需经普遍理性检验，超越特殊利益</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">境遇敏感性</div>
+          <div class="principle-desc">原则应用需回应具体情境，避免抽象教条</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">对话程序正义</div>
+          <div class="principle-desc">伦理决策需包容多元声音，经公共理性论证</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">04</div>
+          <div class="principle-title">整体善追求</div>
+          <div class="principle-desc">超越个体功利，关注共同善与能力发展</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="panel-title">Concept Architecture · 概念架构（11）</div>
+      <div class="concept-stack">
+        <div class="layer layer-system">
+          <div class="layer-label">系统层</div>
+          <div class="layer-items">
+            <span class="layer-tag">环境伦理</span><span class="layer-tag">人权</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-action">
+          <div class="layer-label">制度层</div>
+          <div class="layer-items">
+            <span class="layer-tag">社会契约</span><span class="layer-tag">自然权利</span><span class="layer-tag">正义感</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-cognition">
+          <div class="layer-label">认知层</div>
+          <div class="layer-items">
+            <span class="layer-tag">无知之幕</span><span class="layer-tag">责任</span><span class="layer-tag">良心</span>
+          </div>
+        </div>
+        <div class="stack-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="layer layer-perception">
+          <div class="layer-label">规范层</div>
+          <div class="layer-items">
+            <span class="layer-tag">功利</span><span class="layer-tag">定言命令</span><span class="layer-tag">德性</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-panel">
+        <div class="panel-title">Agent Skills · 可调用框架（10）</div>
+        <div class="skill-grid">
+          <div class="skill-item"><span class="skill-name">苦乐计算</span><span class="skill-desc">功利原则七维量化</span></div>
+          <div class="skill-item"><span class="skill-name">无知之幕分析</span><span class="skill-desc">公正性检验思想实验</span></div>
+          <div class="skill-item"><span class="skill-name">亚里士多德德性检验</span><span class="skill-desc">中庸之道与功能检验</span></div>
+          <div class="skill-item"><span class="skill-name">正义原则检验</span><span class="skill-desc">罗尔斯正义二原则</span></div>
+          <div class="skill-item"><span class="skill-name">自由主义论证分析</span><span class="skill-desc">伤害原则与自由边界</span></div>
+          <div class="skill-item"><span class="skill-name">自然状态分析</span><span class="skill-desc">霍布斯自然状态推演</span></div>
+          <div class="skill-item"><span class="skill-name">非暴力抵抗</span><span class="skill-desc">甘地非暴力抗争框架</span></div>
+          <div class="skill-item"><span class="skill-name">能力方法分析</span><span class="skill-desc">森的能力与发展自由</span></div>
+          <div class="skill-item"><span class="skill-name">德性伦理分析</span><span class="skill-desc">品格与叙事传统检验</span></div>
+          <div class="skill-item"><span class="skill-name">自然权利分析</span><span class="skill-desc">洛克自然权利推演</span></div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-title">AI Era Response · AI 时代回应</div>
+        <div class="ai-text"><b>自动驾驶的道德算法如何设计？</b> AI 决策的责任归属谁？LLM 训练数据中的偏见如何正义分配？算法治理需要哪种社会契约？</div>
+      </div>
+
+      <div class="connections-panel">
+        <div class="panel-title">Cross-Domain · 跨学科连接</div>
+        <div class="conn-list">
+          <b>正义</b> → 哲学(亚里士多德/康德) · 社会学(涂尔干/布迪厄) · 心理学(科尔伯格)<br>
+          <b>自由</b> → 哲学(萨特/海德格尔) · 社会学(福柯规训) · 心理学(罗杰斯)<br>
+          <b>平等</b> → 哲学(亚里士多德中庸) · 心理学(马斯洛需求) · 社会学(马克思异化)<br>
+          <b>权利</b> → 哲学(康德尊严) · 宗教(犹太教盟约) · 社会学(马克思异化)<br>
+          <b>理性与情感</b> → 哲学(休谟/康德) · 心理学(卡尼曼/达玛西奥)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · ETHICS & POLITICS · PEACE LAB</div>
+    <div class="footer-right">
+      <span>15 THINKERS</span><span>11 CONCEPTS</span><span>10 SKILLS</span><span>4 PRINCIPLES</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

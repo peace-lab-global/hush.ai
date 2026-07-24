@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Open Cognition · Evolution Timeline · v0.5</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0f;
+  width: 1920px;
+  height: 1080px;
+  font-family: 'Noto Serif SC', Georgia, serif;
+  color: #e8e6e3;
+  overflow: hidden;
+}
+
+.page {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  background:
+    radial-gradient(ellipse at 10% 15%, rgba(99,102,241,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 85%, rgba(6,182,212,0.04) 0%, transparent 55%),
+    linear-gradient(180deg, #0a0a0f 0%, #0c0c14 50%, #0a0a0f 100%);
+}
+
+/* ─── Background Grid ─── */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+.glow-top {
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 450px;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* ─── HEADER ─── */
+.header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 32px 80px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 10;
+}
+
+.brand-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  opacity: 0.3;
+  color: #a0a0b0;
+}
+
+.brand-title {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-top: 6px;
+  background: linear-gradient(135deg, #fff 0%, #a0a0c0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-center {
+  text-align: center;
+  padding-top: 6px;
+}
+
+.header-center-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+.header-center-sub {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  opacity: 0.35;
+  letter-spacing: 8px;
+  margin-top: 6px;
+  color: #a0a0b0;
+}
+
+.header-right {
+  text-align: right;
+  padding-top: 6px;
+}
+
+.header-badge {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 1px solid rgba(6,182,212,0.35);
+  border-radius: 3px;
+  color: #06b6d4;
+  background: rgba(6,182,212,0.06);
+}
+
+.header-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  opacity: 0.22;
+  margin-top: 10px;
+  color: #a0a0b0;
+}
+
+/* ─── TIMELINE ─── */
+.timeline-wrap {
+  position: absolute;
+  top: 170px;
+  left: 0; right: 0;
+  height: 700px;
+}
+
+/* Main axis line */
+.timeline-axis {
+  position: absolute;
+  top: 380px;
+  left: 140px;
+  right: 140px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(99,102,241,0.25) 4%,
+    rgba(99,102,241,0.35) 50%,
+    rgba(99,102,241,0.25) 96%,
+    transparent 100%
+  );
+  box-shadow: 0 0 20px rgba(99,102,241,0.12), 0 0 40px rgba(99,102,241,0.06);
+}
+
+.timeline-axis::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(99,102,241,0.06) 10%,
+    rgba(99,102,241,0.06) 90%,
+    transparent 100%
+  );
+  filter: blur(2px);
+}
+
+.timeline-axis::after {
+  content: '';
+  position: absolute;
+  right: -7px;
+  top: -3px;
+  width: 0; height: 0;
+  border-left: 7px solid rgba(99,102,241,0.3);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* Axis end dots */
+.axis-end {
+  position: absolute;
+  top: 376px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(99,102,241,0.25);
+  border: 2px solid rgba(99,102,241,0.45);
+}
+.axis-end-left { left: 136px; }
+.axis-end-right { right: 136px; }
+
+/* ─── NODE COMMON ─── */
+.node {
+  position: absolute;
+  width: 280px;
+}
+
+.node-card {
+  position: absolute;
+  width: 280px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(4px);
+}
+
+.node-connector {
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.node-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ─── NODE POSITIONS ─── */
+/* v0.1 - top */
+.node-v1 { left: 60px; }
+.node-v1 .node-card { top: 86px; height: 220px; }
+.node-v1 .node-connector { top: 306px; height: 50px; }
+.node-v1 .node-dot { top: 356px; width: 48px; height: 48px; font-size: 13px; }
+
+/* v0.2 - bottom */
+.node-v2 { left: 360px; }
+.node-v2 .node-card { top: 454px; height: 220px; }
+.node-v2 .node-connector { top: 404px; height: 50px; }
+.node-v2 .node-dot { top: 356px; width: 48px; height: 48px; font-size: 13px; }
+
+/* v0.3 - top */
+.node-v3 { left: 660px; }
+.node-v3 .node-card { top: 86px; height: 220px; }
+.node-v3 .node-connector { top: 306px; height: 50px; }
+.node-v3 .node-dot { top: 356px; width: 48px; height: 48px; font-size: 13px; }
+
+/* v0.4 - bottom */
+.node-v4 { left: 960px; }
+.node-v4 .node-card { top: 454px; height: 220px; }
+.node-v4 .node-connector { top: 404px; height: 50px; }
+.node-v4 .node-dot { top: 356px; width: 48px; height: 48px; font-size: 13px; }
+
+/* v0.5 - CURRENT, top, large */
+.node-v5 { left: 1240px; width: 320px; }
+.node-v5 .node-card {
+  top: -12px;
+  width: 320px;
+  height: 300px;
+  padding: 26px;
+  background: rgba(6,182,212,0.045);
+  border-color: rgba(6,182,212,0.22);
+  box-shadow: 0 0 50px rgba(6,182,212,0.06), 0 12px 40px rgba(0,0,0,0.25);
+}
+.node-v5 .node-connector { top: 288px; height: 60px; }
+.node-v5 .node-dot { top: 348px; width: 64px; height: 64px; font-size: 17px; }
+
+/* v0.6 - FUTURE, bottom, small */
+.node-v6 { left: 1580px; opacity: 0.5; }
+.node-v6 .node-card {
+  top: 474px;
+  height: 200px;
+  border-style: dashed;
+  border-color: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.012);
+}
+.node-v6 .node-connector { top: 404px; height: 50px; }
+.node-v6 .node-dot { top: 356px; width: 48px; height: 48px; font-size: 13px; }
+
+/* ─── DOT STYLES ─── */
+.node-v1 .node-dot,
+.node-v2 .node-dot,
+.node-v3 .node-dot,
+.node-v4 .node-dot {
+  background: linear-gradient(135deg, rgba(99,102,241,0.85), rgba(79,70,229,0.85));
+  border: 2px solid rgba(255,255,255,0.18);
+  box-shadow: 0 0 20px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.node-v5 .node-dot {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  border: 2px solid rgba(6,182,212,0.45);
+  box-shadow: 0 0 35px rgba(6,182,212,0.4), 0 0 70px rgba(6,182,212,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.node-v6 .node-dot {
+  background: transparent;
+  border: 2px dashed rgba(255,255,255,0.22);
+  box-shadow: none;
+  color: rgba(255,255,255,0.45);
+}
+
+/* ─── CONNECTOR STYLES ─── */
+.node-v1 .node-connector,
+.node-v3 .node-connector {
+  background: linear-gradient(180deg, rgba(99,102,241,0.35) 0%, rgba(99,102,241,0.06) 100%);
+}
+
+.node-v2 .node-connector,
+.node-v4 .node-connector {
+  background: linear-gradient(180deg, rgba(99,102,241,0.06) 0%, rgba(99,102,241,0.35) 100%);
+}
+
+.node-v5 .node-connector {
+  background: linear-gradient(180deg, rgba(6,182,212,0.5) 0%, rgba(6,182,212,0.06) 100%);
+}
+
+.node-v6 .node-connector {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.18) 100%);
+}
+
+/* ─── CARD CONTENT ─── */
+.card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.card-version {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.card-phase {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.32;
+  color: #a0a0b0;
+}
+
+.card-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  opacity: 0.28;
+  margin-bottom: 12px;
+  color: #a0a0b0;
+}
+
+.card-desc {
+  font-size: 13px;
+  line-height: 1.75;
+  opacity: 0.62;
+  color: #c4c4d0;
+  flex: 1;
+}
+
+.card-desc b {
+  color: #e6e6f0;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+.card-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.card-stat {
+  text-align: center;
+}
+
+.card-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.card-stat-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.28;
+  margin-top: 4px;
+  color: #a0a0b0;
+}
+
+/* v0.5 card enhancements */
+.node-v5 .card-version { font-size: 30px; }
+.node-v5 .card-phase { font-size: 11px; opacity: 0.45; }
+.node-v5 .card-date { font-size: 12px; opacity: 0.38; margin-bottom: 14px; }
+.node-v5 .card-desc { font-size: 14.5px; line-height: 1.8; opacity: 0.72; }
+.node-v5 .card-stats { margin-top: 16px; padding-top: 14px; gap: 18px; }
+.node-v5 .card-stat-num { font-size: 22px; }
+.node-v5 .card-stat-lbl { font-size: 9px; opacity: 0.35; }
+
+/* v0.5 current tag */
+.current-tag {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: #fff;
+  border-radius: 3px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(6,182,212,0.3);
+}
+
+/* v0.6 subdued */
+.node-v6 .card-version { opacity: 0.55; }
+.node-v6 .card-desc { opacity: 0.38; }
+.node-v6 .card-stats { opacity: 0.35; }
+
+/* ─── FOOTER ─── */
+.footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 100px 32px;
+  z-index: 10;
+}
+
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,0.07) 20%,
+    rgba(255,255,255,0.07) 80%,
+    transparent 100%
+  );
+  margin-bottom: 28px;
+}
+
+.footer-stats {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 80px;
+}
+
+.footer-stat {
+  text-align: center;
+  position: relative;
+}
+
+.footer-stat:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: 15%; bottom: 15%;
+  width: 1px;
+  background: rgba(255,255,255,0.05);
+}
+
+.footer-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(180deg, #fff 0%, #8888a0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.footer-stat-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.3;
+  margin-top: 8px;
+  color: #a0a0b0;
+}
+
+.footer-note {
+  text-align: center;
+  margin-top: 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  opacity: 0.18;
+  letter-spacing: 2px;
+  color: #a0a0b0;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="grid-bg"></div>
+  <div class="glow-top"></div>
+
+  <!-- ===== HEADER ===== -->
+  <div class="header">
+    <div>
+      <div class="brand-label">PEACE LAB · 开放认知实验室</div>
+      <div class="brand-title">Open Cognition</div>
+    </div>
+    <div class="header-center">
+      <div class="header-center-title">Evolution Timeline</div>
+      <div class="header-center-sub">演进时间线</div>
+    </div>
+    <div class="header-right">
+      <div class="header-badge">v0.5 Current</div>
+      <div class="header-date">2026 · 持续演进中</div>
+    </div>
+  </div>
+
+  <!-- ===== TIMELINE ===== -->
+  <div class="timeline-wrap">
+    <div class="timeline-axis"></div>
+    <div class="axis-end axis-end-left"></div>
+    <div class="axis-end axis-end-right"></div>
+
+    <!-- v0.1 -->
+    <div class="node node-v1">
+      <div class="node-card">
+        <div class="card-header">
+          <span class="card-version">v0.1</span>
+          <span class="card-phase">Foundation</span>
+        </div>
+        <div class="card-date">2024 · 奠基期</div>
+        <div class="card-desc">
+          五领域基础骨架搭建完成。确立<b>哲学</b>、<b>宗教</b>、<b>心理学</b>、<b>社会学</b>、<b>伦理学</b>五大领域的条目结构与模板体系。
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><div class="card-stat-num">5</div><div class="card-stat-lbl">领域</div></div>
+          <div class="card-stat"><div class="card-stat-num">~30</div><div class="card-stat-lbl">思想家</div></div>
+          <div class="card-stat"><div class="card-stat-num">Base</div><div class="card-stat-lbl">结构</div></div>
+        </div>
+      </div>
+      <div class="node-connector"></div>
+      <div class="node-dot">v0.1</div>
+    </div>
+
+    <!-- v0.2 -->
+    <div class="node node-v2">
+      <div class="node-card">
+        <div class="card-header">
+          <span class="card-version">v0.2</span>
+          <span class="card-phase">Expansion</span>
+        </div>
+        <div class="card-date">2024 · 扩展期</div>
+        <div class="card-desc">
+          六领域全面扩展，全球顶尖思想家全量补充。各领域核心人物与概念完成首批系统收录，知识网络初步成型。
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><div class="card-stat-num">6</div><div class="card-stat-lbl">领域</div></div>
+          <div class="card-stat"><div class="card-stat-num">~60</div><div class="card-stat-lbl">思想家</div></div>
+          <div class="card-stat"><div class="card-stat-num">~40</div><div class="card-stat-lbl">概念</div></div>
+        </div>
+      </div>
+      <div class="node-connector"></div>
+      <div class="node-dot">v0.2</div>
+    </div>
+
+    <!-- v0.3 -->
+    <div class="node node-v3">
+      <div class="node-card">
+        <div class="card-header">
+          <span class="card-version">v0.3</span>
+          <span class="card-phase">Integration</span>
+        </div>
+        <div class="card-date">2024 · 融合期</div>
+        <div class="card-desc">
+          文学家与文艺家全面融合。<b>美学</b>领域从 7 人扩展至 23 人，新增<b>文学</b>、<b>艺术</b>两大领域，打通人文创作与思想分析。
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><div class="card-stat-num">8</div><div class="card-stat-lbl">领域</div></div>
+          <div class="card-stat"><div class="card-stat-num">+18</div><div class="card-stat-lbl">新增</div></div>
+          <div class="card-stat"><div class="card-stat-num">~90</div><div class="card-stat-lbl">思想家</div></div>
+        </div>
+      </div>
+      <div class="node-connector"></div>
+      <div class="node-dot">v0.3</div>
+    </div>
+
+    <!-- v0.4 -->
+    <div class="node node-v4">
+      <div class="node-card">
+        <div class="card-header">
+          <span class="card-version">v0.4</span>
+          <span class="card-phase">CSE Launch</span>
+        </div>
+        <div class="card-date">2025 · 新增领域</div>
+        <div class="card-desc">
+          新增<b>认知系统工程</b>领域。控制论、生态心理学、分布式认知、认知系统工程、自然决策五大方向齐发，补齐"认知作为人-技术-环境联合系统涌现"轴线。
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><div class="card-stat-num">+15</div><div class="card-stat-lbl">思想家</div></div>
+          <div class="card-stat"><div class="card-stat-num">+12</div><div class="card-stat-lbl">概念</div></div>
+          <div class="card-stat"><div class="card-stat-num">+10</div><div class="card-stat-lbl">Skills</div></div>
+        </div>
+      </div>
+      <div class="node-connector"></div>
+      <div class="node-dot">v0.4</div>
+    </div>
+
+    <!-- v0.5 CURRENT -->
+    <div class="node node-v5">
+      <div class="node-card">
+        <div class="current-tag">Current</div>
+        <div class="card-header">
+          <span class="card-version">v0.5</span>
+          <span class="card-phase">Deep Dive</span>
+        </div>
+        <div class="card-date">2025 · 当前版本</div>
+        <div class="card-desc">
+          <b>CSE 领域深度扩展</b>。新增安全科学学派（霍伦纳格 / 里森 / 德克尔）与自动化社会技术学派（班布里奇 / 帕拉休拉曼 / 维森特）。补齐安全科学与人机协作两条关键轴线。
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><div class="card-stat-num">+13</div><div class="card-stat-lbl">思想家</div></div>
+          <div class="card-stat"><div class="card-stat-num">+4</div><div class="card-stat-lbl">概念</div></div>
+          <div class="card-stat"><div class="card-stat-num">+5</div><div class="card-stat-lbl">Skills</div></div>
+        </div>
+      </div>
+      <div class="node-connector"></div>
+      <div class="node-dot">v0.5</div>
+    </div>
+
+    <!-- v0.6 FUTURE -->
+    <div class="node node-v6">
+      <div class="node-card">
+        <div class="card-header">
+          <span class="card-version">v0.6</span>
+          <span class="card-phase">Future</span>
+        </div>
+        <div class="card-date">2026 · 规划中</div>
+        <div class="card-desc">
+          英文版发布、可视化关联图谱系统、Agent SDK 集成示例。面向全球化与智能化生态演进。
+        </div>
+        <div class="card-stats">
+          <div class="card-stat"><div class="card-stat-num">En</div><div class="card-stat-lbl">英文版</div></div>
+          <div class="card-stat"><div class="card-stat-num">Graph</div><div class="card-stat-lbl">可视化</div></div>
+          <div class="card-stat"><div class="card-stat-num">SDK</div><div class="card-stat-lbl">Agent</div></div>
+        </div>
+      </div>
+      <div class="node-connector"></div>
+      <div class="node-dot">v0.6</div>
+    </div>
+
+  </div>
+
+  <!-- ===== FOOTER STATS ===== -->
+  <div class="footer">
+    <div class="footer-divider"></div>
+    <div class="footer-stats">
+      <div class="footer-stat">
+        <div class="footer-stat-num">10</div>
+        <div class="footer-stat-lbl">领域</div>
+      </div>
+      <div class="footer-stat">
+        <div class="footer-stat-num">148</div>
+        <div class="footer-stat-lbl">思想家</div>
+      </div>
+      <div class="footer-stat">
+        <div class="footer-stat-num">112</div>
+        <div class="footer-stat-lbl">Skills</div>
+      </div>
+      <div class="footer-stat">
+        <div class="footer-stat-num">360+</div>
+        <div class="footer-stat-lbl">知识文件</div>
+      </div>
+    </div>
+    <div class="footer-note">面向人类深度阅读与 AI Agent 调用的跨学科认知资源库 · CC BY-SA 4.0</div>
+  </div>
+
+</div>
+
+</body>
+</html>

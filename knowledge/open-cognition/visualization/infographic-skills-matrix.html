@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Skills 调用矩阵 · Skills Matrix · Open Cognition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#030508;width:1920px;height:1080px;font-family:'Noto Serif SC',Georgia,serif;color:#e8f4f8;overflow:hidden}
+.page{width:1920px;height:1080px;padding:32px 48px 24px;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;background:radial-gradient(ellipse at 50% 0%,rgba(16,185,129,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(99,102,241,.06) 0%,transparent 50%),linear-gradient(180deg,#030508 0%,#060a14 100%);position:relative}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;border-bottom:1.5px solid rgba(16,185,129,.2);position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#34d399;font-family:'Inter',sans-serif;margin-bottom:20px}
+.badge::before{content:'';width:8px;height:8px;background:#10b981;border-radius:50%;box-shadow:0 0 14px rgba(16,185,129,.6)}
+.title{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;background:linear-gradient(135deg,#fff 0%,#a7f3d0 50%,#6ee7b7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:13px;opacity:.4;margin-top:6px;color:#7da0b0;font-family:'Inter',sans-serif}
+.header-right{text-align:right}
+.header-stat{font-size:11px;letter-spacing:3px;text-transform:uppercase;opacity:.25;font-family:'Inter',sans-serif;color:#5a7a8a}
+
+/* Main */
+.main{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:12px 0 8px;position:relative;z-index:1;overflow:hidden}
+
+/* Domain columns */
+.domain-col{display:flex;flex-direction:column;gap:8px}
+.domain-header{padding:10px 12px 8px;border-radius:8px;text-align:center;position:relative;overflow:hidden}
+.domain-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:.6}
+.domain-name{font-size:15px;font-weight:700;color:#fff}
+.domain-count{font-size:10px;opacity:.3;font-family:'Inter',sans-serif;color:#a0b0c0;margin-top:2px}
+
+/* Skill cards */
+.skill-card{border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:10px 12px 8px;background:rgba(255,255,255,.012);transition:all .2s;position:relative}
+.skill-card:hover{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.025);transform:translateY(-1px)}
+.skill-card::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2.5px;background:var(--accent);opacity:.4;border-radius:0 2px 2px 0}
+.skill-name{font-size:12px;font-weight:700;color:#e8f4f8;line-height:1.3;margin-bottom:4px}
+.skill-desc{font-size:10px;line-height:1.45;opacity:.35;color:#a0b0c0;font-family:'Inter',sans-serif}
+.skill-trigger{font-size:9px;opacity:.2;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.04);color:#7da0b0;font-family:'Inter',sans-serif}
+
+/* Domain colors */
+.philosophy{--accent:#8b5cf6}
+.religion{--accent:#f59e0b}
+.psychology{--accent:#10b981}
+.sociology{--accent:#3b82f6}
+.ethics{--accent:#ef4444}
+.aesthetics{--accent:#ec4899}
+.literature{--accent:#f97316}
+.arts{--accent:#84cc16}
+.cse{--accent:#06b6d4}
+.wisdom{--accent:#14b8a6}
+
+/* Scenarios */
+.scenarios{border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 18px;background:rgba(255,255,255,.015);grid-column:1 / -1;margin-top:4px}
+.scenarios-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.2;font-family:'Inter',sans-serif;font-weight:700;color:#5a7a8a;margin-bottom:10px}
+.scenario-row{display:flex;align-items:center;gap:14px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.scenario-row:last-child{border-bottom:none}
+.scenario-who{font-size:11px;font-weight:700;color:#a7f3d0;min-width:100px;font-family:'Inter',sans-serif}
+.scenario-what{font-size:12px;color:#8890a8;line-height:1.5}
+.scenario-what b{color:#c0c8d8;font-weight:600}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0;border-top:1px solid rgba(255,255,255,.05);position:relative;z-index:1}
+.footer-left{font-size:10px;opacity:.1;letter-spacing:1px;font-family:'Inter',sans-serif;color:#5a7a8a}
+.footer-right{display:flex;gap:14px}
+.footer-right span{font-size:9px;opacity:.15;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:600;color:#5a7a8a}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="badge">Agent Skills Matrix · 调用矩阵</div>
+      <div class="title">112 个可调用认知框架</div>
+      <div class="subtitle">每个 Skill 含 YAML frontmatter · 可被 Claude Skills / 自定义 RAG 直接索引调用</div>
+    </div>
+    <div class="header-right">
+      <div class="header-stat">10 domains · 112 skills · trigger-ready</div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- Philosophy -->
+    <div class="domain-col philosophy">
+      <div class="domain-header">
+        <div class="domain-name">哲学</div>
+        <div class="domain-count">19 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">苏格拉底式提问</div><div class="skill-desc">通过追问揭示假设</div><div class="skill-trigger">当你需要挑战一个信念时</div></div>
+      <div class="skill-card"><div class="skill-name">辩证分析</div><div class="skill-desc">正题—反题—合题</div><div class="skill-trigger">面对对立观点时</div></div>
+      <div class="skill-card"><div class="skill-name">现象学还原</div><div class="skill-desc">悬置成见，回到经验</div><div class="skill-trigger">被先入之见困住时</div></div>
+      <div class="skill-card"><div class="skill-name">语言游戏分析</div><div class="skill-desc">在使用中看意义</div><div class="skill-trigger">概念被误用时</div></div>
+      <div class="skill-card"><div class="skill-name">此在分析</div><div class="skill-desc">海德格尔此在分析</div><div class="skill-trigger">追问"我是谁"时</div></div>
+      <div class="skill-card"><div class="skill-name">绝对命令检验</div><div class="skill-desc">康德道德律令检验</div><div class="skill-trigger">道德两难时</div></div>
+      <div class="skill-card"><div class="skill-name">洞穴寓言分析</div><div class="skill-desc">柏拉图洞穴寓言分析</div><div class="skill-trigger">意识到认知局限时</div></div>
+      <div class="skill-card"><div class="skill-name">方法论怀疑</div><div class="skill-desc">笛卡尔方法论怀疑</div><div class="skill-trigger">需要清零重建时</div></div>
+    </div>
+
+    <!-- Religion -->
+    <div class="domain-col religion">
+      <div class="domain-header">
+        <div class="domain-name">宗教</div>
+        <div class="domain-count">14 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">四圣谛诊断</div><div class="skill-desc">苦/集/灭/道四步分析</div><div class="skill-trigger">面对痛苦时</div></div>
+      <div class="skill-card"><div class="skill-name">圣典诠释学</div><div class="skill-desc">文本/历史/语境/应用四层</div><div class="skill-trigger">解读经典时</div></div>
+      <div class="skill-card"><div class="skill-name">无为而治</div><div class="skill-desc">顺应自然，减少干预</div><div class="skill-trigger">过度控制时</div></div>
+      <div class="skill-card"><div class="skill-name">壁观禅修</div><div class="skill-desc">达摩壁观禅修方法</div><div class="skill-trigger">需要深度静定时</div></div>
+      <div class="skill-card"><div class="skill-name">大圆满引导</div><div class="skill-desc">莲花生大士大圆满法门</div><div class="skill-trigger">追求顿悟时</div></div>
+      <div class="skill-card"><div class="skill-name">菩提道次第</div><div class="skill-desc">阿底峡三士道修行指导</div><div class="skill-trigger">规划修行路径时</div></div>
+      <div class="skill-card"><div class="skill-name">神圣—世俗分析</div><div class="skill-desc">涂尔干—伊利亚德框架</div><div class="skill-trigger">分析仪式感时</div></div>
+      <div class="skill-card"><div class="skill-name">柔弱胜刚强</div><div class="skill-desc">以柔克刚，柔性策略</div><div class="skill-trigger">硬碰硬无效时</div></div>
+    </div>
+
+    <!-- Psychology -->
+    <div class="domain-col psychology">
+      <div class="domain-header">
+        <div class="domain-name">心理学</div>
+        <div class="domain-count">16 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">CBT 认知扭曲识别</div><div class="skill-desc">自动思维与重构</div><div class="skill-trigger">陷入负面循环时</div></div>
+      <div class="skill-card"><div class="skill-name">马斯洛需求诊断</div><div class="skill-desc">层次卡点定位</div><div class="skill-trigger">感到不满足时</div></div>
+      <div class="skill-card"><div class="skill-name">心流条件评估</div><div class="skill-desc">8 条件体检</div><div class="skill-trigger">寻找沉浸状态时</div></div>
+      <div class="skill-card"><div class="skill-name">双系统思维分析</div><div class="skill-desc">卡尼曼双系统理论应用</div><div class="skill-trigger">决策失误后复盘</div></div>
+      <div class="skill-card"><div class="skill-name">荣格原型识别</div><div class="skill-desc">阴影/阿尼玛/英雄等</div><div class="skill-trigger">重复陷入同类困境</div></div>
+      <div class="skill-card"><div class="skill-name">依恋分析</div><div class="skill-desc">鲍尔比依恋分析</div><div class="skill-trigger">亲密关系冲突时</div></div>
+      <div class="skill-card"><div class="skill-name">意义疗法</div><div class="skill-desc">弗兰克尔意义疗法</div><div class="skill-trigger">感到空虚迷茫时</div></div>
+      <div class="skill-card"><div class="skill-name">来访者中心对话</div><div class="skill-desc">罗杰斯来访者中心对话</div><div class="skill-trigger">需要被倾听时</div></div>
+    </div>
+
+    <!-- Sociology -->
+    <div class="domain-col sociology">
+      <div class="domain-header">
+        <div class="domain-name">社会学</div>
+        <div class="domain-count">15 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">布迪厄场域分析</div><div class="skill-desc">场域—惯习—资本</div><div class="skill-trigger">分析社会地位时</div></div>
+      <div class="skill-card"><div class="skill-name">福柯权力分析</div><div class="skill-desc">微观权力—规训—知识</div><div class="skill-trigger">感受到无形约束时</div></div>
+      <div class="skill-card"><div class="skill-name">戈夫曼拟剧分析</div><div class="skill-desc">前台/后台/印象管理</div><div class="skill-trigger">社交场合疲惫时</div></div>
+      <div class="skill-card"><div class="skill-name">韦伯理想类型</div><div class="skill-desc">类型化建模</div><div class="skill-trigger">需要分类理解时</div></div>
+      <div class="skill-card"><div class="skill-name">液态现代性分析</div><div class="skill-desc">鲍曼液态现代性分析</div><div class="skill-trigger">一切都不稳定时</div></div>
+      <div class="skill-card"><div class="skill-name">阶级分析</div><div class="skill-desc">马克思主义阶级分析框架</div><div class="skill-trigger">分析经济不平等时</div></div>
+      <div class="skill-card"><div class="skill-name">网络社会分析</div><div class="skill-desc">卡斯特网络社会分析</div><div class="skill-trigger">分析数字权力时</div></div>
+      <div class="skill-card"><div class="skill-name">性别操演分析</div><div class="skill-desc">巴特勒性别操演分析</div><div class="skill-trigger">性别议题争论时</div></div>
+    </div>
+
+    <!-- CSE -->
+    <div class="domain-col cse">
+      <div class="domain-header">
+        <div class="domain-name">认知系统</div>
+        <div class="domain-count">16 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">认知工作分析</div><div class="skill-desc">Rasmussen SRK 模型</div><div class="skill-trigger">设计复杂系统时</div></div>
+      <div class="skill-card"><div class="skill-name">认知负荷评估</div><div class="skill-desc">Sweller 三类诊断</div><div class="skill-trigger">信息过载时</div></div>
+      <div class="skill-card"><div class="skill-name">人-AI 协作设计</div><div class="skill-desc">功能分配与信任校准</div><div class="skill-trigger">设计人机交互时</div></div>
+      <div class="skill-card"><div class="skill-name">STPA 事故分析</div><div class="skill-desc">Leveson 控制缺陷分析</div><div class="skill-trigger">分析系统事故时</div></div>
+      <div class="skill-card"><div class="skill-name">韧性评估</div><div class="skill-desc">系统四项韧性能力</div><div class="skill-trigger">评估系统稳健性时</div></div>
+      <div class="skill-card"><div class="skill-name">自动化级别评估</div><div class="skill-desc">Parasuraman 四阶段</div><div class="skill-trigger">设计自动化时</div></div>
+      <div class="skill-card"><div class="skill-name">安全学习分析</div><div class="skill-desc">Hollnagel Safety-II</div><div class="skill-trigger">从成功中学习时</div></div>
+      <div class="skill-card"><div class="skill-name">人因可靠性分析</div><div class="skill-desc">THERP/CREAM/SPAR-H</div><div class="skill-trigger">量化人误风险时</div></div>
+    </div>
+
+    <!-- Ethics -->
+    <div class="domain-col ethics">
+      <div class="domain-header">
+        <div class="domain-name">伦理·政治</div>
+        <div class="domain-count">10 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">苦乐计算</div><div class="skill-desc">功利原则七维量化</div><div class="skill-trigger">资源分配决策时</div></div>
+      <div class="skill-card"><div class="skill-name">无知之幕分析</div><div class="skill-desc">公正性思想实验</div><div class="skill-trigger">设计制度规则时</div></div>
+      <div class="skill-card"><div class="skill-name">德性检验</div><div class="skill-desc">中庸之道与功能检验</div><div class="skill-trigger">个人品德反思时</div></div>
+      <div class="skill-card"><div class="skill-name">正义原则检验</div><div class="skill-desc">罗尔斯正义二原则</div><div class="skill-trigger">评估公平性时</div></div>
+      <div class="skill-card"><div class="skill-name">自由主义论证</div><div class="skill-desc">伤害原则与自由边界</div><div class="skill-trigger">自由与约束冲突时</div></div>
+      <div class="skill-card"><div class="skill-name">自然状态分析</div><div class="skill-desc">霍布斯自然状态分析</div><div class="skill-trigger">讨论社会秩序起源时</div></div>
+      <div class="skill-card"><div class="skill-name">非暴力抵抗</div><div class="skill-desc">甘地非暴力抵抗</div><div class="skill-trigger">面对不义时</div></div>
+      <div class="skill-card"><div class="skill-name">能力方法分析</div><div class="skill-desc">森能力方法分析</div><div class="skill-trigger">评估发展时</div></div>
+    </div>
+
+    <!-- Aesthetics -->
+    <div class="domain-col aesthetics">
+      <div class="domain-header">
+        <div class="domain-name">美学</div>
+        <div class="domain-count">3 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">审美判断分析</div><div class="skill-desc">康德四契机检验</div><div class="skill-trigger">评判美丑时</div></div>
+      <div class="skill-card"><div class="skill-name">悲剧精神评估</div><div class="skill-desc">日神/酒神元素分析</div><div class="skill-trigger">面对毁灭性美学时</div></div>
+      <div class="skill-card"><div class="skill-name">艺术批评框架</div><div class="skill-desc">形式/表现/语境/实用</div><div class="skill-trigger">评价艺术作品时</div></div>
+    </div>
+
+    <!-- Literature -->
+    <div class="domain-col literature">
+      <div class="domain-header">
+        <div class="domain-name">文学</div>
+        <div class="domain-count">5 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">人性洞察分析</div><div class="skill-desc">莎士比亚人性洞察</div><div class="skill-trigger">理解复杂人性时</div></div>
+      <div class="skill-card"><div class="skill-name">浮士德精神分析</div><div class="skill-desc">歌德浮士德精神</div><div class="skill-trigger">永不满足的追求时</div></div>
+      <div class="skill-card"><div class="skill-name">苦难救赎分析</div><div class="skill-desc">陀思妥耶夫斯基</div><div class="skill-trigger">深渊中寻找救赎时</div></div>
+      <div class="skill-card"><div class="skill-name">荒诞分析</div><div class="skill-desc">卡夫卡荒诞思想</div><div class="skill-trigger">感受到系统荒诞时</div></div>
+      <div class="skill-card"><div class="skill-name">国民性批判</div><div class="skill-desc">鲁迅国民性批判</div><div class="skill-trigger">反思集体特征时</div></div>
+    </div>
+
+    <!-- Arts -->
+    <div class="domain-col arts">
+      <div class="domain-header">
+        <div class="domain-name">艺术</div>
+        <div class="domain-count">3 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">艺术与科学统一</div><div class="skill-desc">达芬奇艺术与科学</div><div class="skill-trigger">跨界创新时</div></div>
+      <div class="skill-card"><div class="skill-name">苦难与艺术</div><div class="skill-desc">贝多芬苦难转化</div><div class="skill-trigger">痛苦催生创造时</div></div>
+      <div class="skill-card"><div class="skill-name">色彩与情感</div><div class="skill-desc">梵高色彩情感表达</div><div class="skill-trigger">用色彩传达情绪时</div></div>
+    </div>
+
+    <!-- Wisdom Masters -->
+    <div class="domain-col wisdom">
+      <div class="domain-header">
+        <div class="domain-name">智慧导师</div>
+        <div class="domain-count">11 Skills</div>
+      </div>
+      <div class="skill-card"><div class="skill-name">无住心法</div><div class="skill-desc">执念辨别与无住引导</div><div class="skill-trigger">执念缠绕时</div></div>
+      <div class="skill-card"><div class="skill-name">顿悟检验</div><div class="skill-desc">打破"先修才能悟"</div><div class="skill-trigger">等待完美时机时</div></div>
+      <div class="skill-card"><div class="skill-name">棒喝当下</div><div class="skill-desc">打破思维直指体验</div><div class="skill-trigger">过度思考时</div></div>
+      <div class="skill-card"><div class="skill-name">裸见觉性</div><div class="skill-desc">情绪当下认出觉性</div><div class="skill-trigger">被情绪淹没时</div></div>
+      <div class="skill-card"><div class="skill-name">只管打坐</div><div class="skill-desc">从追求切换到存在</div><div class="skill-trigger"> striving 过度时</div></div>
+      <div class="skill-card"><div class="skill-name">正念呼吸</div><div class="skill-desc">呼吸锚定回到当下</div><div class="skill-trigger">焦虑飘散时</div></div>
+      <div class="skill-card"><div class="skill-name">慈悲拥抱</div><div class="skill-desc">转化愤怒为慈悲</div><div class="skill-trigger">被愤怒控制时</div></div>
+    </div>
+
+    <!-- Scenarios -->
+    <div class="scenarios">
+      <div class="scenarios-title">Trigger Scenarios · 触发场景示例</div>
+      <div class="scenario-row">
+        <div class="scenario-who">个人困惑</div>
+        <div class="scenario-what"><b>马斯洛需求诊断</b> 定位迷茫根源 → <b>弗兰克尔意义疗法</b> 寻找存在意义 → <b>慧能无住心法</b> 放下执念</div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">职场分析</div>
+        <div class="scenario-what"><b>布迪厄场域分析</b> 看清权力结构 → <b>福柯权力分析</b> 识别规训机制 → <b>认知负荷评估</b> 优化工作流</div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">道德决策</div>
+        <div class="scenario-what"><b>无知之幕分析</b> 检验公正性 → <b>苦乐计算</b> 量化影响 → <b>德性检验</b> 校准品格</div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">AI 设计</div>
+        <div class="scenario-what"><b>人-AI 协作设计</b> 分配功能 → <b>自动化级别评估</b> 校准层级 → <b>STPA 事故分析</b> 预防风险</div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">创意瓶颈</div>
+        <div class="scenario-what"><b>心流条件评估</b> 找回沉浸 → <b>悲剧精神评估</b> 转化毁灭 → <b>色彩与情感分析</b> 打开感官</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">OPEN COGNITION · SKILLS MATRIX · PEACE LAB</div>
+    <div class="footer-right">
+      <span>10 DOMAINS</span><span>112 SKILLS</span><span>YAML FRONTMATTER</span><span>TRIGGER-READY</span><span>CC BY-SA 4.0</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Open Cognition · Executive Summary</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:#050508;
+  width:1920px;
+  height:1080px;
+  font-family:'Inter','Noto Serif SC',sans-serif;
+  color:#f0f0f5;
+  overflow:hidden;
+}
+
+.page{
+  width:1920px;
+  height:1080px;
+  position:relative;
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  grid-template-rows:1fr auto;
+  background:radial-gradient(ellipse at 30% 20%,rgba(99,102,241,.12) 0%,transparent 55%),
+             radial-gradient(ellipse at 70% 80%,rgba(236,72,153,.08) 0%,transparent 55%),
+             radial-gradient(ellipse at 50% 50%,rgba(6,182,212,.06) 0%,transparent 60%),
+             linear-gradient(180deg,#050508 0%,#0a0a12 100%);
+}
+
+/* ─── Animated ambient orbs ─── */
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.35;
+  animation:float 12s ease-in-out infinite;
+}
+.orb-1{width:400px;height:400px;background:rgba(99,102,241,.25);top:-100px;left:-80px;animation-delay:0s}
+.orb-2{width:350px;height:350px;background:rgba(236,72,153,.2);bottom:-80px;right:-60px;animation-delay:-4s}
+.orb-3{width:300px;height:300px;background:rgba(6,182,212,.18);top:40%;left:45%;animation-delay:-8s}
+@keyframes float{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-30px) scale(1.05)}
+  66%{transform:translate(-20px,20px) scale(.95)}
+}
+
+/* ─── Left Column ─── */
+.left-col{
+  padding:72px 64px 48px 80px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  z-index:2;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:#6366f1;
+  margin-bottom:32px;
+}
+.badge::before{
+  content:'';
+  width:8px;
+  height:8px;
+  background:#6366f1;
+  border-radius:50%;
+  box-shadow:0 0 12px rgba(99,102,241,.6);
+}
+
+.headline{
+  font-size:68px;
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-2.5px;
+  margin-bottom:28px;
+  font-family:'Playfair Display',serif;
+}
+.headline .line-1{
+  background:linear-gradient(135deg,#fff 0%,#c7c7d5 60%,#a5b4fc 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.headline .line-2{
+  background:linear-gradient(135deg,#a5b4fc 0%,#818cf8 50%,#c084fc 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.subhead{
+  font-size:17px;
+  line-height:1.7;
+  color:#8890a8;
+  max-width:520px;
+  margin-bottom:40px;
+  font-weight:400;
+}
+
+.problem-solution{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.ps-row{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+}
+.ps-icon{
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  font-weight:700;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.ps-icon.prob{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.ps-icon.sol{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+.ps-icon.diff{background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.2)}
+.ps-text{font-size:14px;line-height:1.6;color:#a0a8c0}
+.ps-text b{color:#e2e8f0;font-weight:600}
+
+.version-track{
+  margin-top:auto;
+  padding-top:36px;
+}
+.version-label{
+  font-size:10px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:#47506b;
+  font-weight:600;
+  margin-bottom:14px;
+}
+.version-dots{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.v-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  position:relative;
+  transition:all .3s;
+}
+.v-dot::after{
+  content:attr(data-v);
+  position:absolute;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:9px;
+  color:#47506b;
+  white-space:nowrap;
+  font-weight:600;
+  letter-spacing:1px;
+}
+.v-dot.active{
+  background:#6366f1;
+  box-shadow:0 0 16px rgba(99,102,241,.5);
+}
+.v-dot.active::after{color:#818cf8}
+.v-line{
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,rgba(99,102,241,.4),rgba(236,72,153,.2));
+}
+
+/* ─── Right Column ─── */
+.right-col{
+  padding:72px 80px 48px 48px;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  position:relative;
+  z-index:2;
+}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+.stat-card{
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  padding:24px 22px 20px;
+  background:rgba(255,255,255,.02);
+  position:relative;
+  overflow:hidden;
+  transition:all .3s;
+}
+.stat-card:hover{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.035);
+  transform:translateY(-2px);
+}
+.stat-card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:var(--accent);
+  opacity:.5;
+}
+.stat-num{
+  font-size:42px;
+  font-weight:900;
+  line-height:1;
+  font-family:'Playfair Display',serif;
+  background:var(--accent-text);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+}
+.stat-label{
+  font-size:12px;
+  color:#6b7280;
+  font-weight:500;
+  letter-spacing:.5px;
+}
+.stat-desc{
+  font-size:11px;
+  color:#47506b;
+  margin-top:8px;
+  line-height:1.5;
+}
+
+.scenarios{
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  padding:22px 24px 18px;
+  background:rgba(255,255,255,.02);
+}
+.scenarios-title{
+  font-size:10px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:#47506b;
+  font-weight:700;
+  margin-bottom:14px;
+}
+.scenario-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.scenario-row:last-child{border-bottom:none}
+.scenario-who{
+  font-size:12px;
+  font-weight:700;
+  color:#a5b4fc;
+  min-width:90px;
+  font-family:'Inter',sans-serif;
+}
+.scenario-what{
+  font-size:13px;
+  color:#8890a8;
+  line-height:1.5;
+}
+.scenario-what b{color:#c7c7d5;font-weight:600}
+
+.pillars{
+  display:flex;
+  gap:10px;
+  margin-top:4px;
+}
+.pillar{
+  flex:1;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;
+  padding:16px 14px 14px;
+  background:rgba(255,255,255,.02);
+  text-align:center;
+}
+.pillar-icon{
+  font-size:24px;
+  margin-bottom:8px;
+}
+.pillar-title{
+  font-size:12px;
+  font-weight:700;
+  color:#e2e8f0;
+  margin-bottom:4px;
+}
+.pillar-desc{
+  font-size:10px;
+  color:#47506b;
+  line-height:1.4;
+}
+
+/* ─── Footer bar ─── */
+.footer-bar{
+  grid-column:1 / -1;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 80px;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.015);
+  position:relative;
+  z-index:2;
+}
+.footer-left{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.footer-logo{
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:2px;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+}
+.footer-divider{width:1px;height:16px;background:rgba(255,255,255,.1)}
+.footer-tag{
+  font-size:11px;
+  color:#47506b;
+  font-weight:500;
+}
+.footer-right{
+  display:flex;
+  gap:20px;
+}
+.footer-right span{
+  font-size:10px;
+  color:#374151;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:600;
+}
+
+/* Domain accent colors for stats */
+.s1{--accent:rgba(139,92,246,.5);--accent-text:linear-gradient(135deg,#c4b5fd,#a78bfa)}
+.s2{--accent:rgba(245,158,11,.5);--accent-text:linear-gradient(135deg,#fde68a,#fbbf24)}
+.s3{--accent:rgba(16,185,129,.5);--accent-text:linear-gradient(135deg,#a7f3d0,#34d399)}
+.s4{--accent:rgba(59,130,246,.5);--accent-text:linear-gradient(135deg,#bfdbfe,#60a5fa)}
+.s5{--accent:rgba(239,68,68,.5);--accent-text:linear-gradient(135deg,#fecaca,#f87171)}
+.s6{--accent:rgba(6,182,212,.5);--accent-text:linear-gradient(135deg,#a5f3fc,#22d3ee)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Ambient Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
+    <div>
+      <div class="badge">Peace Lab · Executive Summary</div>
+      <div class="headline">
+        <div class="line-1">把人类最深刻的认知</div>
+        <div class="line-2">装进 AI 的调用栈</div>
+      </div>
+      <div class="subhead">
+        Open Cognition 是一个面向<strong>人类深度阅读</strong>与 <strong>AI Agent 调用</strong>的跨学科认知资源库。
+        将哲学、宗教、心理学、社会学、伦理学、美学与认知系统工程中<strong>最值得反复使用的思想、命题、方法</strong>，
+        整理成可链接、可检索、可复用的开源知识结构。
+      </div>
+
+      <div class="problem-solution">
+        <div class="ps-row">
+          <div class="ps-icon prob">!</div>
+          <div class="ps-text"><b>问题：</b>跨学科洞见分散在难以阅读的原典与互不通话的学派之中，
+          AI 缺乏可直接调用的<strong>高质量认知框架</strong>。</div>
+        </div>
+        <div class="ps-row">
+          <div class="ps-icon sol">✓</div>
+          <div class="ps-text"><b>方案：</b>用 ~100 行紧凑条目建立整体感，附原典/研究/入门三层进阶阅读，
+          提炼标准化 <strong>Skill</strong> 让 LLM 与人类共用同一份知识。</div>
+        </div>
+        <div class="ps-row">
+          <div class="ps-icon diff">★</div>
+          <div class="ps-text"><b>差异化：</b>显式标注 10 种跨学科关联类型，所有条目可被 Agent runtime 直接索引调用，
+          拒绝鸡汤式简化，诚实标注"常见误读"。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="version-track">
+      <div class="version-label">Evolution · 版本演进</div>
+      <div class="version-dots">
+        <div class="v-dot" data-v="v0.1"></div><div class="v-line"></div>
+        <div class="v-dot" data-v="v0.2"></div><div class="v-line"></div>
+        <div class="v-dot" data-v="v0.3"></div><div class="v-line"></div>
+        <div class="v-dot" data-v="v0.4"></div><div class="v-line"></div>
+        <div class="v-dot active" data-v="v0.5"></div>
+      </div>
+      <div style="display:flex;gap:24px;margin-top:28px;font-size:11px;color:#47506b">
+        <span>五领域骨架</span>
+        <span>→ 全球人物扩展</span>
+        <span>→ 文学·艺术融合</span>
+        <span>→ 认知系统工程</span>
+        <span style="color:#818cf8;font-weight:600">→ CSE 深度扩展 + AI-Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+    <div class="stats-grid">
+      <div class="stat-card s1">
+        <div class="stat-num">10</div>
+        <div class="stat-label">知识领域</div>
+        <div class="stat-desc">哲学 · 宗教 · 心理学 · 社会学 · 伦理·政治 · 美学 · 文学 · 艺术 · 认知系统 · 智慧导师</div>
+      </div>
+      <div class="stat-card s2">
+        <div class="stat-num">148</div>
+        <div class="stat-label">思想家 / 导师</div>
+        <div class="stat-desc">从苏格拉底到卡尼曼，从慧能到拉斯穆森，覆盖 2500 年思想史</div>
+      </div>
+      <div class="stat-card s3">
+        <div class="stat-num">112</div>
+        <div class="stat-label">Agent Skills</div>
+        <div class="stat-desc">标准化操作框架，含 YAML frontmatter，可被 Claude Skills / 自定义 RAG 直接调用</div>
+      </div>
+      <div class="stat-card s4">
+        <div class="stat-num">360+</div>
+        <div class="stat-label">知识文件</div>
+        <div class="stat-desc">思想家条目 · 概念条目 · Skill 文件 · 跨学科关联链接</div>
+      </div>
+      <div class="stat-card s5">
+        <div class="stat-num">93</div>
+        <div class="stat-label">核心概念</div>
+        <div class="stat-desc">跨学派、跨传统的共享观念，显式标注同源/互补/对立/发展等关系</div>
+      </div>
+      <div class="stat-card s6">
+        <div class="stat-num">106+</div>
+        <div class="stat-label">跨学科关系</div>
+        <div class="stat-desc">横向主题索引：自我 · 权力 · 意义 · 现代性 · 苦难 · 自由 · 正义</div>
+      </div>
+    </div>
+
+    <div class="scenarios">
+      <div class="scenarios-title">Use Cases · 使用场景</div>
+      <div class="scenario-row">
+        <div class="scenario-who">个人困惑</div>
+        <div class="scenario-what">用 <b>马斯洛需求诊断</b> 或 <b>四圣谛诊断</b> 定位迷茫根源</div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">职场分析</div>
+        <div class="scenario-what">同时跑 <b>布迪厄场域分析</b> + <b>认知负荷评估</b> + <b>福柯权力分析</b></div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">AI 设计</div>
+        <div class="scenario-what">用 <b>人-AI 协作设计</b> 与 <b>联合认知系统</b> 框架评估人机边界</div>
+      </div>
+      <div class="scenario-row">
+        <div class="scenario-who">道德决策</div>
+        <div class="scenario-what"><b>无知之幕分析</b> + <b>苦乐计算</b> + <b>德性检验</b> 三重校验</div>
+      </div>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">📖</div>
+        <div class="pillar-title">人类阅读</div>
+        <div class="pillar-desc">横向主题浏览<br>纵向学派深入</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🤖</div>
+        <div class="pillar-title">Agent 调用</div>
+        <div class="pillar-desc">标准化 Skill<br>YAML frontmatter</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🔗</div>
+        <div class="pillar-title">跨学科互链</div>
+        <div class="pillar-desc">10 种关联类型<br>可追溯可追问</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <div class="footer-left">
+      <div class="footer-logo">OPEN COGNITION</div>
+      <div class="footer-divider"></div>
+      <div class="footer-tag">v0.5 · 2026-05-24 · CC BY-SA 4.0 · github.com/peace-lab-global/open-cognition</div>
+    </div>
+    <div class="footer-right">
+      <span>HUMAN</span>
+      <span>AGENT</span>
+      <span>SYSTEM</span>
+      <span>OPEN</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
