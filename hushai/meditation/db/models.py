@@ -517,9 +517,7 @@ class CounselorContract(Base):
         String(32), default="platform"
     )  # platform / eap / referral
     template_version: Mapped[Optional[str]] = mapped_column(String(32))
-    commission_rate: Mapped[float] = mapped_column(
-        Float, default=0.0
-    )  # 平台抽佣比例 0.0-1.0
+    commission_rate: Mapped[float] = mapped_column(Float, default=0.0)  # 平台抽佣比例 0.0-1.0
     effective_from: Mapped[Optional[date]] = mapped_column(Date)
     effective_until: Mapped[Optional[date]] = mapped_column(Date)
     document_url: Mapped[Optional[str]] = mapped_column(String(512))
@@ -544,9 +542,7 @@ class InformedConsent(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
-    appointment_id: Mapped[Optional[str]] = mapped_column(
-        ForeignKey("appointments.id"), index=True
-    )
+    appointment_id: Mapped[Optional[str]] = mapped_column(ForeignKey("appointments.id"), index=True)
     consent_type: Mapped[str] = mapped_column(
         String(64), default="counseling"
     )  # counseling / data_processing / recording / minor_guardian
@@ -575,9 +571,7 @@ class CounselorWallet(Base):
     __tablename__ = "counselor_wallets"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    counselor_id: Mapped[str] = mapped_column(
-        ForeignKey("counselors.id"), unique=True, index=True
-    )
+    counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), unique=True, index=True)
     available_balance: Mapped[float] = mapped_column(Float, default=0.0)  # 可提现
     pending_balance: Mapped[float] = mapped_column(Float, default=0.0)  # 冻结（未完成订单）
     withdrawn_total: Mapped[float] = mapped_column(Float, default=0.0)  # 累计已提现
@@ -642,9 +636,7 @@ class Payout(Base):
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     amount: Mapped[float] = mapped_column(Float, default=0.0)
     fee: Mapped[float] = mapped_column(Float, default=0.0)  # 手续费
-    method: Mapped[str] = mapped_column(
-        String(32), default="bank"
-    )  # bank / alipay / wechat
+    method: Mapped[str] = mapped_column(String(32), default="bank")  # bank / alipay / wechat
     destination: Mapped[Optional[str]] = mapped_column(
         String(256)
     )  # 银行卡号 / 支付宝账号（脱敏存储）
@@ -774,9 +766,7 @@ class TreatmentPlan(Base):
     __tablename__ = "treatment_plans"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    client_profile_id: Mapped[str] = mapped_column(
-        ForeignKey("client_profiles.id"), index=True
-    )
+    client_profile_id: Mapped[str] = mapped_column(ForeignKey("client_profiles.id"), index=True)
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     title: Mapped[Optional[str]] = mapped_column(String(256))
     presenting_issues: Mapped[Optional[str]] = mapped_column(Text)  # 主诉
@@ -813,18 +803,12 @@ class SessionLog(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     plan_id: Mapped[str] = mapped_column(ForeignKey("treatment_plans.id"), index=True)
-    client_profile_id: Mapped[str] = mapped_column(
-        ForeignKey("client_profiles.id"), index=True
-    )
+    client_profile_id: Mapped[str] = mapped_column(ForeignKey("client_profiles.id"), index=True)
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
-    appointment_id: Mapped[Optional[str]] = mapped_column(
-        ForeignKey("appointments.id"), index=True
-    )
+    appointment_id: Mapped[Optional[str]] = mapped_column(ForeignKey("appointments.id"), index=True)
     session_number: Mapped[Optional[int]] = mapped_column(Integer)  # 该个案第 N 次
     duration_minutes: Mapped[int] = mapped_column(Integer, default=0)
-    modality: Mapped[Optional[str]] = mapped_column(
-        String(32)
-    )  # in_person / video / phone / chat
+    modality: Mapped[Optional[str]] = mapped_column(String(32))  # in_person / video / phone / chat
     summary_encrypted: Mapped[Optional[str]] = mapped_column("summary", Text)
     mood_before: Mapped[Optional[int]] = mapped_column(Integer)  # 1-10
     mood_after: Mapped[Optional[int]] = mapped_column(Integer)  # 1-10
@@ -851,9 +835,7 @@ class IntakeQuestionnaire(Base):
     )
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
-    appointment_id: Mapped[Optional[str]] = mapped_column(
-        ForeignKey("appointments.id"), index=True
-    )
+    appointment_id: Mapped[Optional[str]] = mapped_column(ForeignKey("appointments.id"), index=True)
     template_version: Mapped[Optional[str]] = mapped_column(String(32))
     responses: Mapped[Optional[dict]] = mapped_column(JSON)  # 问题-答案映射
     mood_baseline: Mapped[Optional[int]] = mapped_column(Integer)  # 初始情绪基线 1-10
@@ -904,9 +886,7 @@ class Review(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
-    appointment_id: Mapped[Optional[str]] = mapped_column(
-        ForeignKey("appointments.id"), index=True
-    )
+    appointment_id: Mapped[Optional[str]] = mapped_column(ForeignKey("appointments.id"), index=True)
     rating: Mapped[int] = mapped_column(Integer)  # 1-5
     communication_score: Mapped[Optional[int]] = mapped_column(Integer)  # 1-5 分项
     professionalism_score: Mapped[Optional[int]] = mapped_column(Integer)
@@ -924,9 +904,7 @@ class Review(Base):
     counselor: Mapped["Counselor"] = relationship(foreign_keys=[counselor_id])
     user: Mapped["User"] = relationship(foreign_keys=[user_id])
 
-    __table_args__ = (
-        Index("ix_reviews_counselor_published", "counselor_id", "is_published"),
-    )
+    __table_args__ = (Index("ix_reviews_counselor_published", "counselor_id", "is_published"),)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -954,9 +932,7 @@ class Supervision(Base):
     notes_encrypted: Mapped[Optional[str]] = mapped_column("notes", Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
-    counselor: Mapped["Counselor"] = relationship(
-        foreign_keys=[counselor_id]
-    )
+    counselor: Mapped["Counselor"] = relationship(foreign_keys=[counselor_id])
     supervisor: Mapped[Optional["Counselor"]] = relationship(foreign_keys=[supervisor_id])
 
 
@@ -997,9 +973,7 @@ class TrainingRecord(Base):
     institution: Mapped[Optional[str]] = mapped_column(String(256))
     start_date: Mapped[Optional[date]] = mapped_column(Date)
     end_date: Mapped[Optional[date]] = mapped_column(Date)
-    level: Mapped[Optional[str]] = mapped_column(
-        String(64)
-    )  # 入门 / 初阶 / 中阶 / 高阶 / 教师认证
+    level: Mapped[Optional[str]] = mapped_column(String(64))  # 入门 / 初阶 / 中阶 / 高阶 / 教师认证
     certificate_url: Mapped[Optional[str]] = mapped_column(String(512))
     description: Mapped[Optional[str]] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
@@ -1129,9 +1103,7 @@ class Workshop(Base):
     counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     title: Mapped[str] = mapped_column(String(256))
     description: Mapped[Optional[str]] = mapped_column(Text)
-    format: Mapped[str] = mapped_column(
-        String(32), default="online"
-    )  # online / in_person / hybrid
+    format: Mapped[str] = mapped_column(String(32), default="online")  # online / in_person / hybrid
     location: Mapped[Optional[str]] = mapped_column(String(256))
     start_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     end_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
@@ -1188,9 +1160,7 @@ class Coupon(Base):
     coupon_type: Mapped[str] = mapped_column(
         String(16), default="discount"
     )  # discount / amount / trial
-    discount_value: Mapped[float] = mapped_column(
-        Float, default=0.0
-    )  # 百分比(0-100) 或固定金额
+    discount_value: Mapped[float] = mapped_column(Float, default=0.0)  # 百分比(0-100) 或固定金额
     min_amount: Mapped[float] = mapped_column(Float, default=0.0)  # 满减门槛
     max_uses: Mapped[Optional[int]] = mapped_column(Integer)  # 总发放量
     used_count: Mapped[int] = mapped_column(Integer, default=0)
@@ -1220,9 +1190,7 @@ class Referral(Base):
     __tablename__ = "referrals"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    from_counselor_id: Mapped[str] = mapped_column(
-        ForeignKey("counselors.id"), index=True
-    )
+    from_counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), index=True)
     to_counselor_id: Mapped[Optional[str]] = mapped_column(
         ForeignKey("counselors.id"), index=True
     )  # 平台内接收方（可为空表示外部转介）
@@ -1302,12 +1270,8 @@ class CalendarSync(Base):
     __tablename__ = "calendar_syncs"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    counselor_id: Mapped[str] = mapped_column(
-        ForeignKey("counselors.id"), unique=True, index=True
-    )
-    provider: Mapped[str] = mapped_column(
-        String(32)
-    )  # google / outlook / ical / apple
+    counselor_id: Mapped[str] = mapped_column(ForeignKey("counselors.id"), unique=True, index=True)
+    provider: Mapped[str] = mapped_column(String(32))  # google / outlook / ical / apple
     external_calendar_id: Mapped[Optional[str]] = mapped_column(String(256))
     ical_feed_url: Mapped[Optional[str]] = mapped_column(String(512))
     sync_direction: Mapped[str] = mapped_column(

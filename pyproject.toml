@@ -101,8 +101,6 @@ omit = [
     "hushai/meditation/admin/pages/*",
     "hushai/meditation/admin/__init__.py",
     "hushai/meditation/admin/export.py",
-    "hushai/meditation/core/remote_knowledge.py",
-    "hushai/meditation/core/wechat_pay.py",
 ]
 
 [tool.coverage.report]
